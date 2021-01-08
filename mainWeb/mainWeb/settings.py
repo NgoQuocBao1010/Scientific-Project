@@ -14,7 +14,7 @@ SECRET_KEY = '-p822q^(4%_34bb$f3lhfk0_@)1h35z$)@9wp*niypa81qdnr='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.121']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.121', '192.168.0.105']
 
 
 # Application definition
@@ -67,6 +67,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
 
 WSGI_APPLICATION = 'mainWeb.wsgi.application'
 ASGI_APPLICATION = 'mainWeb.routing.application'

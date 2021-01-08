@@ -24,7 +24,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script>
     // let socket = new WebSocket('ws://localhost:8000/ws/sendVideo/');
-    let socket = new WebSocket('ws://192.168.1.121:8000/ws/sendVideo/');
+    // let socket = new WebSocket('ws://192.168.1.121:8000/ws/sendVideo/');
+    let socket = new WebSocket('ws://192.168.0.105:8000/ws/sendVideo/');
 
     socket.onopen = function(e) {
         alert('Connection Establish');
