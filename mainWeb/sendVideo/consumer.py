@@ -35,7 +35,15 @@ class SendVideo(AsyncWebsocketConsumer):
         imgByte = data['imgByte']
         imgEncode = str.encode(imgByte)
         name = data['imgName']
+        
+        data['noti'] = 'Nhan duoc roi!!!!'
+        event['value'] = json.dumps(data)
+            
 
         with open(f"static/images/{name}.png","wb") as f:
             f.write(base64.decodebytes(imgEncode))
+
+        # with open(f"static/images/testPic2.png","wb") as f:
+        #     f.write(base64.decodebytes(imgEncode))
+
         await self.send(event['value'])

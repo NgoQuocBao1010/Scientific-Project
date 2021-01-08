@@ -35,7 +35,8 @@
         var imgData = JSON.parse(e.data)
         var name = imgData['imgName']
         document.getElementById("myImg").src = "/static/images/" + name + ".png";
-        console.log(imgData['imgName'])
+        // document.getElementById("myImg").src = "/static/images/testPic2.png";
+        console.log(imgData['noti'])
     };
 
     socket.onclose= function(e){
