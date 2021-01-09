@@ -31,7 +31,7 @@ def on_open(ws):
 
             ret, frame = cap.read()
             i += 1
-            if i % 30 != 0:
+            if i % 10 != 0:
                 continue
             
             cv2.imshow('frame', frame)
@@ -60,7 +60,7 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    url = 'ws://192.168.1.21:8000/ws/sendVideo/'
+    url = 'ws://localhost:8000/ws/sendVideo/'
     ws = websocket.WebSocketApp(url,
                               on_message = on_message,
                               on_error = on_error,
