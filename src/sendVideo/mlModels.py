@@ -55,8 +55,8 @@ def usingDeepLearning2(picStrBytes, savedPath):
         try:
             # pic = pic[startY:endY, startX:endX]
             pic = grayscaleImage(pic)
-            # cv2.rectangle(pic, (startX, startY), (endX, endY), (255, 0, 0), 2)
-            pic = resizeImage(pic, (48, 48))
+            cv2.rectangle(pic, (startX, startY), (endX, endY), (255, 0, 0), 2)
+            pic = resizeImage(pic, (400, 400))
             cv2.imwrite(savedPath, pic)
         except:
             continue

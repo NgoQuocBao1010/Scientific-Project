@@ -36,10 +36,10 @@
         var imgData = JSON.parse(e.data)
         var name = imgData['imgName']
 
-        var byteStr = imgData['imgByte']
-        // document.getElementById("myImg").src = "/static/images/" + name + "_ml.png";
-        document.getElementById("myImg").src = "data:image/png;base64," + byteStr;
-        console.log(imgData['noti'])
+        var byteStr = imgData['imgByte'];
+        document.getElementById("myImg").src = "/static/images/" + name + "_ml.png";
+        // document.getElementById("myImg").src = "data:image/png;base64," + byteStr;
+        console.log(imgData['noti']);
     };
 
     socket.onclose= function(e){

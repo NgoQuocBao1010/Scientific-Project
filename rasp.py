@@ -9,16 +9,20 @@ import cv2
 import datetime
 import base64
 
+
 def on_message(ws, message):
     data = json.loads(message)
     # print(data['noti'])
+
 
 def on_error(ws, error):
     # print(error)
     pass
 
+
 def on_close(ws):
     print("### closed ###")
+
 
 def on_open(ws):
     def run(*args):
@@ -31,7 +35,7 @@ def on_open(ws):
 
             ret, frame = cap.read()
             i += 1
-            if i % 10 != 0:
+            if i % 30 != 0:
                 continue
             
             cv2.imshow('frame', frame)
@@ -58,9 +62,11 @@ def on_open(ws):
 
     thread.start_new_thread(run, ())
 
+
 if __name__ == "__main__":
     websocket.enableTrace(True)
     url = 'ws://localhost:8000/ws/sendVideo/'
+    # url = 'ws://192.168.0.105:8000/ws/sendVideo/'
     ws = websocket.WebSocketApp(url,
                               on_message = on_message,
                               on_error = on_error,
