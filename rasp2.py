@@ -37,7 +37,8 @@ def on_open(ws):
         time.sleep(1.5)
         for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
             frame = frame.array
-            if cv2.waitKey(25) == 13:                                                                                                   break
+            if cv2.waitKey(25) == 13:
+                break                                                                                                   break
             rawCapture.truncate()
             rawCapture.seek(0)
 
