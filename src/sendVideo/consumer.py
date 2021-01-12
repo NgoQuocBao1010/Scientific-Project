@@ -44,6 +44,6 @@ class SendVideo(AsyncWebsocketConsumer):
         # with open(f"static/images/{name}.png","wb") as f:
         #     f.write(base64.decodebytes(imgEncode))
 
-        usingDeepLearning2(imgByte, f"static/images/{name}_ml.png")
+        # usingDeepLearning2(imgByte, f"static/images/{name}_ml.png")
 
         await self.send(event['value'])

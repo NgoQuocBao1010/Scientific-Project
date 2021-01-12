@@ -8,7 +8,8 @@ import json
 import cv2
 import datetime
 import base64
-
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 def on_message(ws, message):
     data = json.loads(message)
@@ -16,9 +17,7 @@ def on_message(ws, message):
 
 
 def on_error(ws, error):
-
-    
-    # print(error)
+    print(error)
     pass
 
 
@@ -28,37 +27,43 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        cap = cv2.VideoCapture(0)
+        # cap = cv2.VideoCapture(0)
+        camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.framerate = 32
+        rawCapture = PiRGBArray(camera, size=(640, 480))
 
         i = -1
-        while True:
-            if cv2.waitKey(25) == 13:
-                break
+        time.sleep(1.5)
+        for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+            frame = frame.array
+            if cv2.waitKey(25) == 13:                                                                                                   break
+            rawCapture.truncate()
+            rawCapture.seek(0)
 
-            ret, frame = cap.read()
             i += 1
-            if i % 30 != 0:
+            if i % 1 != 0:
                 continue
-            
-            cv2.imshow('frame', frame)
+
+            # cv2.imshow('frame', frame)
             _, im_arr = cv2.imencode('.jpg', frame)
             im_bytes = im_arr.tobytes()
-            im_b64 = base64.b64encode(im_bytes)
+             im_b64 = base64.b64encode(im_bytes)
             im_data_str = im_b64.decode('utf-8')
-            
+
             current_time = str(datetime.datetime.now())
             current_time = current_time.replace(" ", "_").replace(".", "_").replace("-", "_").replace(":", "_")
-            
+
             pp = json.dumps({
                 'imgByte': im_data_str,
                 'imgName': current_time
             })
+            print(pp)
             try:
                 ws.send(pp)
             except Exception as e:
-                print(str(e))
-        cap.release()
-        cv2.destroyAllWindows()
+                print(str(e))                                                                                                   # cap.release()
+        # cv2.destroyAllWindows()
         ws.close()
         # print("thread terminating...")
 
@@ -75,3 +80,4 @@ if __name__ == "__main__":
                               on_close = on_close)
     ws.on_open = on_open
     ws.run_forever()
+
