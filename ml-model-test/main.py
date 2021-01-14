@@ -23,6 +23,7 @@ model_path = 'shape_predictor_68_face_landmarks.dat'
 
 # Initialize two counters
 BLINK_COUNT = 0
+YAWN_COUNT = 0
 FRAME_COUNT_EAR = 0
 FRAME_COUNT_MAR = 0
 FRAME_COUNT_DISTR = 0
@@ -40,7 +41,7 @@ predictor = dlib.shape_predictor(model_path)
 # Now start the video stream and allow the camera to warm-up
 print("[INFO]Loading Camera.....")
 # video_capture = cv2.VideoCapture('5182892353891652053.mp4')
-video_capture = cv2.VideoCapture('testVideo3.mp4')
+video_capture = cv2.VideoCapture('testVideo.mp4')
 
 time.sleep(2)
 
@@ -122,8 +123,9 @@ while True:
 
                 cv2.drawContours(frame, [mouth], -1, (0, 0, 255), 1)
 
-                if FRAME_COUNT_MAR >= 5:
+                if FRAME_COUNT_MAR >= 10:
                     print('Yawninggggg')
+                    YAWN_COUNT += 1
                     cv2.putText(frame, "YOU ARE YAWNING!", (270, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
             else:
                 FRAME_COUNT_MAR = 0
@@ -140,3 +142,6 @@ while True:
     if cv2.waitKey(25) == 13:
         break
 
+
+
+print(YAWN_COUNT)
