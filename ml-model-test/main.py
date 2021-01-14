@@ -17,7 +17,7 @@ EAR_THRESHOLD = 0.1
 
 MAR_THRESHOLD = 12
 
-CONSECUTIVE_FRAMES = 2
+CONSECUTIVE_FRAMES = 10
 
 model_path = 'shape_predictor_68_face_landmarks.dat'
 
@@ -40,7 +40,7 @@ predictor = dlib.shape_predictor(model_path)
 # Now start the video stream and allow the camera to warm-up
 print("[INFO]Loading Camera.....")
 # video_capture = cv2.VideoCapture('5182892353891652053.mp4')
-video_capture = cv2.VideoCapture('testVideo.mp4')
+video_capture = cv2.VideoCapture('testVideo3.mp4')
 
 time.sleep(2)
 
