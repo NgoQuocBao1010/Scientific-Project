@@ -33,7 +33,7 @@ def convertStrByteToImg(strByte):
     return img
 
 
-def usingDeepLearning2(picStrBytes, savedPath):
+def usingDeepLearning2(picStrBytes):
     pic = convertStrByteToImg(picStrBytes)
     net = cv2.dnn.readNetFromCaffe("deploy.prototxt.txt", "res10_300x300_ssd_iter_140000.caffemodel")
     
@@ -57,9 +57,13 @@ def usingDeepLearning2(picStrBytes, savedPath):
             pic = grayscaleImage(pic)
             cv2.rectangle(pic, (startX, startY), (endX, endY), (255, 0, 0), 2)
             pic = resizeImage(pic, (400, 400))
-            cv2.imwrite(savedPath, pic)
+            _, im_arr = cv2.imencode('.jpg', pic)
+            im_bytes = im_arr.tobytes()
+            im_b64 = base64.b64encode(im_bytes)
+            im_data_str = im_b64.decode('utf-8')
+            return im_data_str
         except:
-            continue
+            return None
     
 
 

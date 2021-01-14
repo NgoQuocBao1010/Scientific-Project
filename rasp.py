@@ -16,8 +16,6 @@ def on_message(ws, message):
 
 
 def on_error(ws, error):
-
-    
     # print(error)
     pass
 
@@ -29,6 +27,7 @@ def on_close(ws):
 def on_open(ws):
     def run(*args):
         cap = cv2.VideoCapture(0)
+        time.sleep(2)
 
         i = -1
         while True:
@@ -37,9 +36,10 @@ def on_open(ws):
 
             ret, frame = cap.read()
             i += 1
-            if i % 30 != 0:
+            if i % 2 != 0:
                 continue
             
+            cv2.putText(frame, f"{i}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 3)
             cv2.imshow('frame', frame)
             _, im_arr = cv2.imencode('.jpg', frame)
             im_bytes = im_arr.tobytes()
@@ -54,6 +54,7 @@ def on_open(ws):
                 'imgName': current_time
             })
             try:
+                time.sleep(0.3)
                 ws.send(pp)
             except Exception as e:
                 print(str(e))
@@ -67,8 +68,8 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    # url = 'ws://localhost:8000/ws/sendVideo/'
-    url = 'ws://192.168.123.147:8000/ws/sendVideo/'
+    url = 'ws://localhost:8000/ws/sendVideo/'
+    # url = 'ws://192.168.123.147:8000/ws/sendVideo/'
     ws = websocket.WebSocketApp(url,
                               on_message = on_message,
                               on_error = on_error,
