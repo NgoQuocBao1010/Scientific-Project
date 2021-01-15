@@ -35,12 +35,12 @@
 
     socket.onmessage = function(e) {
         var imgData = JSON.parse(e.data)
-        var name = imgData['imgName']
+        var name = imgData['imgName'];
 
-        var byteStr = imgData['imgByte'];
+        var byteStr = imgData['imgByte'][0];
         // document.getElementById("myImg").src = "/static/images/" + name + "_ml.png";
         document.getElementById("myImg").src = "data:image/png;base64," + byteStr;
-        console.log(imgData['noti']);
+        console.log(byteStr);
     };
 
     socket.onclose= function(e){

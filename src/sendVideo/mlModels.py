@@ -25,16 +25,24 @@ def grayscaleImage(image):
 
 
 def convertStrByteToImg(strByte):
-    im_b64 = str.encode(strByte)
-    f = base64.b64decode(im_b64)
-    im_arr = np.frombuffer(f, dtype=np.uint8)
-    img = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
+    try:
+        im_b64 = str.encode(strByte)
+        f = base64.b64decode(im_b64)
+        im_arr = np.frombuffer(f, dtype=np.uint8)
+        img = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
 
-    return img
+        return img
+    except Exception as e:
+        # print(str(e))
+        return None
 
 
 def usingDeepLearning2(picStrBytes):
     pic = convertStrByteToImg(picStrBytes)
+
+    if pic is None:
+        return None
+
     net = cv2.dnn.readNetFromCaffe("deploy.prototxt.txt", "res10_300x300_ssd_iter_140000.caffemodel")
     
     blob = cv2.dnn.blobFromImage(cv2.resize(pic, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))

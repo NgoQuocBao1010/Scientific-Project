@@ -10,6 +10,7 @@ import datetime
 import base64
 
 
+
 def on_message(ws, message):
     data = json.loads(message)
     # print(data['noti'])
@@ -26,7 +27,9 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        cap = cv2.VideoCapture(0)
+        MAXIMUM_NUMBER_OF_SEND_FRAMES = 2
+        LIST_OF_FRAMES = []
+        cap = cv2.VideoCapture('testVideo.mp4')
         time.sleep(2)
 
         i = -1
@@ -36,7 +39,7 @@ def on_open(ws):
 
             ret, frame = cap.read()
             i += 1
-            if i % 2 != 0:
+            if i % 1 != 0:
                 continue
             
             cv2.putText(frame, f"{i}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 3)
@@ -45,19 +48,25 @@ def on_open(ws):
             im_bytes = im_arr.tobytes()
             im_b64 = base64.b64encode(im_bytes)
             im_data_str = im_b64.decode('utf-8')
-            
-            current_time = str(datetime.datetime.now())
-            current_time = current_time.replace(" ", "_").replace(".", "_").replace("-", "_").replace(":", "_")
-            
-            pp = json.dumps({
-                'imgByte': im_data_str,
-                'imgName': current_time
-            })
-            try:
-                time.sleep(0.3)
-                ws.send(pp)
-            except Exception as e:
-                print(str(e))
+
+            LIST_OF_FRAMES.append(im_data_str)
+
+            if len(LIST_OF_FRAMES) == MAXIMUM_NUMBER_OF_SEND_FRAMES:
+                current_time = str(datetime.datetime.now())
+                current_time = current_time.replace(" ", "_").replace(".", "_").replace("-", "_").replace(":", "_")
+
+                print('\n\n\n\n', type(LIST_OF_FRAMES), '\n\n\n\n')
+                pp = json.dumps({
+                    'imgByte': LIST_OF_FRAMES,
+                    'imgName': current_time
+                })
+                LIST_OF_FRAMES = []
+                try:
+                    time.sleep(0.3)
+                    ws.send(pp)
+                except Exception as e:
+                    print(str(e))
+
         cap.release()
         cv2.destroyAllWindows()
         ws.close()

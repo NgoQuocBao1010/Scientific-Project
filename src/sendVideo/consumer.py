@@ -3,6 +3,7 @@ import json
 import base64
 
 from .mlModels import usingDeepLearning2
+from .drosinessDetect import detectionDrowsiness
 
 
 class SendVideo(AsyncWebsocketConsumer):
@@ -35,8 +36,9 @@ class SendVideo(AsyncWebsocketConsumer):
         data = json.loads(event['value'])
 
         imgByte = data['imgByte']
+        time = data['imgName']
         data['noti'] = 'Nhan duoc roi!!!!'
 
-        data['imgByte'] = usingDeepLearning2(imgByte)
+        data['imgByte'] = detectionDrowsiness(imgByte, time)
         event['value'] = json.dumps(data)
         await self.send(event['value'])

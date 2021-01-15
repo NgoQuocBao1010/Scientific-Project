@@ -17,7 +17,7 @@ time.sleep(1)
 i = -1
 while(True):
 	i += 1
-	# Capture frame-by-frame
+	# Capture frame-by-frameq
 	ret, frame = cap.read()
 
 	if not ret:
