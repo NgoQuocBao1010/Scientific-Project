@@ -30,15 +30,28 @@ class RealtimeData(AsyncWebsocketConsumer):
         data = json.loads(event['value'])
 
         piName = data['name']
+        status = data.get('status')
+        message = data.get('message')
 
-        piDevice = await self.getPiDevice(piName)
-        # piDevice = await database_sync_to_async(RaspberryDevice.objects.all)()
-        # print(piDevice)
+        if status is not None:
+            piDevice = await self.changePiStatus(piName, status)
+
+        if message is not None:
+            await self.saveActivity(piName, message)
 
         await self.send(event['value'])
 
     @database_sync_to_async
-    def getPiDevice(self, piName):
+    def changePiStatus(self, piName, status):
         result = RaspberryDevice.objects.all()
-        print(result)
+        device = result.get(name=piName)
+        device.status = status
+        device.save()
         return result
+
+    @database_sync_to_async
+    def saveActivity(self, piName, activity):
+        result = RaspberryDevice.objects.all()
+        device = result.get(name=piName)
+        print(activity)
+        return Activity.objects.create(devices=device, activityName=activity)

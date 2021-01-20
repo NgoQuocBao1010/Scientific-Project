@@ -5,7 +5,7 @@
 <div class='container-fluid main2'>
     <div class='online'>
         <h4>Online Devices</h4>
-        <table class="table table-sm">
+        <table class="table table-sm" id='onlTable'>
             <tr>
                 <th>Name</th>
                 <th>Status</th>
@@ -20,21 +20,49 @@
     </div>
 
     <div class='offine'>
-        <h4>Offline Devices</h4>
-        <table class="table table-sm">
+        <h4>All Devices</h4>
+        <table class="table table-sm" id='offTable'>
             <tr>
                 <th>Name</th>
-                <th>Status</th>
             </tr>
-            {% for device in offDevices %}
+            {% for device in devices %}
             <tr>
-                <td>{{ device.name }}</td>
-                <td>{{ device.status }}</td>
+                <td>{{ device }}</td>
             </tr>
             {% endfor %}
         </table>
     </div>
 </div>
+<script>
+    let devices = {{ devices | safe }};
+
+    function removeRows() {
+    }
+
+    function createHeader(table) {
+        let headervalues = ['Name', 'Status']
+        let tHead = table.createTHead(); // create header
+        let trow = tHead.insertRow(); // insert row
+        for (val in headervalues) {
+            // console.log(headervalues[val]);
+            let th = document.createElement('th'); // get the th element 
+            let text = document.createTextNode(headervalues[val]); // create text element
+            th.appendChild(text); // add text to th (table header)
+            trow.appendChild(th); // add th to row
+        }
+    }
+
+    function createtableBody(table, data) {
+        var len = table.rows.length;
+        var row = table.insertRow(len);
+        var cell1 = row.insertCell(0);
+        cell1.innerHTML = data[0];
+
+        var cell2 = row.insertCell(1);
+        cell2.innerHTML = data[1];
+    }
+
+</script>
 <script>
     let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
 
@@ -43,7 +71,16 @@
     };
 
     socket.onmessage = function (e) {
+        var data = JSON.parse(e.data)
 
+        if (data['status'] === 'online') {
+            for (var device of devices) {
+                if (data['name'] === device) {
+                    var onlTable = document.getElementById("onlTable");
+                    createtableBody(onlTable, [data['name'], 'Online']);
+                }
+            }
+        }
     };
 
     socket.onclose = function (e) {

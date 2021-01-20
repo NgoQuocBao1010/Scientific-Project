@@ -6,11 +6,11 @@ from .models import *
 def home(request):
     piDevices = RaspberryDevice.objects.all()
 
+    piNames = list(map(lambda x: x.name, piDevices))
     onlDevices = piDevices.filter(status='Online')
-    offDevices = piDevices.filter(status='Offline')
 
     context = {
-        'offDevices': offDevices,
+        'devices': piNames,
         'onlDevices': onlDevices,
     }
 

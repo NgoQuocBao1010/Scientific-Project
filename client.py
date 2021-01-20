@@ -29,7 +29,7 @@ def on_open(ws):
     def run(*args):
         global ONLINE, DEVICES_NAME
         if not ONLINE:
-            message = json.dumps({'status': 'online', 'name': DEVICES_NAME})
+            message = json.dumps({'status': 'Online', 'name': DEVICES_NAME})
 
             try:
                 ws.send(message)
@@ -40,12 +40,12 @@ def on_open(ws):
 
         dumpMsg = 1
         while ONLINE:
-            time.sleep(0.3)
-            if dumpMsg > 10:
+            time.sleep(1)
+            if dumpMsg > 5:
                 ONLINE = False
                 break
 
-            status = ['Yawning', 'Eyes clossed', 'Nothing']
+            status = ['Yawning', 'Drowsiness', 'Nothing']
 
             deviceStatus = random.choice(status)
 
@@ -65,7 +65,7 @@ def on_open(ws):
                 print(str(e))
 
         time.sleep(1)
-        message = json.dumps({'status': 'offline', 'name': DEVICES_NAME})
+        message = json.dumps({'status': 'Offline', 'name': DEVICES_NAME})
         try:
             print('Why?')
             ws.send(message)
