@@ -6,8 +6,14 @@ class Car(models.Model):
     description = models.CharField(max_length=50, null=True, blank=True)
 
 
-class Status(models.Model):
-    STATUS_NAME = (
+class RaspberryDevice(models.Model):
+    ipAdress = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
+    car = models.OneToOneField(Car, null=True, on_delete=models.CASCADE)
+
+
+class Activity(models.Model):
+    STATUS = (
         ('Starting', 'Starting'),
         ('Offline', 'Offline'),
         ('Yawning', 'Yawning'),
@@ -15,15 +21,9 @@ class Status(models.Model):
         ('Unconscious', 'Unconscious'),
     )
 
-    name = models.CharField(max_length=50, choices=STATUS_NAME)
-    description = models.CharField(max_length=50, null=True, blank=True)
-
-
-class Activity(models.Model):
-    pass
-
-
-class RaspberryDevice(models.Model):
-    ipAdress = models.CharField(max_length=20)
-    name = models.CharField(max_length=50)
-    car = models.OneToOneField(Car, null=True, on_delete=models.CASCADE)
+    devices = models.ForeignKey(RaspberryDevice,
+                                null=True,
+                                on_delete=models.CASCADE)
+    activityName = models.CharField(max_length=50, choices=STATUS)
+    timeOccured = models.DateTimeField(auto_now_add=True, null=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
