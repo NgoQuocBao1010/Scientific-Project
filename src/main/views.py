@@ -1,9 +1,17 @@
 from django.shortcuts import render
 
+from .models import *
+
 
 def home(request):
-    context = {
+    piDevices = RaspberryDevice.objects.all()
 
+    onlDevices = piDevices.filter(status='Online')
+    offDevices = piDevices.filter(status='Offline')
+
+    context = {
+        'offDevices': offDevices,
+        'onlDevices': onlDevices,
     }
 
-    return render(request, 'main/index.html', context)
+    return render(request, 'main/home.html', context)

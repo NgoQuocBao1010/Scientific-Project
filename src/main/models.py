@@ -5,17 +5,28 @@ class Car(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=50, null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class RaspberryDevice(models.Model):
-    ipAdress = models.CharField(max_length=20)
+    STATUS = (
+        ('Online', 'Online'),
+        ('Offline', 'Offline'),
+    )
+
     name = models.CharField(max_length=50)
     car = models.OneToOneField(Car, null=True, on_delete=models.CASCADE)
+    status = models.CharField(default='Offline', max_length=20, choices=STATUS)
+
+    def __str__(self):
+        return f'{self.name} (pi devices from {self.car})'
 
 
 class Activity(models.Model):
     STATUS = (
         ('Starting', 'Starting'),
-        ('Offline', 'Offline'),
+        ('Stopped', 'Stopped'),
         ('Yawning', 'Yawning'),
         ('Drowsiness', 'Drowsiness'),
         ('Unconscious', 'Unconscious'),
@@ -27,3 +38,7 @@ class Activity(models.Model):
     activityName = models.CharField(max_length=50, choices=STATUS)
     timeOccured = models.DateTimeField(auto_now_add=True, null=True)
     description = models.CharField(max_length=200, null=True, blank=True)
+    isRead = models.BooleanField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.devices} is currently {self.activityName}'

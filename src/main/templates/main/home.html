@@ -1,0 +1,53 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<div class='container-fluid main2'>
+    <div class='online'>
+        <h4>Online Devices</h4>
+        <table class="table table-sm">
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+            </tr>
+            {% for device in onlDevices %}
+            <tr>
+                <td>{{ device.name }}</td>
+                <td>{{ device.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class='offine'>
+        <h4>Offline Devices</h4>
+        <table class="table table-sm">
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+            </tr>
+            {% for device in offDevices %}
+            <tr>
+                <td>{{ device.name }}</td>
+                <td>{{ device.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<script>
+    let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+
+    socket.onopen = function (e) {
+        alert('Connection Establish');
+    };
+
+    socket.onmessage = function (e) {
+
+    };
+
+    socket.onclose = function (e) {
+        alert('Connection closed');
+    };
+</script>
+{% endblock %}
