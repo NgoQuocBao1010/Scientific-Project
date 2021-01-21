@@ -2,67 +2,61 @@
 {% load static %}
 
 {% block content %}
-<div class='container-fluid main2'>
-    <div class='online'>
-        <h4>Online Devices</h4>
-        <table class="table table-sm" id='onlTable'>
-            <tr>
-                <th>Name</th>
-                <th>Status</th>
-            </tr>
-            {% for device in onlDevices %}
-            <tr>
-                <td>{{ device.name }}</td>
-                <td>{{ device.status }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <div class='offine'>
-        <h4>All Devices</h4>
-        <table class="table table-sm" id='offTable'>
-            <tr>
-                <th>Name</th>
-            </tr>
-            {% for device in devices %}
-            <tr>
-                <td>{{ device }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+<div id='devices'>
+    <h4>All Devices</h4>
+    <table class="table table-sm" id='devicesTable'>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+        {% for device in devices %}
+        <tr>
+            <td><a id='link' href="{% url 'activityLog' device.id %}">{{ device.name }}</a></td>
+            <td>{{ device.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 <script>
-    let devices = {{ devices | safe }};
+    let devices = {{ devicesName | safe }};
 
-    function removeRows() {
-    }
-
-    function createHeader(table) {
-        let headervalues = ['Name', 'Status']
-        let tHead = table.createTHead(); // create header
-        let trow = tHead.insertRow(); // insert row
-        for (val in headervalues) {
-            // console.log(headervalues[val]);
-            let th = document.createElement('th'); // get the th element 
-            let text = document.createTextNode(headervalues[val]); // create text element
-            th.appendChild(text); // add text to th (table header)
-            trow.appendChild(th); // add th to row
+    function addStatus() {
+        var table = document.getElementById("devicesTable");
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            for (var j = 0, col; col = row.cells[j]; j++) {
+                status = col.innerHTML;
+                if (status === 'Offline') {
+                    row.classList.add("offline");
+                }
+                else {
+                    row.classList.add("online");
+                }
+            }
         }
     }
 
-    function createtableBody(table, data) {
-        var len = table.rows.length;
-        var row = table.insertRow(len);
-        var cell1 = row.insertCell(0);
-        cell1.innerHTML = data[0];
 
-        var cell2 = row.insertCell(1);
-        cell2.innerHTML = data[1];
+    function changeStatus(piName, status) {
+        var table = document.getElementById("devicesTable");
+        for (var i = 0, row; row = table.rows[i]; i++) {
+            name = row.cells[0].innerHTML;
+
+            if (name.includes(piName)) {
+                row.cells[1].innerHTML = status;
+
+                if (status === 'Offline') {
+                    row.classList.toggle("offline3");
+                }
+                else {
+                    row.classList.toggle("newClass");
+                }
+            }
+        }
     }
 
+    addStatus();
 </script>
+
 <script>
     let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
 
@@ -73,13 +67,11 @@
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data)
 
-        if (data['status'] === 'online') {
-            for (var device of devices) {
-                if (data['name'] === device) {
-                    var onlTable = document.getElementById("onlTable");
-                    createtableBody(onlTable, [data['name'], 'Online']);
-                }
-            }
+        status = data['status'];
+
+        if (status !== 'undefined') {
+            piName = data['name'];
+            changeStatus(piName, status);
         }
     };
 

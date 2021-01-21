@@ -7,19 +7,27 @@ body {
 
 .main {
   min-height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.main2 {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100vh;
-}
 
 .online {
   background-color: #7cd1c0;
 }
 
-.offine {
-  background-color: gray;
+.offline {
+  color: black;
+  background-color: white;
+}
+
+.newClass {
+  color: white;
+  background-color: greenyellow;
+}
+
+.offline3 {
+  color: black;
+  background-color: white;
 }

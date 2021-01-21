@@ -36,9 +36,9 @@ class Activity(models.Model):
                                 null=True,
                                 on_delete=models.CASCADE)
     activityName = models.CharField(max_length=50, choices=STATUS)
-    timeOccured = models.DateTimeField(auto_now_add=True, null=True)
+    timeOccured = models.DateTimeField(null=True)
     description = models.CharField(max_length=200, null=True, blank=True)
     isRead = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.devices} is currently {self.activityName}'
+        return f'{self.devices} - {self.activityName} at {self.timeOccured}'

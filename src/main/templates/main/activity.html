@@ -1,0 +1,30 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<div class='container-fluid activity'>
+    <h3>Activity Log from {{ device.name }}</h3>
+    <ul class="list-group">
+        {% for act in activity %}
+        <li class="list-group-item">{{ act }}</li>
+        {% endfor %}
+    </ul>
+</div>
+<script>
+    let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+
+    socket.onopen = function (e) {
+        alert('Connection Establish');
+    };
+
+    socket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        console.log(data['message']);
+        console.log(data['time']);
+    };
+
+    socket.onclose = function (e) {
+        alert('Connection closed');
+    };
+</script>
+{% endblock %}

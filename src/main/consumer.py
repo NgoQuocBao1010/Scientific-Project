@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 import json
+from datetime import datetime
 
 from .models import *
 
@@ -26,18 +27,18 @@ class RealtimeData(AsyncWebsocketConsumer):
         })
 
     async def randomFuntion(self, event):
-        # print(event['value'])
         data = json.loads(event['value'])
 
         piName = data['name']
         status = data.get('status')
         message = data.get('message')
+        time = data.get('time')
 
         if status is not None:
             piDevice = await self.changePiStatus(piName, status)
 
         if message is not None:
-            await self.saveActivity(piName, message)
+            await self.saveActivity(piName, message, time)
 
         await self.send(event['value'])
 
@@ -50,8 +51,10 @@ class RealtimeData(AsyncWebsocketConsumer):
         return result
 
     @database_sync_to_async
-    def saveActivity(self, piName, activity):
+    def saveActivity(self, piName, activity, time):
+        time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S.%f')
         result = RaspberryDevice.objects.all()
         device = result.get(name=piName)
-        print(activity)
-        return Activity.objects.create(devices=device, activityName=activity)
+        Activity.objects.create(devices=device,
+                                activityName=activity,
+                                timeOccured=time)

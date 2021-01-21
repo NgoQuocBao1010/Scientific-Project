@@ -4,6 +4,7 @@ try:
 except ImportError:
     import _thread as thread
 import time
+from datetime import datetime
 import json
 import random
 
@@ -40,21 +41,23 @@ def on_open(ws):
 
         dumpMsg = 1
         while ONLINE:
-            time.sleep(1)
-            if dumpMsg > 5:
+            time.sleep(1.5)
+            if dumpMsg > 2:
                 ONLINE = False
                 break
 
             status = ['Yawning', 'Drowsiness', 'Nothing']
 
             deviceStatus = random.choice(status)
+            timeOccured = datetime.now()
 
             if deviceStatus == 'Nothing':
                 continue
 
             message = json.dumps({
                 'message': str(deviceStatus),
-                'name': DEVICES_NAME
+                'name': DEVICES_NAME,
+                'time': str(timeOccured)
             })
 
             dumpMsg += 1
@@ -67,7 +70,7 @@ def on_open(ws):
         time.sleep(1)
         message = json.dumps({'status': 'Offline', 'name': DEVICES_NAME})
         try:
-            print('Why?')
+            print('Offline message!!!!')
             ws.send(message)
         except Exception as e:
             print(str(e))
@@ -79,7 +82,7 @@ def on_open(ws):
 
 
 if __name__ == "__main__":
-    websocket.enableTrace(True)
+    # websocket.enableTrace(True)
     url = 'ws://localhost:8000/ws/realtimeData/'
 
     ws = websocket.WebSocketApp(url,
