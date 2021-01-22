@@ -39,10 +39,10 @@
         li.setAttribute("class", "list-group-item");
 
         if (message.includes('Starting')) {
-            li.setAttribute("class", "online");
+            li.setAttribute("class", "online list-group-item");
         }
         if (message.includes('Stopped')) {
-            li.setAttribute("class", "offline4");
+            li.setAttribute("class", "offline4 list-group-item");
         }
 
         ul.appendChild(li);
