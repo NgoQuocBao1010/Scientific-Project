@@ -23,11 +23,15 @@ body {
 }
 
 .newClass {
-  color: white;
-  background-color: greenyellow;
+  background-color: #7cd1c0;
 }
 
 .offline3 {
   color: black;
   background-color: white;
+}
+
+.offline4 {
+  color: white;
+  background-color: red;
 }

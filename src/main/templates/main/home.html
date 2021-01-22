@@ -69,6 +69,7 @@
 
         status = data['status'];
 
+        console.log(data['message']);
         if (status !== 'undefined') {
             piName = data['name'];
             changeStatus(piName, status);

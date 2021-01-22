@@ -4,7 +4,7 @@
 {% block content %}
 <div class='container-fluid activity'>
     <h3>Activity Log from {{ device.name }}</h3>
-    <ul class="list-group">
+    <ul class="list-group" id='activity'>
         {% for act in activity %}
         <li class="list-group-item">{{ act }}</li>
         {% endfor %}
@@ -19,12 +19,33 @@
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data);
-        console.log(data['message']);
-        console.log(data['time']);
+
+        if (typeof data['message'] !== 'undefined') {
+            console.log(data['message']);
+            console.log(data['time']);
+            message = data['message'] + data['time'];
+            function1(message);
+        }
     };
 
     socket.onclose = function (e) {
         alert('Connection closed');
     };
+
+    function function1(message) {
+        var ul = document.getElementById("activity");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(message));
+        li.setAttribute("class", "list-group-item");
+
+        if (message.includes('Starting')) {
+            li.setAttribute("class", "online");
+        }
+        if (message.includes('Stopped')) {
+            li.setAttribute("class", "offline4");
+        }
+
+        ul.appendChild(li);
+    }
 </script>
 {% endblock %}

@@ -30,7 +30,12 @@ def on_open(ws):
     def run(*args):
         global ONLINE, DEVICES_NAME
         if not ONLINE:
-            message = json.dumps({'status': 'Online', 'name': DEVICES_NAME})
+            message = json.dumps({
+                'status': 'Online',
+                'name': DEVICES_NAME,
+                'time': str(datetime.now()),
+                'message': 'Starting',
+            })
 
             try:
                 ws.send(message)
@@ -68,7 +73,12 @@ def on_open(ws):
                 print(str(e))
 
         time.sleep(1)
-        message = json.dumps({'status': 'Offline', 'name': DEVICES_NAME})
+        message = json.dumps({
+            'status': 'Offline',
+            'name': DEVICES_NAME,
+            'time': str(datetime.now()),
+            'message': 'Stopped',
+        })
         try:
             print('Offline message!!!!')
             ws.send(message)

@@ -55,6 +55,10 @@ class RealtimeData(AsyncWebsocketConsumer):
         time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S.%f')
         result = RaspberryDevice.objects.all()
         device = result.get(name=piName)
-        Activity.objects.create(devices=device,
-                                activityName=activity,
-                                timeOccured=time)
+
+        try:
+            Activity.objects.create(devices=device,
+                                    activityName=activity,
+                                    timeOccured=time)
+        except Exception as e:
+            print(str(e))

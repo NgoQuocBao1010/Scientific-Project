@@ -24,6 +24,11 @@ class RaspberryDevice(models.Model):
 
 
 class Activity(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['timeOccured'], name='time'),
+        ]
+
     STATUS = (
         ('Starting', 'Starting'),
         ('Stopped', 'Stopped'),
@@ -41,4 +46,4 @@ class Activity(models.Model):
     isRead = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.devices} - {self.activityName} at {self.timeOccured}'
+        return f'{self.devices.name} - {self.activityName} at {self.timeOccured}'
