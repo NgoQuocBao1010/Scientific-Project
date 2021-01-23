@@ -8,6 +8,7 @@ import cv2
 
 # initialize the ImageHub object
 imageHub = imagezmq.ImageHub()
+print('Server is up')
 
 # initialize the consider set (class labels we care about and want
 # to count), the object count dictionary, and the frame  dictionary
@@ -24,7 +25,7 @@ lastActiveCheck = datetime.now()
 # see if a device was active
 ESTIMATED_NUM_PIS = 4
 ACTIVE_CHECK_PERIOD = 10
-ACTIVE_CHECK_SECONDS = ESTIMATED_NUM_PIS * ACTIVE_CHECK_PERIOD
+ACTIVE_CHECK_SECONDS = 2
 
 # assign montage width and height so we can view all incoming frames
 # in a single "dashboard"
@@ -52,15 +53,19 @@ while True:
                 (0, 0, 255), 2)
     frameDict[rpiName] = frame
     # build a montage using images in the frame dictionary
-    montages = build_montages(frameDict.values(), (w, h), (mW, mH))
-    # display the montage(s) on the screen
-    for (i, montage) in enumerate(montages):
-        cv2.imshow("Home pet location monitor ({})".format(i), montage)
+    # montages = build_montages(frameDict.values(), (w, h), (mW, mH))
+    # # display the montage(s) on the screen
+    # for (i, montage) in enumerate(montages):
+    #     cv2.imshow("Home pet location monitor ({})".format(i), montage)
     # detect any kepresses
+
+    # if rpiName != 'Dummy':
+    #     cv2.imshow('DEMO', frame)
     key = cv2.waitKey(1) & 0xFF
 
     if (datetime.now() - lastActiveCheck).seconds > ACTIVE_CHECK_SECONDS:
         # loop over all previously active devices
+        print('Checking')
         for (rpiName, ts) in list(lastActive.items()):
             # remove the RPi from the last active and frame
             # dictionaries if the device hasn't been active recently
