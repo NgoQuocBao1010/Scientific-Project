@@ -63,7 +63,7 @@ def on_open(ws):
             deviceStatus = random.choice(status)
             timeOccured = datetime.now()
 
-            if trackingFrame % 113 == 0:
+            if trackingFrame % 1113 == 0:
                 deviceStatus = random.choice(status)
 
                 message = json.dumps({
@@ -93,6 +93,7 @@ def on_open(ws):
                 break  # esc to quit
 
         cv2.destroyAllWindows()
+
         # Detect Disconnect
         # Dump way
         time.sleep(1)

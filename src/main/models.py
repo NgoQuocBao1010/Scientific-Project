@@ -18,6 +18,7 @@ class RaspberryDevice(models.Model):
     name = models.CharField(max_length=50)
     car = models.OneToOneField(Car, null=True, on_delete=models.CASCADE)
     status = models.CharField(default='Offline', max_length=20, choices=STATUS)
+    lastActive = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} (pi devices from {self.car})'

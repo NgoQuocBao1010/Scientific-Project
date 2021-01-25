@@ -1,8 +1,13 @@
 from datetime import datetime
 
-now = datetime.now()
-# now = now.strftime("%Y-%m-%d %H:%M:%S%f")
-now = str(now)
-print(now)
-now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S.%f')
-print(type(now))
+lastimeCheck = datetime.now()
+
+secondToCheck = (datetime.now() - lastimeCheck).timestamp()
+print(secondToCheck)
+secondRun = 0
+# while True:
+#     secondRun = datetime.now().second - lastimeCheck.second
+#     print(secondRun)
+
+#     if secondRun > secondToCheck:
+#         break

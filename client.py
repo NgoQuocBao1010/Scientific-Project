@@ -8,6 +8,7 @@ from datetime import datetime
 import json
 import random
 
+SENCOND_SEND = 5
 ONLINE = False
 DEVICES_NAME = 'Pi 1'
 
@@ -44,46 +45,29 @@ def on_open(ws):
 
             ONLINE = True
 
+        lastActive = datetime.now()
+
         dumpMsg = 1
         while ONLINE:
-            time.sleep(1.5)
-            if dumpMsg > 2:
+            time.sleep(1)
+            if dumpMsg > 10:
                 ONLINE = False
                 break
 
-            status = ['Yawning', 'Drowsiness', 'Nothing']
+            if datetime.now().second - lastActive.second >= SENCOND_SEND:
+                message = json.dumps({
+                    'name': DEVICES_NAME,
+                    'active': str(datetime.now())
+                })
 
-            deviceStatus = random.choice(status)
-            timeOccured = datetime.now()
+                lastActive = datetime.now()
 
-            if deviceStatus == 'Nothing':
-                continue
-
-            message = json.dumps({
-                'message': str(deviceStatus),
-                'name': DEVICES_NAME,
-                'time': str(timeOccured)
-            })
+                try:
+                    ws.send(message)
+                except Exception as e:
+                    print(str(e))
 
             dumpMsg += 1
-
-            try:
-                ws.send(message)
-            except Exception as e:
-                print(str(e))
-
-        time.sleep(1)
-        message = json.dumps({
-            'status': 'Offline',
-            'name': DEVICES_NAME,
-            'time': str(datetime.now()),
-            'message': 'Stopped',
-        })
-        try:
-            print('Offline message!!!!')
-            ws.send(message)
-        except Exception as e:
-            print(str(e))
 
         ws.close()
         # print("thread terminating...")

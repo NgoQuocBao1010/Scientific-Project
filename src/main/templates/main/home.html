@@ -13,6 +13,7 @@
         <tr>
             <td><a id='link' href="{% url 'activityLog' device.id %}">{{ device.name }}</a></td>
             <td>{{ device.status }}</td>
+            <td>{{ device.lastActive }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -66,10 +67,10 @@
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data)
-
+        console.log(data)
         status = data['status'];
 
-        console.log(data['message']);
+        // console.log(data['message']);
         if (status !== 'undefined') {
             piName = data['name'];
             changeStatus(piName, status);
