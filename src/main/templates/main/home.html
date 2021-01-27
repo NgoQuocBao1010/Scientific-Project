@@ -58,7 +58,8 @@
 </script>
 
 <script>
-    let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+    // let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+    let socket = new WebSocket('ws://192.168.123.149:8000/ws/realtimeData/');
 
     socket.onopen = function (e) {
         alert('Connection Establish');

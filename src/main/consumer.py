@@ -32,9 +32,8 @@ class RealtimeData(AsyncWebsocketConsumer):
         })
 
     async def randomFuntion(self, event):
-        print(event)
         data = json.loads(event['value'])
-        # print(data)
+        print(data)
 
         piName = data['name']
         status = data.get('status')
