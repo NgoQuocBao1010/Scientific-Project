@@ -16,26 +16,25 @@ class RealtimeData(AsyncWebsocketConsumer):
 
         await self.accept()
 
-    # async def disconnect(self, event):
-    #     print('disconnected! ', event)
-
     async def disconnect(self, code):  # changed
-        await self.checkActive()
+        time.sleep(6)
+        pi = await self.checkActive()
         await self.channel_layer.group_discard(group='realtimeData',
                                                channel=self.channel_name)
         await super().disconnect(code)
 
-    async def receive(self, text_data):
-        # print(text_data)
+        await self.receive(json.dumps({'name': pi, 'status': 'Offline'}))
 
+    async def receive(self, text_data):
         await self.channel_layer.group_send(self.group_name, {
             'type': 'randomFuntion',
-            'value': text_data
+            'value': text_data,
         })
 
     async def randomFuntion(self, event):
+        print(event)
         data = json.loads(event['value'])
-        print(data)
+        # print(data)
 
         piName = data['name']
         status = data.get('status')
@@ -57,8 +56,6 @@ class RealtimeData(AsyncWebsocketConsumer):
     @database_sync_to_async
     def checkActive(self):
         print('Check for disconnect devices')
-        checkTime = 6
-        time.sleep(checkTime)
         piDevices = RaspberryDevice.objects.all()
 
         for pi in piDevices:
@@ -67,19 +64,17 @@ class RealtimeData(AsyncWebsocketConsumer):
 
             lastActive = pi.lastActive
             if datetime.now().minute - lastActive.minute < 1:
-                if datetime.now().second - lastActive.second > checkTime:
+                if datetime.now().second - lastActive.second > 6:
                     print(pi.name, 'is disconnect')
                     pi.status = 'Offline'
                     pi.save()
-                    message = json.dumps({'haha': 'haha'})
-                    self.send(message)
+                    return pi.name
 
             else:
                 print(pi.name, 'is disconnect')
                 pi.status = 'Offline'
                 pi.save()
-                message = json.dumps({'haha': 'haha'})
-                self.send(message)
+                return pi.name
 
         print('Done')
 

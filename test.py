@@ -2,7 +2,7 @@ from datetime import datetime
 
 lastimeCheck = datetime.now()
 
-secondToCheck = (datetime.now() - lastimeCheck).timestamp()
+secondToCheck = (datetime.now() - lastimeCheck)
 print(secondToCheck)
 secondRun = 0
 # while True:
