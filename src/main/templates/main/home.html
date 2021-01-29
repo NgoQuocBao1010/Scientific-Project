@@ -58,8 +58,8 @@
 </script>
 
 <script>
-    let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
-    // let socket = new WebSocket('ws://192.168.123.149:8000/ws/realtimeData/');
+    // let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+    let socket = new WebSocket('ws://192.168.123.149:8000/ws/realtimeData/');
 
     socket.onopen = function (e) {
         alert('Connection Establish');
@@ -69,6 +69,11 @@
         var data = JSON.parse(e.data)
         console.log(data)
         status = data['status'];
+
+        if (data['activeTime'] !== 'undefined') {
+            piName = data['name'];
+            changeStatus(piName, 'Online');
+        }
 
         // console.log(data['message']);
         if (status !== 'undefined') {

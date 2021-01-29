@@ -9,6 +9,7 @@ import json
 import random
 
 SENCOND_SEND = 5
+DEVICES_NAME = 'Pi 2'
 
 
 def on_message(ws, message):
@@ -31,7 +32,11 @@ def on_open(ws):
         send = False
 
         try:
-            ws.send(json.dumps({'check': 1}))
+            ws.send(
+                json.dumps({
+                    'name': DEVICES_NAME,
+                    'activeTime': str(lastActive),
+                }))
         except Exception as e:
             print(str(e))
 
@@ -40,13 +45,16 @@ def on_open(ws):
                 send = True
 
             else:
-                if datetime.now().second - lastActive.second >= 5:
+                if datetime.now().second - lastActive.second >= 2:
                     send = True
 
             if send:
-                print('Dang gui')
                 try:
-                    ws.send(json.dumps({'check': 1}))
+                    ws.send(
+                        json.dumps({
+                            'name': DEVICES_NAME,
+                            'activeTime': str(datetime.now())
+                        }))
                     send = False
                     lastActive = datetime.now()
                 except Exception as e:
