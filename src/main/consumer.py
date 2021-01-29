@@ -33,6 +33,7 @@ class RealtimeData(AsyncWebsocketConsumer):
 
     async def randomFuntion(self, event):
         data = json.loads(event['value'])
+        print(data)
 
         piName = data.get('name')
         activeTime = data.get('activeTime')
@@ -47,27 +48,43 @@ class RealtimeData(AsyncWebsocketConsumer):
 
         check = data.get('check')
         if check is not None:
-            await self.checkActive()
+            disDevices = await self.checkActive()
+
+            if len(disDevices) > 0:
+                print(disDevices)
+                await self.send(json.dumps({'dis': disDevices}))
+
         await self.send(event['value'])
 
     @database_sync_to_async
     def checkActive(self):
-        print('Check for disconnect devices')
         piDevices = RaspberryDevice.objects.all().filter(status='Online')
+        disDevices = []
+        disconnect = False
 
         for pi in piDevices:
             lastActive = pi.lastActive
             # print(f'{datetime.now()}\n{lastActive}')
             if datetime.now().minute - lastActive.minute < 1:
                 if datetime.now().second - lastActive.second >= 6:
-                    print(pi.name, 'is disconnect')
-                    pi.status = 'Offline'
-                    pi.save()
+                    disconnect = True
 
             else:
+                disconnect = True
+
+            if disconnect:
                 print(pi.name, 'is disconnect')
+                disDevices.append(pi.name)
                 pi.status = 'Offline'
                 pi.save()
+                try:
+                    Activity.objects.create(devices=pi,
+                                            activityName='Stopped',
+                                            timeOccured=datetime.now())
+                except Exception as e:
+                    print(str(e))
+
+        return disDevices
 
     @database_sync_to_async
     def updateActive(self, piName, activeTime):
@@ -75,11 +92,17 @@ class RealtimeData(AsyncWebsocketConsumer):
         device = result.get(name=piName)
 
         if device.lastActive != activeTime:
-            print('Update', device.name)
+            print('Update', device.name, activeTime)
             device.lastActive = activeTime
 
             if device.status == 'Offline':
                 device.status = 'Online'
+                try:
+                    Activity.objects.create(devices=device,
+                                            activityName='Starting',
+                                            timeOccured=activeTime)
+                except Exception as e:
+                    print(str(e))
 
             device.save()
 

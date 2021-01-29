@@ -44,7 +44,7 @@ def on_open(ws):
                     send = True
 
             if send:
-                print('Dang gui')
+                print('Dang gui', datetime.now())
                 try:
                     ws.send(json.dumps({'check': 1}))
                     send = False
@@ -60,8 +60,8 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    # url = 'ws://localhost:8000/ws/realtimeData/'
-    url = 'ws://192.168.123.149:8000/ws/realtimeData/'
+    url = 'ws://localhost:8000/ws/realtimeData/'
+    # url = 'ws://192.168.123.149:8000/ws/realtimeData/'
 
     ws = websocket.WebSocketApp(url,
                                 on_message=on_message,

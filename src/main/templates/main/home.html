@@ -38,12 +38,17 @@
 
     function changeStatus(piName, status) {
         var table = document.getElementById("devicesTable");
-        for (var i = 0, row; row = table.rows[i]; i++) {
+        for (var i = 1, row; row = table.rows[i]; i++) {
             name = row.cells[0].innerHTML;
+            oldStatus = row.cells[1].innerHTML;
+            console.log(oldStatus);
+            if (oldStatus === status)
+                return;
 
+            if (status === 'Offline')
+                console.log(name, piName);
             if (name.includes(piName)) {
                 row.cells[1].innerHTML = status;
-
                 if (status === 'Offline') {
                     row.classList.toggle("offline3");
                 }
@@ -58,8 +63,8 @@
 </script>
 
 <script>
-    // let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
-    let socket = new WebSocket('ws://192.168.123.149:8000/ws/realtimeData/');
+    let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+    // let socket = new WebSocket('ws://192.168.123.149:8000/ws/realtimeData/');
 
     socket.onopen = function (e) {
         alert('Connection Establish');
@@ -76,9 +81,11 @@
         }
 
         // console.log(data['message']);
-        if (status !== 'undefined') {
-            piName = data['name'];
-            changeStatus(piName, status);
+        if (typeof data['dis'] !== 'undefined') {
+            console.log(data['dis']);
+            for (piName of data['dis']) {
+                changeStatus(piName, 'Offline');
+            }
         }
     };
 
