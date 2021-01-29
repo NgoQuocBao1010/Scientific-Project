@@ -85,6 +85,7 @@ class RealtimeData(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def saveActivity(self, piName, activity, time):
+        print('Saving', activity, 'in', piName)
         time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S.%f')
         result = RaspberryDevice.objects.all()
         device = result.get(name=piName)
