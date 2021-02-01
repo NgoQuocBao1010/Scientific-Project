@@ -5,12 +5,49 @@
 <div class='container-fluid activity'>
     <h3>Activity Log from {{ device.name }}</h3>
     <ul class="list-group" id='activity'>
-        {% for act in activity %}
-        <li class="list-group-item">{{ act }}</li>
-        {% endfor %}
+
     </ul>
 </div>
 <script>
+    let activities = [];
+
+    {% for act in activity %}
+    var act = {}
+    act.name = '{{ act.activityName | safe }}';
+    act.time = '{{ act.timeOccured | safe }}';
+    activities.push(act);
+    {% endfor %}
+
+
+    function function1(activity) {
+        var ul = document.getElementById("activity");
+        var li = document.createElement("li");
+        var button = document.createElement("button");
+
+        li.setAttribute("class", "actLi list-group-item");
+        li.appendChild(button);
+        button.appendChild(document.createTextNode(activity));
+        // button.setAttribute('class', '')
+
+        if (activity.includes('Starting')) {
+            button.setAttribute("class", "btn actBtn btn-secondary");
+        }
+        else if (activity.includes('Stopped')) {
+            button.setAttribute("class", "btn actBtn btn-secondary");
+        }
+        else {
+            button.setAttribute("class", "btn actBtn btn-primary");
+        }
+
+        ul.appendChild(li);
+    }
+
+    for (act of activities) {
+        function1(act.name);
+    }
+</script>
+<script>
+    let piDevice = '{{ device.name | safe }}';
     let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
 
     socket.onopen = function (e) {
@@ -19,33 +56,26 @@
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data);
+        console.log(data);
+        if (typeof data['status'] !== 'undefined') {
+            if (data['name'] === piDevice) {
+                message = data['status'];
+                function1(message);
+            }
+        }
 
-        if (typeof data['message'] !== 'undefined') {
-            console.log(data['message']);
-            console.log(data['time']);
-            message = data['message'] + data['time'];
-            function1(message);
+        if (typeof data['dis'] !== 'undefined') {
+            message = 'Stopped';
+            let disconnectDevices = data['dis'];
+
+            if (disconnectDevices.includes(piDevice)) {
+                function1(message);
+            }
         }
     };
 
     socket.onclose = function (e) {
         alert('Connection closed');
     };
-
-    function function1(message) {
-        var ul = document.getElementById("activity");
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(message));
-        li.setAttribute("class", "list-group-item");
-
-        if (message.includes('Starting')) {
-            li.setAttribute("class", "online list-group-item");
-        }
-        if (message.includes('Stopped')) {
-            li.setAttribute("class", "offline4 list-group-item");
-        }
-
-        ul.appendChild(li);
-    }
 </script>
 {% endblock %}

@@ -40,7 +40,7 @@ def on_open(ws):
                 send = True
 
             else:
-                if datetime.now().second - lastActive.second >= 5:
+                if datetime.now().second - lastActive.second >= 10:
                     send = True
 
             if send:
@@ -60,8 +60,8 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    # url = 'ws://localhost:8000/ws/realtimeData/'
-    url = 'ws://192.168.123.147:8000/ws/realtimeData/'
+    url = 'ws://localhost:8000/ws/realtimeData/'
+    # url = 'ws://192.168.123.147:8000/ws/realtimeData/'
 
     ws = websocket.WebSocketApp(url,
                                 on_message=on_message,

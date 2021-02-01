@@ -35,7 +35,8 @@ def on_open(ws):
             ws.send(
                 json.dumps({
                     'name': DEVICES_NAME,
-                    'activeTime': str(lastActive),
+                    'time': str(lastActive),
+                    'status': 'Starting'
                 }))
         except Exception as e:
             print(str(e))
@@ -53,7 +54,7 @@ def on_open(ws):
                     ws.send(
                         json.dumps({
                             'name': DEVICES_NAME,
-                            'activeTime': str(datetime.now())
+                            'time': str(datetime.now())
                         }))
                     send = False
                     lastActive = datetime.now()

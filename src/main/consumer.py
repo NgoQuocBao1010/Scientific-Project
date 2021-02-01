@@ -36,13 +36,11 @@ class RealtimeData(AsyncWebsocketConsumer):
         print(data)
 
         piName = data.get('name')
-        activeTime = data.get('activeTime')
-
-        if activeTime is not None:
-            await self.updateActive(piName, activeTime)
+        time = data.get('time')
+        if time is not None:
+            await self.updateActive(piName, time)
 
         activity = data.get('activity')
-        time = data.get('time')
         if activity is not None:
             await self.saveActivity(piName, activity, time)
 
@@ -51,8 +49,7 @@ class RealtimeData(AsyncWebsocketConsumer):
             disDevices = await self.checkActive()
 
             if len(disDevices) > 0:
-                print(disDevices)
-                await self.send(json.dumps({'dis': disDevices}))
+                await self.receive(json.dumps({'dis': disDevices}))
 
         await self.send(event['value'])
 
@@ -93,7 +90,7 @@ class RealtimeData(AsyncWebsocketConsumer):
 
         if device.lastActive != activeTime:
             print('Update', device.name, activeTime)
-            device.lastActive = datetime.now()
+            device.lastActive = activeTime
 
             if device.status == 'Offline':
                 device.status = 'Online'

@@ -35,7 +35,8 @@ def on_open(ws):
             ws.send(
                 json.dumps({
                     'name': DEVICES_NAME,
-                    'activeTime': str(lastActive),
+                    'time': str(lastActive),
+                    'status': 'Starting'
                 }))
         except Exception as e:
             print(str(e))
@@ -53,7 +54,7 @@ def on_open(ws):
                     ws.send(
                         json.dumps({
                             'name': DEVICES_NAME,
-                            'activeTime': str(datetime.now())
+                            'time': str(datetime.now())
                         }))
                     send = False
                     lastActive = datetime.now()
@@ -68,8 +69,8 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    # url = 'ws://localhost:8000/ws/realtimeData/'
-    url = 'ws://192.168.123.147:8000/ws/realtimeData/'
+    url = 'ws://localhost:8000/ws/realtimeData/'
+    # url = 'ws://192.168.123.147:8000/ws/realtimeData/'
 
     ws = websocket.WebSocketApp(url,
                                 on_message=on_message,

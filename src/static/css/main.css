@@ -17,6 +17,16 @@ body {
   background-color: #7cd1c0;
 }
 
+.actLi {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.actBtn {
+  width: 80%;
+}
+
 .offline {
   color: black;
   background-color: white;
