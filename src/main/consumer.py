@@ -64,9 +64,9 @@ class RealtimeData(AsyncWebsocketConsumer):
 
         for pi in piDevices:
             lastActive = pi.lastActive
-            # print(f'{datetime.now()}\n{lastActive}')
+            print(f'{datetime.now()}\n{lastActive}')
             if datetime.now().minute - lastActive.minute < 1:
-                if datetime.now().second - lastActive.second >= 6:
+                if datetime.now().second - lastActive.second >= 10:
                     disconnect = True
 
             else:
@@ -93,7 +93,7 @@ class RealtimeData(AsyncWebsocketConsumer):
 
         if device.lastActive != activeTime:
             print('Update', device.name, activeTime)
-            device.lastActive = activeTime
+            device.lastActive = datetime.now()
 
             if device.status == 'Offline':
                 device.status = 'Online'

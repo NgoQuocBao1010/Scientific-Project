@@ -35,7 +35,7 @@ class Activity(models.Model):
         ('Stopped', 'Stopped'),
         ('Yawning', 'Yawning'),
         ('Drowsiness', 'Drowsiness'),
-        ('Unconscious', 'Unconscious'),
+        ('MissingFace', 'MissingFace'),
     )
 
     devices = models.ForeignKey(RaspberryDevice,

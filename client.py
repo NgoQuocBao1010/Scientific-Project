@@ -46,7 +46,7 @@ def on_open(ws):
             if send:
                 print('Dang gui', datetime.now())
                 try:
-                    ws.send(json.dumps({'check': 1}))
+                    ws.send(json.dumps({'check': str(datetime.now())}))
                     send = False
                     lastActive = datetime.now()
                 except Exception as e:
@@ -60,8 +60,8 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    url = 'ws://localhost:8000/ws/realtimeData/'
-    # url = 'ws://192.168.123.149:8000/ws/realtimeData/'
+    # url = 'ws://localhost:8000/ws/realtimeData/'
+    url = 'ws://192.168.123.147:8000/ws/realtimeData/'
 
     ws = websocket.WebSocketApp(url,
                                 on_message=on_message,

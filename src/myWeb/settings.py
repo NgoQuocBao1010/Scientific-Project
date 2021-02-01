@@ -13,7 +13,7 @@ SECRET_KEY = '&$b7@y^*_t7l4imw8pnw6(cg&*(9(wif8uz3(9(zfl^@lfvw=7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.123.149', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.123.147', '127.0.0.1']
 
 # Application definition
 
