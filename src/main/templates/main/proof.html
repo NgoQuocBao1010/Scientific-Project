@@ -1,0 +1,34 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<div class='container-fluid activity'>
+    <h3>{{ act.activityName }} at {{ act.timeOccured }}</h3>
+</div>
+<script>
+
+</script>
+<script>
+    // let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+    let socket = new WebSocket('ws://192.168.123.147:8000/ws/realtimeData/');
+    let deviceName = '{{ act.devices.name }}';
+    let time = '{{ act.timeOccured }}';
+
+    socket.onopen = function (e) {
+        alert('Connection Establish');
+        socket.send(JSON.stringify({
+            'nameGet': deviceName,
+            'timeGet': time
+        }));
+    };
+
+    socket.onmessage = function (e) {
+
+    };
+
+    socket.onclose = function (e) {
+        alert('Connection closed');
+    };
+
+</script>
+{% endblock %}

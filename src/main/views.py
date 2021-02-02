@@ -26,3 +26,13 @@ def activityLog(request, pk):
     }
 
     return render(request, 'main/activity.html', context)
+
+
+def proof(request, pk):
+    act = Activity.objects.get(id=pk)
+
+    context = {
+        'act': act,
+    }
+
+    return render(request, 'main/proof.html', context)

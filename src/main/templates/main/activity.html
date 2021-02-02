@@ -13,42 +13,46 @@
 
     {% for act in activity %}
     var act = {}
+    act.id = '{{ act.id | safe }}';
     act.name = '{{ act.activityName | safe }}';
     act.time = '{{ act.timeOccured | safe }}';
     activities.push(act);
     {% endfor %}
 
 
-    function function1(activity) {
+    function function1(act) {
         var ul = document.getElementById("activity");
         var li = document.createElement("li");
-        var button = document.createElement("button");
+        var link = document.createElement("a");
+        var id = String(act.id);
 
         li.setAttribute("class", "actLi list-group-item");
-        li.appendChild(button);
-        button.appendChild(document.createTextNode(activity));
-        // button.setAttribute('class', '')
+        li.appendChild(link);
+        link.appendChild(document.createTextNode(act.name));
+        const url = "{% url 'proof' 10 %}".replace("10", act.id);
+        link.href = url;
 
-        if (activity.includes('Starting')) {
-            button.setAttribute("class", "btn actBtn btn-secondary");
+        if (act.name.includes('Starting')) {
+            link.setAttribute("class", "btn actBtn btn-warning");
         }
-        else if (activity.includes('Stopped')) {
-            button.setAttribute("class", "btn actBtn btn-secondary");
+        else if (act.name.includes('Stopped')) {
+            link.setAttribute("class", "btn actBtn btn-warning");
         }
         else {
-            button.setAttribute("class", "btn actBtn btn-primary");
+            link.setAttribute("class", "btn actBtn btn-primary");
         }
 
         ul.appendChild(li);
     }
 
     for (act of activities) {
-        function1(act.name);
+        function1(act);
     }
 </script>
 <script>
     let piDevice = '{{ device.name | safe }}';
-    let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+    // let socket = new WebSocket('ws://localhost:8000/ws/realtimeData/');
+    let socket = new WebSocket('ws://192.168.123.147:8000/ws/realtimeData/');
 
     socket.onopen = function (e) {
         alert('Connection Establish');
@@ -59,7 +63,7 @@
         console.log(data);
         if (typeof data['status'] !== 'undefined') {
             if (data['name'] === piDevice) {
-                message = data['status'];
+                message = data['status'] + data['time'];
                 function1(message);
             }
         }
