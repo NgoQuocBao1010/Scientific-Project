@@ -16,6 +16,7 @@
         </tr>
         {% endfor %}
     </table>
+    <img id="myImg" src="data:image/png;base64,{{image}}">
 </div>
 <script>
     let devices = {{ devicesName | safe }};
@@ -87,6 +88,7 @@
                 changeStatus(piName, 'Offline');
             }
         }
+        document.getElementById("myImg").src = "data:image/png;base64," + byteStr;
     };
 
     socket.onclose = function (e) {
