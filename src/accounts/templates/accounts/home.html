@@ -1,0 +1,22 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class='container'>
+    <h1>Hello <a href="{% url 'profile' request.user.profile.id %}">{{ request.user.profile.name }}</a></h1>
+    <br>
+    <br>
+    <div class="card" style="width: 18rem;">
+        <div class="card-header">
+            <h3>Dashborad</h3>
+        </div>
+        {% if request.user.profile.role == 'admin' %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="#">Raspberry Devices</a></li>
+            <li class="list-group-item"><a href="#">Cars</a></li>
+            <li class="list-group-item"><a href="{% url 'users' %}">Users Management</a></li>
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class='container'>
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Users</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.profile.role }}</td>
+                        <td>{{ user.profile.phone }}</td>
+                        <td>{{ user.profile.email }}</td>
+                        <td><a href="{% url 'profile' user.profile.id %}" class="btn btn-primary">View</a></td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    {% if request.user.profile.role == 'admin' %}
+    <a href="{% url 'addUser' %}" class="btn btn-primary">Add User</a>
+    {% endif %}
+    {% for message in messages %}
+    <p style="color: red; font-weight: bold;">{{message}}</p>
+    {% endfor %}
+</div>
+{% endblock %}
