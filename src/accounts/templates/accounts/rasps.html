@@ -1,0 +1,44 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class='container'>
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Cars</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Car Name</th>
+                        <th>Date Created</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+
+                    {% for rasp in rasps %}
+                    <tr>
+                        <td>{{ rasp.name }}</td>
+                        <td>{{ rasp.car.name }}</td>
+                        <td>{{ rasp.date_created }}</td>
+                        <td><a href="#" class="btn btn-primary">Update</a></td>
+                        <td><a href="#" class="btn btn-danger">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    {% if request.user.profile.role == 'admin' %}
+    <a href="{% url 'addCar' %}" class="btn btn-primary">Add Car</a>
+    {% endif %}
+    {% for message in messages %}
+    <p style="color: red; font-weight: bold;">{{message}}</p>
+    {% endfor %}
+</div>
+{% endblock %}

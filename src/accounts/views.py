@@ -10,7 +10,7 @@ import string
 from .models import *
 from django.contrib.auth.models import User, Group
 
-from .forms import ProfileForm, DriverForm
+from .forms import ProfileForm, DriverForm, CarForm
 
 from .decorators import adminOnly, rescritedProfile
 
@@ -205,3 +205,60 @@ def delUserPage(request, id):
     context = {}
 
     return render(request, "accounts/deleteUser.html", context)
+
+
+# $$$$$$$$$$$$          Car and Rasp Page          $$$$$$$$$$$$ #
+def carsPage(request):
+    cars = Car.objects.all()
+
+    context = {"cars": cars}
+    return render(request, "accounts/cars.html", context)
+
+
+def addCarPage(request):
+    form = CarForm()
+
+    if request.method == "POST":
+        form = CarForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "Car has been added")
+            return redirect("cars")
+
+    context = {"form": form}
+    return render(request, "accounts/addCar.html", context)
+
+
+def updateCarPage(request, id):
+    car = Car.objects.get(id=id)
+    form = CarForm(instance=car)
+
+    if request.method == "POST":
+        form = CarForm(request.POST, instance=car)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, f"Car {car} has been updated")
+            return redirect("cars")
+
+    context = {"form": form}
+    return render(request, "accounts/updateCarInfo.html", context)
+
+
+def deleteCar(request, id):
+    delCar = Car.objects.get(id=id)
+    delCar.delete()
+
+    messages.success(request, f"Car {delCar} is deleted")
+
+    return redirect("cars")
+
+
+def raspsPage(request):
+    rasps = RaspDevice.objects.all()
+
+    context = {"rasps": rasps}
+    return render(request, "accounts/rasps.html", context)

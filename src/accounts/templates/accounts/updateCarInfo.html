@@ -1,0 +1,16 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class='container'>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+
+        <input type="submit" name="Submit" value="submit">
+    </form>
+</div>
+{% for message in messages %}
+<p style="color: red; font-weight: bold;">{{message}}</p>
+{% endfor %}
+{% endblock %}

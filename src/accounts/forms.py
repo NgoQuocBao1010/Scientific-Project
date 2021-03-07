@@ -14,3 +14,9 @@ class DriverForm(ModelForm):
         model = Driver
         fields = "__all__"
         exclude = ["profile"]
+
+
+class CarForm(ModelForm):
+    class Meta:
+        model = Car
+        fields = "__all__"

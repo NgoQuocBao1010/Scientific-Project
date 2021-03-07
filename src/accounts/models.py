@@ -33,3 +33,12 @@ class Car(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RaspDevice(models.Model):
+    name = models.CharField(max_length=50)
+    car = models.OneToOneField(Car, null=True, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
