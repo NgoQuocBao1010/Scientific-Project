@@ -10,7 +10,7 @@ import string
 from .models import *
 from django.contrib.auth.models import User, Group
 
-from .forms import ProfileForm, DriverForm, CarForm
+from .forms import ProfileForm, DriverForm, CarForm, RaspDeviceForm
 
 from .decorators import adminOnly, rescritedProfile
 
@@ -262,3 +262,45 @@ def raspsPage(request):
 
     context = {"rasps": rasps}
     return render(request, "accounts/rasps.html", context)
+
+
+def raspAddPage(request):
+    form = RaspDeviceForm()
+
+    if request.method == "POST":
+        form = RaspDeviceForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "A raspberry device has been added")
+            return redirect("rasps")
+
+    context = {"form": form}
+    return render(request, "accounts/raspAdd.html", context)
+
+
+def raspUpdatePage(request, id):
+    rasp = RaspDevice.objects.get(id=id)
+    form = RaspDeviceForm(instance=rasp)
+
+    if request.method == "POST":
+        form = RaspDeviceForm(request.POST, instance=rasp)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, f"Device {rasp} has been updated")
+            return redirect("rasps")
+
+    context = {"form": form}
+    return render(request, "accounts/raspAdd.html", context)
+
+
+def raspDelete(request, id):
+    rasp = RaspDevice.objects.get(id=id)
+    rasp.delete()
+
+    messages.success(request, f"Device {rasp} is deleted")
+
+    return redirect("rasps")

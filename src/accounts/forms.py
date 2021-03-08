@@ -1,4 +1,4 @@
-from .models import Car, Profile, Driver
+from .models import Car, Profile, Driver, RaspDevice
 from django.forms import ModelForm
 
 
@@ -19,4 +19,10 @@ class DriverForm(ModelForm):
 class CarForm(ModelForm):
     class Meta:
         model = Car
+        fields = "__all__"
+
+
+class RaspDeviceForm(ModelForm):
+    class Meta:
+        model = RaspDevice
         fields = "__all__"

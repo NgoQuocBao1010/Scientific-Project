@@ -22,9 +22,9 @@ urlpatterns = [
     path("updateCar/<str:id>/", views.updateCarPage, name="updateCar"),
     path("deleteCar/<str:id>/", views.deleteCar, name="deleteCar"),
     path("rasps/", views.raspsPage, name="rasps"),
-    # path("addCar/", views.addCarPage, name="addCar"),
-    # path("updateCar/<str:id>/", views.updateCarPage, name="updateCar"),
-    # path("deleteCar/<str:id>/", views.deleteCar, name="deleteCar"),
+    path("raspAdd/", views.raspAddPage, name="raspAdd"),
+    path("raspUpdate/<str:id>/", views.raspUpdatePage, name="raspUpdate"),
+    path("raspDelete/<str:id>/", views.raspDelete, name="raspDelete"),
     # Password Reset
     path(
         "reset_password/",

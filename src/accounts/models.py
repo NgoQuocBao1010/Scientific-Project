@@ -37,7 +37,7 @@ class Car(models.Model):
 
 class RaspDevice(models.Model):
     name = models.CharField(max_length=50)
-    car = models.OneToOneField(Car, null=True, on_delete=models.CASCADE)
+    car = models.OneToOneField(Car, null=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

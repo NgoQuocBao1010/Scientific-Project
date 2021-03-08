@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md">
             <div class="card card-body">
-                <h5>Cars</h5>
+                <h5>Raspberry Devices</h5>
             </div>
             <div class="card card-body">
                 <table class="table">
@@ -23,8 +23,8 @@
                         <td>{{ rasp.name }}</td>
                         <td>{{ rasp.car.name }}</td>
                         <td>{{ rasp.date_created }}</td>
-                        <td><a href="#" class="btn btn-primary">Update</a></td>
-                        <td><a href="#" class="btn btn-danger">Delete</a></td>
+                        <td><a href="{% url 'raspUpdate' rasp.id %}" class="btn btn-primary">Update</a></td>
+                        <td><a href="{% url 'raspDelete' rasp.id %}" class="btn btn-danger">Delete</a></td>
                     </tr>
                     {% endfor %}
 
@@ -35,7 +35,7 @@
     </div>
 
     {% if request.user.profile.role == 'admin' %}
-    <a href="{% url 'addCar' %}" class="btn btn-primary">Add Car</a>
+    <a href="{% url 'raspAdd' %}" class="btn btn-primary">Add Device</a>
     {% endif %}
     {% for message in messages %}
     <p style="color: red; font-weight: bold;">{{message}}</p>
