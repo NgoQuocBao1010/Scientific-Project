@@ -11,8 +11,9 @@
             <div class="card card-body">
                 <table class="table">
                     <tr>
-                        <th>Name</th>
+                        <th>Device Name</th>
                         <th>Car Name</th>
+                        <th>Status</th>
                         <th>Date Created</th>
                         <th></th>
                         <th></th>
@@ -22,6 +23,7 @@
                     <tr>
                         <td>{{ rasp.name }}</td>
                         <td>{{ rasp.car.name }}</td>
+                        <td>{{ rasp.status }}</td>
                         <td>{{ rasp.date_created }}</td>
                         <td><a href="{% url 'raspUpdate' rasp.id %}" class="btn btn-primary">Update</a></td>
                         <td><a href="{% url 'raspDelete' rasp.id %}" class="btn btn-danger">Delete</a></td>

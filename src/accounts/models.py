@@ -36,8 +36,14 @@ class Car(models.Model):
 
 
 class RaspDevice(models.Model):
+    STATUS = (
+        ("online", "online"),
+        ("offline", "offline"),
+    )
     name = models.CharField(max_length=50)
     car = models.OneToOneField(Car, null=True, on_delete=models.SET_NULL)
+    status = models.CharField(max_length=50, null=True, blank=True, choices=STATUS)
+    lastActive = models.DateTimeField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

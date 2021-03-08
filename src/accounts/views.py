@@ -12,6 +12,8 @@ from django.contrib.auth.models import User, Group
 
 from .forms import ProfileForm, DriverForm, CarForm, RaspDeviceForm
 
+from .filters import ProfileFilter
+
 from .decorators import adminOnly, rescritedProfile
 
 
@@ -97,9 +99,12 @@ def createUser(name, role="driver"):
 @login_required(login_url="login")
 @adminOnly
 def userPage(request):
-    users = User.objects.all()
+    profiles = Profile.objects.all()
 
-    context = {"users": users}
+    profileFilter = ProfileFilter(request.GET, queryset=profiles)
+    profiles = profileFilter.qs
+
+    context = {"profiles": profiles, "filter": profileFilter}
     return render(request, "accounts/users.html", context)
 
 

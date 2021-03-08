@@ -1,0 +1,82 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1>Activity</h1>
+
+    <div>
+        <h4>Online Devices</h4>
+        <table id='online' class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Device Name</th>
+                    <th scope="col">Car</th>
+                    <th scope="col">Driver</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in onlDevices %}
+                <tr>
+                    <th>{{ device.name }}</th>
+                    <td>{{ device.car.name }}</td>
+                    <td>{{ device.car.driver.profile.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+        <hr>
+        <h4>All Devices</h4>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Device Name</th>
+                    <th scope="col">Car</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <th>{{ device.name }}</th>
+                    <td>{{ device.car.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+<script>
+    let socket = new WebSocket('ws://localhost:8000/ws/realtime/');
+
+    let devices = [];
+
+    {% for device in devices %}
+    var device = {}
+    device.id = '{{ device.id | safe }}';
+    device.name = '{{ device.name | safe }}';
+    device.car = '{{ device.car.name | safe }}';
+    device.driver = '{{ device.car.driver.profile.name | safe }}';
+    devices.push(device);
+    {% endfor %}
+
+    console.log(devices);
+
+    socket.onopen = function (e) {
+        alert('Connection established');
+    };
+
+    socket.onmessage = function (e) {
+
+    };
+
+    socket.onclose = function (e) {
+        alert('Connection closed');
+    };
+</script>
+{% endblock %}
