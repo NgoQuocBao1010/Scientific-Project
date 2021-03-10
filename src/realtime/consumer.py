@@ -2,8 +2,10 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
 from accounts.models import RaspDevice
+from .models import Activity
 
 import json
+from datetime import datetime
 
 
 class RealTime(AsyncWebsocketConsumer):
@@ -33,6 +35,13 @@ class RealTime(AsyncWebsocketConsumer):
         if time is not None:
             await self.updateActive(piName, time)
 
+        check = data.get("check")
+        if check is not None:
+            disDevices = await self.checkActive()
+
+            if len(disDevices) > 0:
+                await self.receive(json.dumps({"dis": disDevices}))
+
         await self.send(event["value"])
 
     @database_sync_to_async
@@ -46,5 +55,43 @@ class RealTime(AsyncWebsocketConsumer):
 
             if device.status == "offline":
                 device.status = "online"
+                device.save()
 
-            device.save()
+                try:
+                    Activity.objects.create(
+                        devices=device, name="Starting", timeOccured=activeTime
+                    )
+                except Exception as e:
+                    print(str(e))
+
+    @database_sync_to_async
+    def checkActive(self):
+        piDevices = RaspDevice.objects.filter(status="online")
+        disDevices = []
+        disconnect = False
+
+        for pi in piDevices:
+            disconnect = False
+            lastActive = pi.lastActive
+            print(f"{datetime.now()}\t{lastActive}\t{pi.name}")
+            if datetime.now().minute - lastActive.minute < 1:
+                if datetime.now().second - lastActive.second >= 10:
+                    disconnect = True
+
+            else:
+                disconnect = True
+
+            if disconnect:
+                print(pi.name, "is disconnect")
+                disDevices.append(pi.name)
+                pi.status = "offline"
+                pi.save()
+
+                try:
+                    Activity.objects.create(
+                        devices=pi, name="Stopped", timeOccured=datetime.now()
+                    )
+                except Exception as e:
+                    print(str(e))
+
+        return disDevices

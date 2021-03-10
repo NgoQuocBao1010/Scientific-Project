@@ -7,7 +7,7 @@
 
     <div>
         <h4>Online Devices</h4>
-        <table id='online' class="table">
+        <table id='onlineTable' class="table">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Device Name</th>
@@ -17,7 +17,7 @@
             </thead>
             <tbody>
                 {% for device in onlDevices %}
-                <tr>
+                <tr id='{{ device.name }}' style='background-color: lightgreen;'>
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
                     <td>{{ device.car.driver.profile.name }}</td>
@@ -48,8 +48,31 @@
     </div>
 </div>
 
+<script>
+    function updateOnlineDevice(piDevice) {
+        var onlineTable = document.getElementById('onlineTable');
 
 
+        var row = document.createElement("tr");
+
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode(piDevice.name);
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+        var cell = document.createElement("td");
+        var cellText = document.createTextNode(piDevice.car);
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+        var cell = document.createElement("td");
+        var cellText = document.createTextNode(piDevice.driver);
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        row.style.backgroundColor = 'lightgreen';
+        row.id = piDevice.name;
+        onlineTable.tBodies[0].appendChild(row);
+    }
+</script>
 
 <script>
     let socket = new WebSocket('ws://localhost:8000/ws/realtime/');
@@ -62,17 +85,44 @@
     device.name = '{{ device.name | safe }}';
     device.car = '{{ device.car.name | safe }}';
     device.driver = '{{ device.car.driver.profile.name | safe }}';
+    device.status = '{{ device.status | safe }}';
     devices.push(device);
     {% endfor %}
-
-    console.log(devices);
 
     socket.onopen = function (e) {
         alert('Connection established');
     };
 
     socket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        console.log(data);
 
+        if (typeof data['time'] !== 'undefined') {
+            for (device of devices) {
+                if (device.name === data['name']) {
+                    if (device.status === 'offline') {
+                        updateOnlineDevice(device);
+                        device.status = 'online';
+                    }
+                }
+            }
+        }
+
+        if (typeof data['dis'] !== 'undefined') {
+            var offlineDevices = data['dis'];
+
+            for (offDevice of offlineDevices) {
+                var row = document.getElementById(offDevice);
+                row.remove();
+
+                for (device of devices) {
+                    if (device.name === offDevice) {
+                        console.log(device.name);
+                        device.status = 'offline';
+                    }
+                }
+            }
+        }
     };
 
     socket.onclose = function (e) {
