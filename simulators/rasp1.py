@@ -36,9 +36,9 @@ def on_open(ws):
             ws.send(
                 json.dumps(
                     {
+                        "command": "updateActive",
                         "name": DEVICES_NAME,
                         "time": str(lastActive),
-                        "status": "Starting",
                     }
                 )
             )
@@ -56,7 +56,13 @@ def on_open(ws):
             if send:
                 try:
                     ws.send(
-                        json.dumps({"name": DEVICES_NAME, "time": str(datetime.now())})
+                        json.dumps(
+                            {
+                                "command": "updateActive",
+                                "name": DEVICES_NAME,
+                                "time": str(datetime.now()),
+                            }
+                        )
                     )
                     send = False
                     lastActive = datetime.now()

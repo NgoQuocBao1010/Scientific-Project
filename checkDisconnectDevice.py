@@ -32,7 +32,7 @@ def on_open(ws):
         send = False
 
         try:
-            ws.send(json.dumps({"check": 1}))
+            ws.send(json.dumps({"command": "check", "time": str(lastActive)}))
         except Exception as e:
             print(str(e))
 
@@ -47,7 +47,9 @@ def on_open(ws):
             if send:
                 print("Dang gui", datetime.now())
                 try:
-                    ws.send(json.dumps({"check": str(datetime.now())}))
+                    ws.send(
+                        json.dumps({"command": "check", "time": str(datetime.now())})
+                    )
                     send = False
                     lastActive = datetime.now()
                 except Exception as e:
