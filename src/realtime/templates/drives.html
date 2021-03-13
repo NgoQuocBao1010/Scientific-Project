@@ -1,13 +1,10 @@
-{% extends 'accounts/main.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'accounts/main.html' %} {% load static %} {% block content %}
 <div class="container">
     <h1>Activity</h1>
 
     <div>
         <h4>Online Devices</h4>
-        <table id='onlineTable' class="table">
+        <table id="onlineTable" class="table">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Device Name</th>
@@ -18,18 +15,25 @@
             </thead>
             <tbody>
                 {% for device in onlDevices %}
-                <tr id='{{ device.name }}' style='background-color: lightgreen;'>
+                <tr id="{{ device.name }}" style="background-color: lightgreen">
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
                     <td>{{ device.car.driver.profile.name }}</td>
-                    <td><a class="btn btn-primary" href="{% url 'drivesOfPi' device.id %}">View</a></td>
+                    <td>
+                        <a
+                            class="btn btn-primary"
+                            href="{% url 'drivesOfPi' device.id %}"
+                        >
+                            View All Drives
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <br>
-        <hr>
+        <br />
+        <hr />
         <h4>All Devices</h4>
         <table class="table">
             <thead class="thead-light">
@@ -44,7 +48,14 @@
                 <tr>
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
-                    <td><a class="btn btn-primary" href="{% url 'drivesOfPi' device.id %}">View</a></td>
+                    <td>
+                        <a
+                            class="btn btn-primary"
+                            href="{% url 'drivesOfPi' device.id %}"
+                        >
+                            View All Drives
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -54,8 +65,7 @@
 
 <script>
     function updateOnlineDevice(piDevice) {
-        var onlineTable = document.getElementById('onlineTable');
-
+        var onlineTable = document.getElementById("onlineTable");
 
         var row = document.createElement("tr");
 
@@ -72,7 +82,7 @@
         cell.appendChild(cellText);
         row.appendChild(cell);
 
-        row.style.backgroundColor = 'lightgreen';
+        row.style.backgroundColor = "lightgreen";
         row.id = piDevice.name;
         onlineTable.tBodies[0].appendChild(row);
     }

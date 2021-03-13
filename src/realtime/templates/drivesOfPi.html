@@ -1,21 +1,23 @@
-{% extends 'accounts/main.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'accounts/main.html' %} {% load static %} {% block content %}
 <style>
-    .preDrives {
-        height: 30vh;
+    table tbody {
+        display: block;
+        max-height: 10vh;
         overflow-y: scroll;
+    }
+    table thead,
+    table tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
     }
 </style>
 
 <div class="container">
     <h1>{{ pi }}</h1>
 
-
     <h3>All previous Drives</h3>
-    <div class="preDrives">
-
+    <div>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -26,7 +28,7 @@
             <tbody>
                 {% for drive in previousDrives %}
                 <tr>
-                    <td>{{ drive.startTime}}</td>
+                    <td>{{ drive.startTime }}</td>
                     <td>{{ drive.endTime }}</td>
                 </tr>
                 {% endfor %}
@@ -35,14 +37,11 @@
     </div>
 </div>
 
-
 <script>
-    let socket = new WebSocket('ws://localhost:8000/ws/realtime/');
-
-
+    let socket = new WebSocket("ws://localhost:8000/ws/realtime/");
 
     socket.onopen = function (e) {
-        alert('Connection established');
+        alert("Connection established");
     };
 
     socket.onmessage = function (e) {
@@ -51,7 +50,7 @@
     };
 
     socket.onclose = function (e) {
-        alert('Connection closed');
+        alert("Connection closed");
     };
 </script>
 {% endblock %}
