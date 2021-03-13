@@ -13,6 +13,7 @@
                     <th scope="col">Device Name</th>
                     <th scope="col">Car</th>
                     <th scope="col">Driver</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -21,6 +22,7 @@
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
                     <td>{{ device.car.driver.profile.name }}</td>
+                    <td><a class="btn btn-primary" href="{% url 'drivesOfPi' device.id %}">View</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -34,6 +36,7 @@
                 <tr>
                     <th scope="col">Device Name</th>
                     <th scope="col">Car</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +44,7 @@
                 <tr>
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
+                    <td><a class="btn btn-primary" href="{% url 'drivesOfPi' device.id %}">View</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

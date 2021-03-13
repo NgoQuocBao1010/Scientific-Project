@@ -2,7 +2,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from accounts.models import RaspDevice
-from .models import Activity
+from .models import Drive, Alert
 
 import json
 from datetime import datetime
@@ -23,8 +23,8 @@ class RealTime(WebsocketConsumer):
                 device.status = "online"
 
                 try:
-                    Activity.objects.create(
-                        devices=device, name="Starting", timeOccured=activeTime
+                    Drive.objects.create(
+                        device=device, startTime=activeTime, status="ongoing"
                     )
                 except Exception as e:
                     print(str(e))
@@ -51,14 +51,15 @@ class RealTime(WebsocketConsumer):
 
             if disconnect:
                 print(pi.name, "is disconnect")
+                drive = pi.drive_set.all().get(status="ongoing")
                 disDevices.append(pi.name)
                 pi.status = "offline"
                 pi.save()
 
                 try:
-                    Activity.objects.create(
-                        devices=pi, name="Stopped", timeOccured=datetime.now()
-                    )
+                    drive.status = "ended"
+                    drive.endTime = datetime.now()
+                    drive.save()
                 except Exception as e:
                     print(str(e))
 

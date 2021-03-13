@@ -1,0 +1,57 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .preDrives {
+        height: 30vh;
+        overflow-y: scroll;
+    }
+</style>
+
+<div class="container">
+    <h1>{{ pi }}</h1>
+
+
+    <h3>All previous Drives</h3>
+    <div class="preDrives">
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Time Start</th>
+                    <th scope="col">Time Ended</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drive in previousDrives %}
+                <tr>
+                    <td>{{ drive.startTime}}</td>
+                    <td>{{ drive.endTime }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    let socket = new WebSocket('ws://localhost:8000/ws/realtime/');
+
+
+
+    socket.onopen = function (e) {
+        alert('Connection established');
+    };
+
+    socket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        console.log(data);
+    };
+
+    socket.onclose = function (e) {
+        alert('Connection closed');
+    };
+</script>
+{% endblock %}
