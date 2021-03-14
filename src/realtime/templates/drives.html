@@ -7,24 +7,24 @@
         <table id="onlineTable" class="table">
             <thead class="thead-dark">
                 <tr>
+                    <th scope="col">Driver</th>
                     <th scope="col">Device Name</th>
                     <th scope="col">Car</th>
-                    <th scope="col">Driver</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for device in onlDevices %}
                 <tr id="{{ device.name }}" style="background-color: lightgreen">
+                    <td>{{ device.car.driver.profile.name }}</td>
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
-                    <td>{{ device.car.driver.profile.name }}</td>
                     <td>
                         <a
                             class="btn btn-primary"
                             href="{% url 'drivesOfPi' device.id %}"
                         >
-                            View All Drives
+                            View
                         </a>
                     </td>
                 </tr>
@@ -52,9 +52,8 @@
                         <a
                             class="btn btn-primary"
                             href="{% url 'drivesOfPi' device.id %}"
+                            >View All Drives</a
                         >
-                            View All Drives
-                        </a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -70,6 +69,10 @@
         var row = document.createElement("tr");
 
         var cell = document.createElement("th");
+        var cellText = document.createTextNode(piDevice.driver);
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+        var cell = document.createElement("td");
         var cellText = document.createTextNode(piDevice.name);
         cell.appendChild(cellText);
         row.appendChild(cell);
@@ -78,8 +81,11 @@
         cell.appendChild(cellText);
         row.appendChild(cell);
         var cell = document.createElement("td");
-        var cellText = document.createTextNode(piDevice.driver);
-        cell.appendChild(cellText);
+        var link = "{% url 'drivesOfPi' 1 %}".replace("1", piDevice.id);
+        cell.innerHTML =
+            '<a class="btn btn-primary" href="' + link + '">' + "View" + "</a>";
+        // var cellText = document.createTextNode(piDevice.car);
+        // cell.appendChild(cellText);
         row.appendChild(cell);
 
         row.style.backgroundColor = "lightgreen";

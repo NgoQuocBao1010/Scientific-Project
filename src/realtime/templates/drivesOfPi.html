@@ -21,6 +21,7 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th scope="col">Driver</th>
                     <th scope="col">Time Start</th>
                     <th scope="col">Time Ended</th>
                 </tr>
@@ -28,6 +29,7 @@
             <tbody>
                 {% for drive in previousDrives %}
                 <tr>
+                    <td>{{ drive.device.car.driver }}</td>
                     <td>{{ drive.startTime }}</td>
                     <td>{{ drive.endTime }}</td>
                 </tr>
