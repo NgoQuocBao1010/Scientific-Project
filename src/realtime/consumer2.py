@@ -65,12 +65,23 @@ class RealTime(WebsocketConsumer):
                     print(str(e))
 
         if len(disDevices) > 0:
-            self.sendSignal({"dis": disDevices})
+            self.sendSignal({"dis": disDevices, "disTime": str(datetime.now())})
+
+    def drowsinessDetect(self, data):
+        alertType = data.get("type")
+        device = RaspDevice.objects.get(name=data.get("name"))
+        alertTime = RaspDevice.objects.get(name=data.get("alertTime"))
+        drive = device.drive_set.all().get(status="ongoing")
+
+        try:
+            Alert.objects.create(drive=drive, detect=alertType, alertTime=alertTime)
+        except Exception as e:
+            print(str(e))
 
     commands = {
         "check": checkActive,
         "updateActive": updateActive,
-        "test": "test",
+        "alert": drowsinessDetect,
     }
 
     def connect(self):

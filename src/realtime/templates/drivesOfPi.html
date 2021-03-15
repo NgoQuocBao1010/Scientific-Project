@@ -41,7 +41,7 @@
                             <th scope="col">Time Ended</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="myTable">
                         {% for drive in previousDrives %}
                         <tr>
                             <td>{{ drive.device.car.driver }}</td>
@@ -68,8 +68,13 @@
     piDevice.name = '{{ pi.name }}';
     piDevice.status = '{{ pi.status }}';
 
+    var onDrive = {};
+
+    if (piDevice.status == 'online') {
+        onDrive.startTime = '{{ onDrive.startTime }}';
+    }
+
     var info = document.querySelector('.info');
-    console.log(info);
 
 
     let socket = new WebSocket("ws://localhost:8000/ws/realtime/");
@@ -88,6 +93,7 @@
             for (offDevice of offlineDevices) {
                 if (offDevice === piDevice.name) {
                     piDevice.status = 'offline';
+                    onDrive.endTime = data['disTime'];
 
                     info.innerHTML = '';
                     var h2 = document.createElement('h2');
@@ -97,6 +103,20 @@
                     span.style.color = 'gray';
                     h2.appendChild(span);
                     info.appendChild(h2);
+
+                    var myTableBody = document.getElementById('myTable');
+                    tr = myTableBody.insertRow(0);
+                    tr.style.backgroundColor = 'lightblue';
+
+                    var td = document.createElement('td');
+                    td.innerHTML = "Driver Vinh Mai";
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.innerHTML = onDrive.startTime;
+                    tr.appendChild(td);
+                    var td = document.createElement('td');
+                    td.innerHTML = onDrive.endTime;
+                    tr.appendChild(td);
                 }
             }
         }
@@ -105,6 +125,7 @@
             if (piDevice.name === data['name']) {
                 if (piDevice.status === 'offline') {
                     piDevice.status = 'online';
+                    onDrive.startTime = data['time'];
 
                     info.innerHTML = '';
                     var h2 = document.createElement('h2');
