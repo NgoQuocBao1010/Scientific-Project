@@ -20,6 +20,11 @@ def drivesOfPi(request, id):
 
     previousDrives = piDevice.drive_set.all().filter(status="ended")
 
-    context = {"pi": piDevice, "previousDrives": previousDrives}
+    onDrive = (
+        piDevice.drive_set.all().get(status="ongoing")
+        if piDevice.status == "online"
+        else None
+    )
 
+    context = {"pi": piDevice, "previousDrives": previousDrives, "onDrive": onDrive}
     return render(request, "drivesOfPi.html", context)
