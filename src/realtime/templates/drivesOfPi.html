@@ -68,6 +68,10 @@
     piDevice.name = '{{ pi.name }}';
     piDevice.status = '{{ pi.status }}';
 
+    var info = document.querySelector('.info');
+    console.log(info);
+
+
     let socket = new WebSocket("ws://localhost:8000/ws/realtime/");
 
     socket.onopen = function (e) {
@@ -83,7 +87,36 @@
 
             for (offDevice of offlineDevices) {
                 if (offDevice === piDevice.name) {
-                    console.log('yes');
+                    piDevice.status = 'offline';
+
+                    info.innerHTML = '';
+                    var h2 = document.createElement('h2');
+                    h2.innerHTML = "Status: ";
+                    var span = document.createElement('span');
+                    span.innerHTML = 'Ended';
+                    span.style.color = 'gray';
+                    h2.appendChild(span);
+                    info.appendChild(h2);
+                }
+            }
+        }
+
+        if (typeof data['time'] !== 'undefined') {
+            if (piDevice.name === data['name']) {
+                if (piDevice.status === 'offline') {
+                    piDevice.status = 'online';
+
+                    info.innerHTML = '';
+                    var h2 = document.createElement('h2');
+                    h2.innerHTML = "Status: ";
+                    var span = document.createElement('span');
+                    span.innerHTML = 'Ongoing';
+                    span.style.color = 'lightgreen';
+                    var h3 = document.createElement('h3');
+                    h3.innerHTML = "StartTime: " + data['time'];
+                    h2.appendChild(span);
+                    info.appendChild(h2);
+                    info.appendChild(h3);
                 }
             }
         }

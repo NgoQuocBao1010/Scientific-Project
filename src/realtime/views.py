@@ -18,7 +18,9 @@ def drivesMangementPage(request):
 def drivesOfPi(request, id):
     piDevice = RaspDevice.objects.get(id=id)
 
-    previousDrives = piDevice.drive_set.all().filter(status="ended")
+    previousDrives = (
+        piDevice.drive_set.all().filter(status="ended").order_by("-startTime")
+    )
 
     onDrive = (
         piDevice.drive_set.all().get(status="ongoing")

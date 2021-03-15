@@ -52,6 +52,7 @@ class RealTime(WebsocketConsumer):
             if disconnect:
                 print(pi.name, "is disconnect")
                 drive = pi.drive_set.all().get(status="ongoing")
+
                 disDevices.append(pi.name)
                 pi.status = "offline"
                 pi.save()
