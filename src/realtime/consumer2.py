@@ -43,7 +43,7 @@ class RealTime(WebsocketConsumer):
             lastActive = pi.lastActive
             print(f"{datetime.now()}\t{lastActive}\t{pi.name}")
             if datetime.now().minute - lastActive.minute < 1:
-                if datetime.now().second - lastActive.second >= 10:
+                if datetime.now().second - lastActive.second >= 20:
                     disconnect = True
 
             else:
@@ -68,20 +68,30 @@ class RealTime(WebsocketConsumer):
             self.sendSignal({"dis": disDevices, "disTime": str(datetime.now())})
 
     def drowsinessDetect(self, data):
-        alertType = data.get("type")
-        device = RaspDevice.objects.get(name=data.get("name"))
-        alertTime = RaspDevice.objects.get(name=data.get("alertTime"))
-        drive = device.drive_set.all().get(status="ongoing")
+        self.sendSignal(data)
+        # alertType = data.get("type")
+        # device = RaspDevice.objects.get(name=data.get("name"))
+        # alertTime = RaspDevice.objects.get(name=data.get("alertTime"))
+        # drive = device.drive_set.all().get(status="ongoing")
 
-        try:
-            Alert.objects.create(drive=drive, detect=alertType, alertTime=alertTime)
-        except Exception as e:
-            print(str(e))
+        # try:
+        #     Alert.objects.create(drive=drive, detect=alertType, alertTime=alertTime)
+        # except Exception as e:
+        #     print(str(e))
+
+    def getInfo(self, data):
+        self.sendSignal(data)
+
+    def sendVideo(self, data):
+        print(data["list_frames"])
+        self.sendSignal({"message": "Da nhan list frame"})
 
     commands = {
         "check": checkActive,
         "updateActive": updateActive,
         "alert": drowsinessDetect,
+        "getInfo": getInfo,
+        "send_video": sendVideo,
     }
 
     def connect(self):

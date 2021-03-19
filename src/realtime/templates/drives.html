@@ -20,10 +20,7 @@
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
                     <td>
-                        <a
-                            class="btn btn-primary"
-                            href="{% url 'drivesOfPi' device.id %}"
-                        >
+                        <a class="btn btn-primary" href="{% url 'drivesOfPi' device.id %}">
                             View
                         </a>
                     </td>
@@ -49,11 +46,7 @@
                     <th>{{ device.name }}</th>
                     <td>{{ device.car.name }}</td>
                     <td>
-                        <a
-                            class="btn btn-primary"
-                            href="{% url 'drivesOfPi' device.id %}"
-                            >View All Drives</a
-                        >
+                        <a class="btn btn-primary" href="{% url 'drivesOfPi' device.id %}">View All Drives</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -95,7 +88,8 @@
 </script>
 
 <script>
-    let socket = new WebSocket('ws://localhost:8000/ws/realtime/');
+    // let socket = new WebSocket('ws://localhost:8000/ws/realtime/');
+    let socket = new WebSocket('ws://10.10.32.119:8000/ws/realtime/');
 
     let devices = [];
 

@@ -30,6 +30,12 @@
             {% endif %}
         </div>
         <hr>
+        <div class="alert-container">
+            <h4>Alerts</h4>
+            <ul id="alerts" class="list-group">
+            </ul>
+        </div>
+        <hr>
         <div class="historyTable">
             <h3>All previous Drives</h3>
             <div>
@@ -70,6 +76,8 @@
 
     var onDrive = {};
 
+    var alertId = 1;
+
     if (piDevice.status == 'online') {
         onDrive.startTime = '{{ onDrive.startTime }}';
     }
@@ -77,7 +85,8 @@
     var info = document.querySelector('.info');
 
 
-    let socket = new WebSocket("ws://localhost:8000/ws/realtime/");
+    // let socket = new WebSocket("ws://localhost:8000/ws/realtime/");
+    let socket = new WebSocket("ws://10.10.32.119:8000/ws/realtime/");
 
     socket.onopen = function (e) {
         alert("Connection established");
@@ -139,6 +148,28 @@
                     info.appendChild(h2);
                     info.appendChild(h3);
                 }
+            }
+        }
+
+        if (data['command'] === 'alert') {
+            console.log('Yes');
+            if (piDevice.name === data['name']) {
+                var ul = document.getElementById("alerts");
+                var li = document.createElement("li");
+                var button = document.createElement("button");
+                button.setAttribute("class", "btn btn-primary");
+                button.innerHTML = "Get Info";
+                button.addEventListener("click", function () {
+                    socket.send(JSON.stringify({ 'command': 'getInfo', 'timeEnd': data['time'] }));
+                    console.log('Da gui', data['time']);
+                });
+                li.appendChild(button);
+
+                var detection = data['activity'] + ' ' + data['time'];
+                li.appendChild(document.createTextNode(detection));
+                li.setAttribute("id", alertId); // added line
+                ul.appendChild(li);
+                alertId += 1;
             }
         }
     };
