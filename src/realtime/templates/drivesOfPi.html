@@ -62,6 +62,11 @@
     </div>
 
 
+    <img id="myImg" src="">
+    <br>
+    <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
+    AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+        9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" />
 </div>
 <script>
 
@@ -86,7 +91,8 @@
 
 
     // let socket = new WebSocket("ws://localhost:8000/ws/realtime/");
-    let socket = new WebSocket("ws://10.10.32.119:8000/ws/realtime/");
+    // let socket = new WebSocket("ws://10.10.32.119:8000/ws/realtime/");
+    let socket = new WebSocket("ws://192.168.123.147:8000/ws/realtime/");
 
     socket.onopen = function (e) {
         alert("Connection established");
@@ -94,7 +100,7 @@
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data);
-        console.log(data);
+        // console.log(data);
 
         if (typeof data['dis'] !== 'undefined') {
             var offlineDevices = data['dis'];
@@ -170,6 +176,16 @@
                 li.setAttribute("id", alertId); // added line
                 ul.appendChild(li);
                 alertId += 1;
+            }
+        }
+
+        if (data['command'] === 'send_video') {
+            console.log('Yes')
+            if (piDevice.name === data['name']) {
+                var dataImg = data['frame'];
+
+                console.log(dataImg);
+                document.getElementById("myImg").src = "data:image/png;base64," + dataImg;
             }
         }
     };

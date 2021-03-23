@@ -6,11 +6,11 @@ except ImportError:
     import _thread as thread
 import time
 from datetime import datetime
-import json
+import json, base64
 import random
 
 SENCOND_SEND = 5
-DEVICES_NAME = "Pi 2"
+DEVICES_NAME = "Pi 1"
 
 
 def on_message(ws, message):
@@ -29,48 +29,26 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        lastActive = datetime.now()
-        send = False
+        with open("nchm.png", "rb") as f:
+            f_data = base64.b64encode(f.read()).decode("utf-8")
 
         try:
             ws.send(
                 json.dumps(
                     {
-                        "command": "updateActive",
+                        "command": "send_video",
                         "name": DEVICES_NAME,
-                        "time": str(lastActive),
+                        "frame": str(f_data),
                     }
                 )
             )
+            print("Da send")
         except Exception as e:
             print(str(e))
 
-        while True:
-            if datetime.now().minute - lastActive.minute >= 1:
-                send = True
-
-            else:
-                if datetime.now().second - lastActive.second >= 2:
-                    send = True
-
-            if send:
-                try:
-                    ws.send(
-                        json.dumps(
-                            {
-                                "command": "updateActive",
-                                "name": DEVICES_NAME,
-                                "time": str(datetime.now()),
-                            }
-                        )
-                    )
-                    send = False
-                    lastActive = datetime.now()
-                except Exception as e:
-                    print(str(e))
+        # print("thread terminating...")
 
         ws.close()
-        # print("thread terminating...")
 
     thread.start_new_thread(run, ())
 
@@ -78,6 +56,7 @@ def on_open(ws):
 if __name__ == "__main__":
     # websocket.enableTrace(True)
     # url = "ws://localhost:8000/ws/realtime/"
+    # url = "ws://10.10.32.119:8000/ws/realtime/"
     url = "ws://192.168.123.147:8000/ws/realtime/"
 
     ws = websocket.WebSocketApp(

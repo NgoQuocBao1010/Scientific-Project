@@ -4,6 +4,7 @@ try:
     import thread
 except ImportError:
     import _thread as thread
+
 import time
 from datetime import datetime
 import json
@@ -31,6 +32,7 @@ def on_open(ws):
     def run(*args):
         lastActive = datetime.now()
         send = False
+        delay = 0
 
         try:
             ws.send(
@@ -65,7 +67,25 @@ def on_open(ws):
                         )
                     )
                     send = False
+                    delay += 1
                     lastActive = datetime.now()
+
+                    if delay >= 10:
+                        print("Alert")
+                        ws.send(
+                            json.dumps(
+                                {
+                                    "command": "alert",
+                                    "name": DEVICES_NAME,
+                                    "activity": random.choice(
+                                        ["Yawning", "Drowsiness"]
+                                    ),
+                                    "time": str(datetime.now()),
+                                }
+                            )
+                        )
+
+                        delay = 0
                 except Exception as e:
                     print(str(e))
 
@@ -78,7 +98,8 @@ def on_open(ws):
 if __name__ == "__main__":
     # websocket.enableTrace(True)
     # url = "ws://localhost:8000/ws/realtime/"
-    url = "ws://10.10.32.119:8000/ws/realtime/"
+    # url = "ws://10.10.32.119:8000/ws/realtime/"
+    url = "ws://192.168.123.147:8000/ws/realtime/"
 
     ws = websocket.WebSocketApp(
         url, on_message=on_message, on_error=on_error, on_close=on_close

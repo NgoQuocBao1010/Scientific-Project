@@ -83,8 +83,7 @@ class RealTime(WebsocketConsumer):
         self.sendSignal(data)
 
     def sendVideo(self, data):
-        print(data["list_frames"])
-        self.sendSignal({"message": "Da nhan list frame"})
+        self.sendSignal(data)
 
     commands = {
         "check": checkActive,
