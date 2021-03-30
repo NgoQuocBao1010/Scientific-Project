@@ -64,9 +64,6 @@
 
     <img id="myImg" src="">
     <br>
-    <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
-    AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-        9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" />
 </div>
 <script>
 
@@ -89,10 +86,14 @@
 
     var info = document.querySelector('.info');
 
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
 
     // let socket = new WebSocket("ws://localhost:8000/ws/realtime/");
-    // let socket = new WebSocket("ws://10.10.32.119:8000/ws/realtime/");
-    let socket = new WebSocket("ws://192.168.123.147:8000/ws/realtime/");
+    let socket = new WebSocket("ws://10.10.36.35:8000/ws/realtime/");
+    // let socket = new WebSocket("ws://192.168.123.147:8000/ws/realtime/");
 
     socket.onopen = function (e) {
         alert("Connection established");
@@ -166,7 +167,7 @@
                 button.setAttribute("class", "btn btn-primary");
                 button.innerHTML = "Get Info";
                 button.addEventListener("click", function () {
-                    socket.send(JSON.stringify({ 'command': 'getInfo', 'timeEnd': data['time'] }));
+                    socket.send(JSON.stringify({ 'command': 'getInfo', 'time': data['time'], 'activity': data['activity'] }));
                     console.log('Da gui', data['time']);
                 });
                 li.appendChild(button);
@@ -182,10 +183,14 @@
         if (data['command'] === 'send_video') {
             console.log('Yes')
             if (piDevice.name === data['name']) {
-                var dataImg = data['frame'];
-
-                console.log(dataImg);
-                document.getElementById("myImg").src = "data:image/png;base64," + dataImg;
+                var frames = data['frames'];
+                console.log(frames.length)
+                for (const dataImg of frames) {
+                    // document.getElementById("myImg").src = "data:image/png;base64," + dataImg;
+                    var img = document.createElement('img');
+                    img.src = "data:image/png;base64," + dataImg;
+                    document.body.appendChild(img);
+                }
             }
         }
     };
