@@ -9,9 +9,10 @@ from datetime import datetime
 
 
 class RealTime(WebsocketConsumer):
+    # Update the last time the system receive signal from pi
     def updateActive(self, data):
         piName = data.get("name")
-        activeTime = data.get("time")
+        activeTime = datetime.now()
         result = RaspDevice.objects.all()
         device = result.get(name=piName)
 
@@ -33,6 +34,7 @@ class RealTime(WebsocketConsumer):
 
             device.save()
 
+    # check if pi was disconnected
     def checkActive(self, data):
         piDevices = RaspDevice.objects.filter(status="online")
         disDevices = []

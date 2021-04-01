@@ -62,7 +62,6 @@ def on_open(ws):
                             {
                                 "command": "updateActive",
                                 "name": DEVICES_NAME,
-                                "time": str(datetime.now()),
                             }
                         )
                     )
