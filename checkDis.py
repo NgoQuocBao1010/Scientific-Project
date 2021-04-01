@@ -9,7 +9,7 @@ from datetime import datetime
 import json
 import random
 
-SENCOND_SEND = 5
+SENCOND_SEND = 10
 
 
 def on_message(ws, message):
@@ -28,35 +28,20 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        lastActive = datetime.now()
-        send = False
-
-        try:
-            ws.send(json.dumps({"command": "check", "time": str(lastActive)}))
-        except Exception as e:
-            print(str(e))
+        start = time.time()
 
         while True:
-            if datetime.now().minute - lastActive.minute >= 1:
-                send = True
+            end = time.time()
 
-            else:
-                if datetime.now().second - lastActive.second >= 10:
-                    send = True
-
-            if send:
+            if round(end - start) == SENCOND_SEND:
+                start = end
                 print("Dang gui", datetime.now())
                 try:
                     ws.send(
                         json.dumps({"command": "check", "time": str(datetime.now())})
                     )
-                    send = False
-                    lastActive = datetime.now()
                 except Exception as e:
                     print(str(e))
-
-        ws.close()
-        # print("thread terminating...")
 
     thread.start_new_thread(run, ())
 
