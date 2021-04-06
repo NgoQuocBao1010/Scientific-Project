@@ -26,3 +26,4 @@ class RaspDeviceForm(ModelForm):
     class Meta:
         model = RaspDevice
         fields = "__all__"
+        exclude = ["status", "date_created"]

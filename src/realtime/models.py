@@ -27,6 +27,19 @@ class Activity(models.Model):
         return f"{self.devices.name} - {self.name} at {self.timeOccured}"
 
 
+class ActiveCheck(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["time"], name="timeActive"),
+        ]
+
+    device = models.ForeignKey(RaspDevice, null=True, on_delete=models.CASCADE)
+    time = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.device} was last active on {self.time}"
+
+
 class Drive(models.Model):
     STATUS = (
         ("ongoing", "ongoing"),
