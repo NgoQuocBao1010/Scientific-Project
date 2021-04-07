@@ -2,7 +2,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from accounts.models import RaspDevice
-from .models import ActiveCheck, Drive, Alert
+from .models import Drive, Alert
 
 import json
 from datetime import datetime
@@ -16,30 +16,23 @@ class RealTime(WebsocketConsumer):
         result = RaspDevice.objects.all()
         device = result.get(name=piName)
 
-        activeTimes = device.activecheck_set.all().order_by("-time")
-        print(len(activeTimes))
-        # if device.lastActive != activeTime:
-        #     print("Update", device.name, activeTime)
-        #     device.lastActive = activeTime
+        if device.lastActive != activeTime:
+            print("Update", device.name, activeTime)
+            device.lastActive = activeTime
 
-        #     try:
-        #         ActiveCheck.objects.create(device=device, lastActive=activeTime)
-        #     except Exception as e:
-        #         print(str(e))
+            if device.status == "offline":
+                device.status = "online"
 
-        #     if device.status == "offline":
-        #         device.status = "online"
+                try:
+                    Drive.objects.create(
+                        device=device, startTime=activeTime, status="ongoing"
+                    )
+                except Exception as e:
+                    print(str(e))
 
-        #         try:
-        #             Drive.objects.create(
-        #                 device=device, startTime=activeTime, status="ongoing"
-        #             )
-        #         except Exception as e:
-        #             print(str(e))
+                self.sendSignal(data)
 
-        #         self.sendSignal(data)
-
-        #     device.save()
+            device.save()
 
     # check if pi was disconnected
     def checkActive(self, data):
