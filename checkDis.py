@@ -48,9 +48,9 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    # url = "ws://localhost:8000/ws/realtime/"
+    url = "ws://localhost:8000/ws/realtime/"
     # url = "ws://10.10.36.35:8000/ws/realtime/"
-    url = "ws://192.168.123.147:8000/ws/realtime/"
+    # url = "ws://192.168.123.147:8000/ws/realtime/"
 
     ws = websocket.WebSocketApp(
         url, on_message=on_message, on_error=on_error, on_close=on_close
