@@ -1,5 +1,9 @@
 from pathlib import Path
 import os
+import socket
+
+HOSTNAME = socket.gethostname()
+IP_ADDRESS = socket.gethostbyname(HOSTNAME)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,7 +18,8 @@ SECRET_KEY = "f%#wz-o!prt4oj%atus&52+-az&qcb-z(3ynh0l37rhp^@df8e"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.10.36.35", "192.168.123.147", "127.0.0.1"]
+# ALLOWED_HOSTS = ["10.10.36.35", "192.168.123.147", "127.0.0.1"]
+ALLOWED_HOSTS = [IP_ADDRESS, "127.0.0.1"]
 
 
 # Application definition

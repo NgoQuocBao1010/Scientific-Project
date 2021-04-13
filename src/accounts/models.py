@@ -30,6 +30,8 @@ class Driver(models.Model):
 class Car(models.Model):
     name = models.CharField(max_length=50)
     driver = models.ForeignKey(Driver, null=True, on_delete=models.CASCADE)
+    licensePlate = models.CharField(max_length=10, null=True)
+    boughtDate = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.name
