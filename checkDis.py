@@ -55,5 +55,6 @@ if __name__ == "__main__":
     ws = websocket.WebSocketApp(
         url, on_message=on_message, on_error=on_error, on_close=on_close
     )
+
     ws.on_open = on_open
     ws.run_forever()
