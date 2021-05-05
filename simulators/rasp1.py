@@ -10,6 +10,11 @@ from datetime import datetime
 import json
 import random
 
+import socket
+
+HOSTNAME = socket.gethostname()
+IP_ADDRESS = socket.gethostbyname(HOSTNAME)
+
 SENCOND_SEND = 5
 DEVICES_NAME = "Pi 1"
 
@@ -38,7 +43,7 @@ def on_open(ws):
             ws.send(
                 json.dumps(
                     {
-                        "command": "updateActive",
+                        "command": "testActive",
                         "name": DEVICES_NAME,
                         "time": str(lastActive),
                     }
@@ -60,7 +65,7 @@ def on_open(ws):
                     ws.send(
                         json.dumps(
                             {
-                                "command": "updateActive",
+                                "command": "testActive",
                                 "name": DEVICES_NAME,
                             }
                         )
@@ -70,19 +75,19 @@ def on_open(ws):
                     lastActive = datetime.now()
 
                     if delay >= 2:
-                        print("Alert")
-                        ws.send(
-                            json.dumps(
-                                {
-                                    "command": "alert",
-                                    "name": DEVICES_NAME,
-                                    "activity": random.choice(
-                                        ["Yawning", "Drowsiness"]
-                                    ),
-                                    "time": str(datetime.now()),
-                                }
-                            )
-                        )
+                        # print("Alert")
+                        # ws.send(
+                        #     json.dumps(
+                        #         {
+                        #             "command": "alert",
+                        #             "name": DEVICES_NAME,
+                        #             "activity": random.choice(
+                        #                 ["Yawning", "Drowsiness"]
+                        #             ),
+                        #             "time": str(datetime.now()),
+                        #         }
+                        #     )
+                        # )
 
                         delay = 0
                 except Exception as e:
@@ -98,7 +103,7 @@ if __name__ == "__main__":
     # websocket.enableTrace(True)
     # url = "ws://localhost:8000/ws/realtime/"
     # url = "ws://10.10.32.119:8000/ws/realtime/"
-    url = "ws://192.168.123.147:8000/ws/realtime/"
+    url = f"ws://{HOSTNAME}:8000/ws/realtime/"
 
     ws = websocket.WebSocketApp(
         url, on_message=on_message, on_error=on_error, on_close=on_close

@@ -15,6 +15,7 @@ class RealTime(WebsocketConsumer):
         activeTime = datetime.now()
         result = RaspDevice.objects.all()
         device = result.get(name=piName)
+        print(self.scope["client"])
 
         if device.lastActive != activeTime:
             print("Update", device.name, activeTime)
@@ -91,23 +92,54 @@ class RealTime(WebsocketConsumer):
     def sendVideo(self, data):
         self.sendSignal(data)
 
+    # Test
+    def testActive(self, data):
+        pass
+
+    def testActive2(self, client):
+        ipAddress, port = client
+        try:
+            device = RaspDevice.objects.get(ipAddress=ipAddress)
+
+            device.status = "online"
+            device.lastActive = datetime.now()
+            device.save()
+            print(f"{device} is online")
+        except Exception as e:
+            print("Not a Pi")
+
+    def testDis(self, client):
+        ipAddress, port = client
+        try:
+            device = RaspDevice.objects.get(ipAddress=ipAddress)
+
+            device.status = "offline"
+            device.lastActive = datetime.now()
+            device.save()
+            print(f"{device} is offline")
+        except Exception as e:
+            print("Not a Pi")
+
     commands = {
         "check": checkActive,
         "updateActive": updateActive,
         "alert": drowsinessDetect,
         "getInfo": getInfo,
         "send_video": sendVideo,
+        # test
+        "testActive": testActive,
     }
 
     def connect(self):
         self.group_name = "realtime"
+        self.testActive2(self.scope["client"])
 
         async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
 
         self.accept()
 
     def disconnect(self, close_code):
-        pass
+        self.testDis(self.scope["client"])
 
     def receive(self, text_data):
         data = json.loads(text_data)
