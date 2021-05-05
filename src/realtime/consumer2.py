@@ -70,18 +70,18 @@ class RealTime(WebsocketConsumer):
             self.sendSignal({"dis": disDevices, "disTime": str(datetime.now())})
 
     def drowsinessDetect(self, data):
-        piName = data.get("name")
-        detect = data.get("activity")
-        time = data.get("time")
+        # piName = data.get("name")
+        # detect = data.get("activity")
+        # time = data.get("time")
 
-        pi = RaspDevice.objects.get(name=piName)
-        drive = pi.drive_set.all().get(status="ongoing")
+        # pi = RaspDevice.objects.get(name=piName)
+        # drive = pi.drive_set.all().get(status="ongoing")
 
-        try:
-            Alert.objects.create(drive=drive, detect=detect, timeOccured=time)
-            print("Deteced and saved!!")
-        except Exception as e:
-            print(str(e))
+        # try:
+        #     Alert.objects.create(drive=drive, detect=detect, timeOccured=time)
+        #     print("Deteced and saved!!")
+        # except Exception as e:
+        #     print(str(e))
 
         self.sendSignal(data)
 
