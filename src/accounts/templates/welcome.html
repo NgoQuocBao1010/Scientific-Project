@@ -30,13 +30,16 @@
                 <section class="form">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                     <p class="title">ĐĂNG NHẬP</p>
-                    <div class="messages" id="signin-message">Sai mat khau</div>
-                    <form id="SignInForm">
+                    {% for message in messages %}
+                    <div class="messages" id="signin-message">{{ message }}</div>
+                    {% endfor %}
+                    <form id="SignInForm" method="POST">
+                        {% csrf_token %}
                         <!-- User name -->
                         <div class="form-field">
-                            <input type="email" name="login-email" id="login-email" placeholder=" " required>
-                            <label for="login-email">
-                                <span class="input-label">Email <span class="required-star">*</span></span>
+                            <input type="text" name="login-username" id="login-email" placeholder=" " required>
+                            <label for="login-username">
+                                <span class="input-label">Tai khoan <span class="required-star">*</span></span>
                             </label>
                         </div>
                         <!-- Password -->
