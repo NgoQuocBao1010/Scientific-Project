@@ -87,7 +87,8 @@
 
 
     <!-- Device Modal -->
-    <div class="modal fade" id="DeviceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    {% for car in cars %}
+    <div class="modal fade" id="DeviceModal{{ car.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -99,7 +100,8 @@
                     <form id="DeviceForm">
                         <!-- Device ID -->
                         <div class="form-field">
-                            <input type="text" name="device-id" id="device-id" placeholder=" " required>
+                            <input type="text" name="device-id" id="device-id" placeholder=" " required
+                            value="{{ car.name }}">
                             <label for="device-id">
                                 <span class="input-label">Mã số thiết bị <span class="required-star">*</span></span>
                             </label>
@@ -107,16 +109,16 @@
                         <!-- License plate -->
                         <div class="form-field">
                             <input type="text" name="device-license-plate" id="device-license-plate" placeholder=" "
-                                required>
+                                required value="{{ car.licensePlate }}">
                             <label for="device-license-plate">
                                 <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
                             </label>
                         </div>
                         <!-- Password -->
                         <div class="form-field">
-                            <input type="password" name="device-password" id="device-password" placeholder=" " required>
-                            <label for="device-password">
-                                <span class="input-label">Mật khẩu <span class="required-star">*</span></span>
+                            <input type="date" name="device-date" id="device-date" placeholder=" " required default="{{ car.boughtDate }}">
+                            <label for="device-date">
+                                <span class="input-label">Ngày mua <span class="required-star">*</span></span>
                             </label>
                         </div>
                         <!-- Confirm password -->
@@ -137,6 +139,7 @@
             </div>
         </div>
     </div>
+    {% endfor %}
 
     <!-- Confirm Delete Modal -->
     <div class="modal fade" id="ConfirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -271,6 +274,7 @@
 
         <div class="content-container">
             <!-- Car information -->
+            {% for car in cars %}
             <div class="card">
                 <!-- <h5 class="card-header">Featured</h5> -->
                 <div class="card-body row">
@@ -278,8 +282,17 @@
                         <img src="{% static '/images/web/car-image.svg' %}" alt="">
                     </div>
                     <div class="info col-lg-9 col-7">
-                        <p class="license-plate">65H P1 56.734</p>
-                        <p> <span class="active-circle">&#11044; </span> Đang hoạt động</p>
+                        <p class="license-plate">{{ car.name }}</p>
+                        <p> <span
+                            {% if car.raspdevice.status == 'offline'%}
+                            class="deactive-circle"
+                            {% else %}
+                            class="active-circle"
+                            {% endif %}
+                            >&#11044; 
+                            </span>
+                            {{ car.raspdevice.status }}
+                        </p>
                         <p> <img src="{% static '/images/web/alcohol-icon.svg' %}" alt=""> 0.00 BAC</p>
                     </div>
                     <div class="more col-lg-1 col-2 dropdown">
@@ -287,7 +300,7 @@
                             aria-expanded="true">&#8942;</a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu-carxxx">
                             <a class="dropdown-item" href="#">Chi tiết</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#DeviceModal">Chỉnh
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#DeviceModal{{ car.id }}">Chỉnh
                                 sửa</a>
                             <a class="dropdown-item" href="#" data-toggle="modal"
                                 data-target="#ConfirmDeleteModal">Xóa</a>
@@ -295,32 +308,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card">
-                <!-- <h5 class="card-header">Featured</h5> -->
-                <div class="card-body row">
-                    <div class="avt col-lg-2 col-3">
-                        <img src="{% static '/images/web/car-image.svg' %}" alt="">
-                    </div>
-                    <div class="info col-lg-9 col-7">
-                        <p class="license-plate">65H P1 56.734</p>
-                        <p> <span class="deactive-circle">&#11044; </span> Không hoạt động</p>
-                        <p> <img src="{% static '/images/web/alcohol-icon.svg' %}" alt=""> 0.00 BAC</p>
-                    </div>
-                    <div class="more col-lg-1 col-2 dropdown">
-                        <a href="#" type="button" id="dropdownMenu-carxxx" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="true">&#8942;</a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu-carxxx">
-                            <a class="dropdown-item" href="#">Chi tiết</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#DeviceModal">Chỉnh
-                                sửa</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal"
-                                data-target="#ConfirmDeleteModal">Xóa</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            {% endfor %}
             <br>
 
             <!-- Car Detail Information -->

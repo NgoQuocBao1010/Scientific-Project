@@ -16,11 +16,13 @@ class Profile(models.Model):
         ("driver", "driver"),
     )
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=20, null=True, blank=True)
-    role = models.CharField(max_length=20, choices=ROLES)
+    address = models.CharField(max_length=50, null=True, blank=True)
     email = models.CharField(max_length=30, null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
+    role = models.CharField(max_length=20, choices=ROLES)
+    dateCreated = models.DateTimeField(auto_now_add=True)
     profilePic = models.ImageField(default="huongtram.png", null=True, blank=True)
 
     def __str__(self):
@@ -37,9 +39,9 @@ class Driver(models.Model):
 
 class Car(models.Model):
     name = models.CharField(max_length=50)
-    driver = models.ForeignKey(Driver, null=True, on_delete=models.CASCADE)
-    licensePlate = models.CharField(max_length=10, null=True)
+    licensePlate = models.CharField(max_length=20, null=True)
     boughtDate = models.DateTimeField(auto_now_add=True, null=True)
+    company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -53,8 +55,8 @@ class RaspDevice(models.Model):
     name = models.CharField(max_length=50)
     car = models.OneToOneField(Car, null=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=50, null=True, blank=True, choices=STATUS)
-    lastActive = models.DateTimeField(null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
+    ipaddress = models.CharField(max_length=50, null=True, blank=True)
+    dateAdded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

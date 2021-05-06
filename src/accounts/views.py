@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from .models import *
+
 
 def welcome(request):
     if request.method == "POST":
@@ -23,10 +25,13 @@ def welcome(request):
 
 @login_required(login_url="/")
 def home(request):
-    context = {}
+    company = request.user.profile.company
+    cars = Car.objects.filter(company=company)
+    context = {"cars": cars}
     return render(request, "content.html", context)
 
 
+@login_required(login_url="/")
 def logoutUser(request):
     logout(request)
     return redirect("welcome")
