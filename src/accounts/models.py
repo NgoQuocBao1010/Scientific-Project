@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Company(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=200, null=True, blank=True)
+    roomCode = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return "Company " + self.name
@@ -54,7 +55,9 @@ class RaspDevice(models.Model):
     )
     name = models.CharField(max_length=50)
     car = models.OneToOneField(Car, null=True, on_delete=models.SET_NULL, blank=True)
-    status = models.CharField(max_length=50, null=True, blank=True, choices=STATUS, default="offline")
+    status = models.CharField(
+        max_length=50, null=True, blank=True, choices=STATUS, default="offline"
+    )
     ipaddress = models.CharField(max_length=50, null=True, blank=True)
     dateAdded = models.DateTimeField(auto_now_add=True)
 

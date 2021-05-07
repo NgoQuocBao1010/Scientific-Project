@@ -7,10 +7,11 @@ from datetime import datetime
 
 class RealTime(WebsocketConsumer):
     def connect(self):
-        self.group_name = "realtime"
-        ipAddress, port = self.scope["client"]
-        print(ipAddress)
-        async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
+        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.piName = self.scope["url_route"]["kwargs"]["pi"]
+
+        print(self.room_name, self.piName)
+        async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
         self.accept()
 
     def disconnect(self, close_code):
@@ -18,12 +19,14 @@ class RealTime(WebsocketConsumer):
 
     def receive(self, text_data):
         data = json.loads(text_data)
-    
+        print(data)
+        self.sendSignal(data)
+
     def sendSignal(self, message):
         async_to_sync(self.channel_layer.group_send)(
-            self.group_name, {"type": "randomFunc", "message": message}
+            self.room_name, {"type": "randomFunc", "message": message}
         )
-    
+
     def randomFunc(self, event):
         message = event["message"]
         self.send(text_data=json.dumps(message))

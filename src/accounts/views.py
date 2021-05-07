@@ -8,6 +8,9 @@ from .forms import CarForm
 
 # Welcome, Login, Register Page
 def welcome(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     if request.method == "POST":
         username = request.POST.get("login-username")
         password = request.POST.get("login-password")
@@ -32,14 +35,14 @@ def home(request):
 
     if request.method == "POST":
         carID = request.POST.get("device-id")
-        
+
         if carID:
             editedCar = Car.objects.get(id=carID)
             form = CarForm(request.POST, instance=editedCar)
             if form.is_valid():
                 form.save()
         else:
-            freeRasp  = RaspDevice.objects.get(car=None)
+            freeRasp = RaspDevice.objects.get(car=None)
             print(freeRasp)
             form = CarForm(request.POST)
 
@@ -49,9 +52,9 @@ def home(request):
                 freeRasp.car = newCar
                 newCar.save()
                 freeRasp.save()
-        
+
         return redirect("home")
-    
+
     context = {"cars": cars}
     return render(request, "content.html", context)
 

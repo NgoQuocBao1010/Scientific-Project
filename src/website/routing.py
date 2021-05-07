@@ -1,10 +1,12 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-from django.urls import path
+from django.urls import re_path
 from realtime import consumer
 
 ws_patterns = [
-    path("ws/realtime/", consumer.RealTime.as_asgi()),
+    re_path(
+        r"ws/realtime/(?P<room_name>\w+)/(?P<pi>\w+)/$", consumer.RealTime.as_asgi()
+    ),
 ]
 
 application = ProtocolTypeRouter(
