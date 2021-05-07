@@ -87,6 +87,42 @@
 
 
     <!-- Device Modal -->
+    <div class="modal fade" id="DeviceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Edit form  -->
+                <section class="form">
+                    <p class="title">THÔNG TIN THIẾT BỊ</p>
+                    <p class="messages" id="device-message"></p>
+                    <form id="DeviceForm" method="POST">
+                        {% csrf_token %}
+                        <!-- Device ID -->
+                        <div class="form-field">
+                            <input type="text" name="name" id="device-name" placeholder=" " required>
+                            <label for="device-name">
+                                <span class="input-label">Tên thiết bị <span class="required-star">*</span></span>
+                            </label>
+                        </div>
+                        <!-- License plate -->
+                        <div class="form-field">
+                            <input type="text" name="licensePlate" id="device-license-plate" placeholder=" " required>
+                            <label for="licensePlate">
+                                <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
+                            </label>
+                        </div>
+                        <!-- Sign in button  -->
+                        <div class="form-field buttons">
+                            <button id="DeviceBtn" type="submit" href="#" class="btn blue-btn long-btn">LƯU THÔNG
+                                TIN</button>
+                            <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
     {% for car in cars %}
     <div class="modal fade" id="DeviceModal{{ car.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -97,35 +133,29 @@
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                     <p class="title">THÔNG TIN THIẾT BỊ</p>
                     <p class="messages" id="device-message"></p>
-                    <form id="DeviceForm">
+                    <form id="DeviceForm" method="POST">
+                        {% csrf_token %}
                         <!-- Device ID -->
                         <div class="form-field">
-                            <input type="text" name="device-id" id="device-id" placeholder=" " required
-                            value="{{ car.name }}">
+                            <input type="text" name="device-id" id="device-id" readonly="readonly" value="{{ car.id }}">
                             <label for="device-id">
                                 <span class="input-label">Mã số thiết bị <span class="required-star">*</span></span>
                             </label>
                         </div>
+                        <!-- Device Name -->
+                        <div class="form-field">
+                            <input type="text" name="name" id="device-name" placeholder="Car Name" required
+                                value="{{ car.name }}">
+                            <label for="name">
+                                <span class="input-label">Tên Thiết Bị <span class="required-star">*</span></span>
+                            </label>
+                        </div>
                         <!-- License plate -->
                         <div class="form-field">
-                            <input type="text" name="device-license-plate" id="device-license-plate" placeholder=" "
-                                required value="{{ car.licensePlate }}">
-                            <label for="device-license-plate">
+                            <input type="text" name="licensePlate" id="device-license-plate" placeholder=" " required
+                                value="{{ car.licensePlate }}">
+                            <label for="licensePlate">
                                 <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Password -->
-                        <div class="form-field">
-                            <input type="date" name="device-date" id="device-date" placeholder=" " required default="{{ car.boughtDate }}">
-                            <label for="device-date">
-                                <span class="input-label">Ngày mua <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Confirm password -->
-                        <div class="form-field">
-                            <input type="password" name="device-confirm" id="device-confirm" placeholder=" " required>
-                            <label for="device-confirm">
-                                <span class="input-label">Xác nhận mật khẩu <span class="required-star">*</span> </span>
                             </label>
                         </div>
                         <!-- Sign in button  -->
@@ -283,13 +313,12 @@
                     </div>
                     <div class="info col-lg-9 col-7">
                         <p class="license-plate">{{ car.name }}</p>
-                        <p> <span
-                            {% if car.raspdevice.status == 'offline'%}
-                            class="deactive-circle"
+                        <p> <span 
+                            {% if car.raspdevice.status == 'offline' %} 
+                            class="deactive-circle" 
                             {% else %}
-                            class="active-circle"
-                            {% endif %}
-                            >&#11044; 
+                            class="active-circle" 
+                            {% endif %}>&#11044;
                             </span>
                             {{ car.raspdevice.status }}
                         </p>
@@ -300,9 +329,10 @@
                             aria-expanded="true">&#8942;</a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu-carxxx">
                             <a class="dropdown-item" href="#">Chi tiết</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#DeviceModal{{ car.id }}">Chỉnh
-                                sửa</a>
                             <a class="dropdown-item" href="#" data-toggle="modal"
+                                data-target="#DeviceModal{{ car.id }}">Chỉnh
+                                sửa</a>
+                            <a class="dropdown-item" href="{% url 'removeCar' car.id %}" data-toggle="modal"
                                 data-target="#ConfirmDeleteModal">Xóa</a>
                         </div>
                     </div>
@@ -375,10 +405,7 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
-
     </div>
 
     <script type="text/javascript">
@@ -398,7 +425,22 @@
 
         });
     </script>
+    <script>
+        let socketUrl = 'ws://' + window.location.host + '/ws/realtime/';
+        let socket = new WebSocket(socketUrl);
 
+        socket.onopen = function (e) {
+            alert("Connection established");
+        };
+
+        socket.onmessage = function (e) {
+
+        }
+
+        socket.onclose = function (e) {
+            alert("Connection closed");
+        };
+    </script>
 </body>
 
 </html>

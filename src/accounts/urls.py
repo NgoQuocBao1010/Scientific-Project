@@ -9,4 +9,5 @@ urlpatterns = [
         views.logoutUser,
         name="logout",
     ),
+    path('removeCar/<str:id>/', views.removeCar, name='removeCar'),
 ]

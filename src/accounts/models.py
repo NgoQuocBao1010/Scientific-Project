@@ -53,8 +53,8 @@ class RaspDevice(models.Model):
         ("offline", "offline"),
     )
     name = models.CharField(max_length=50)
-    car = models.OneToOneField(Car, null=True, on_delete=models.SET_NULL)
-    status = models.CharField(max_length=50, null=True, blank=True, choices=STATUS)
+    car = models.OneToOneField(Car, null=True, on_delete=models.SET_NULL, blank=True)
+    status = models.CharField(max_length=50, null=True, blank=True, choices=STATUS, default="offline")
     ipaddress = models.CharField(max_length=50, null=True, blank=True)
     dateAdded = models.DateTimeField(auto_now_add=True)
 
