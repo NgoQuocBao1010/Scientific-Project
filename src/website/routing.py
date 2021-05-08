@@ -5,7 +5,7 @@ from realtime import consumer
 
 ws_patterns = [
     re_path(
-        r"ws/realtime/(?P<room_name>\w+)/(?P<pi>\w+)/$", consumer.RealTime.as_asgi()
+        r"ws/realtime/(?P<roomCode>\w+)/(?P<piID>\w+)/$", consumer.RealTime.as_asgi()
     ),
 ]
 

@@ -301,7 +301,7 @@
                 </ul>
             </div>
         </nav>
-        
+        <button id="dungquantam">Test Test Test</button>
         <div class="content-container">
             <!-- Car information -->
             {% for car in cars %}
@@ -445,11 +445,10 @@
             const spanHTML = statusCircle.outerHTML;
             statusPara.innerHTML = `${spanHTML} ${text}`;
         }
-        switchStatus("85A -145", true);
+        // switchStatus("85A -145", true);
     </script>
     <script>
         const room = '{{ request.user.profile.company.roomCode }}';
-        console.log(room);
 
         let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
         let socket = new WebSocket(socketUrl);
@@ -459,20 +458,26 @@
         };
 
         socket.onmessage = function (e) {
-            console.log(JSON.parse(e.data));
+            let data = JSON.parse(e.data);
+
+            if (data["messageType"] === "status") {
+                switchStatus(data["licensePlate"], data["status"]);
+            }
         }
 
         socket.onclose = function (e) {
             alert("Connection closed");
         };
 
-        // const testBtn = document.getElementById("dungquantam");
-        // testBtn.addEventListener("click", () => {
-        //     socket.send(JSON.stringify({
-        //         "message": "Chao",
-        //         "data": "chao.data"
-        //     }));
-        // })
+        const testBtn = document.getElementById("dungquantam");
+        testBtn.addEventListener("click", () => {
+            var today = new Date();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            socket.send(JSON.stringify({
+                "message": "Chao",
+                "data": time,
+            }));
+        })
     </script>
 </body>
 
