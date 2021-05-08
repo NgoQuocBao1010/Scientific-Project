@@ -133,18 +133,18 @@
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                     <p class="title">THÔNG TIN THIẾT BỊ</p>
                     <p class="messages" id="device-message"></p>
-                    <form id="DeviceForm" method="POST">
+                    <form id="DeviceForm{{ car.id }}" method="POST">
                         {% csrf_token %}
                         <!-- Device ID -->
                         <div class="form-field">
-                            <input type="text" name="device-id" id="device-id" readonly="readonly" value="{{ car.id }}">
+                            <input type="text" name="device-id" id="device-id{{ car.id }}" readonly="readonly" value="{{ car.id }}">
                             <label for="device-id">
                                 <span class="input-label">Mã số thiết bị <span class="required-star">*</span></span>
                             </label>
                         </div>
                         <!-- Device Name -->
                         <div class="form-field">
-                            <input type="text" name="name" id="device-name" placeholder="Car Name" required
+                            <input type="text" name="name" id="device-name{{ car.id }}" placeholder="Car Name" required
                                 value="{{ car.name }}">
                             <label for="name">
                                 <span class="input-label">Tên Thiết Bị <span class="required-star">*</span></span>
@@ -152,7 +152,7 @@
                         </div>
                         <!-- License plate -->
                         <div class="form-field">
-                            <input type="text" name="licensePlate" id="device-license-plate" placeholder=" " required
+                            <input type="text" name="licensePlate" id="device-license-plate{{ car.id }}" placeholder=" " required
                                 value="{{ car.licensePlate }}">
                             <label for="licensePlate">
                                 <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
@@ -160,7 +160,7 @@
                         </div>
                         <!-- Sign in button  -->
                         <div class="form-field buttons">
-                            <button id="DeviceBtn" type="submit" href="#" class="btn light-blue-btn long-btn">LƯU THÔNG
+                            <button id="DeviceBtn{{ car.id }}" type="submit" href="#" class="btn light-blue-btn long-btn">LƯU THÔNG
                                 TIN</button>
                             <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
                         </div>
@@ -301,18 +301,18 @@
                 </ul>
             </div>
         </nav>
-        <button id="dungquantam">Test Test Test</button>
+        
         <div class="content-container">
             <!-- Car information -->
             {% for car in cars %}
-            <div class="card">
+            <div class="card" id="{{ car.licensePlate }}">
                 <!-- <h5 class="card-header">Featured</h5> -->
                 <div class="card-body row">
                     <div class="avt col-lg-2 col-3">
                         <img src="{% static '/images/web/car-image.svg' %}" alt="">
                     </div>
                     <div class="info col-lg-9 col-7">
-                        <p class="license-plate">{{ car.name }}</p>
+                        <p class="license-plate">{{ car.licensePlate }}</p>
                         <p> <span 
                             {% if car.raspdevice.status == 'offline' %} 
                             class="deactive-circle" 
@@ -321,7 +321,6 @@
                             {% endif %}>&#11044;
                             </span>
                             {{ car.raspdevice.status }}
-
                         </p>
                         <p> <img src="{% static '/images/web/alcohol-icon.svg' %}" alt=""> 0.00 BAC</p>
                     </div>
@@ -427,6 +426,28 @@
         });
     </script>
     <script>
+        const switchStatus = (licensePlate, online=true) => {
+            const displayCards = document.getElementById(licensePlate);
+            const statusPara = displayCards.querySelector("p:not(.license-plate)")
+            const statusCircle = statusPara.querySelector("span");
+
+            const text = (online) ? "online" : "offline";
+
+            if (online) {
+                statusCircle.classList.remove("deactive-circle");
+                statusCircle.classList.add("active-circle");
+            }
+            else {
+                statusCircle.classList.add("deactive-circle");
+                statusCircle.classList.remove("active-circle");
+            }
+            
+            const spanHTML = statusCircle.outerHTML;
+            statusPara.innerHTML = `${spanHTML} ${text}`;
+        }
+        switchStatus("85A -145", true);
+    </script>
+    <script>
         const room = '{{ request.user.profile.company.roomCode }}';
         console.log(room);
 
@@ -445,13 +466,13 @@
             alert("Connection closed");
         };
 
-        const testBtn = document.getElementById("dungquantam");
-        testBtn.addEventListener("click", () => {
-            socket.send(JSON.stringify({
-                "message": "Chao",
-                "data": "chao.data"
-            }));
-        })
+        // const testBtn = document.getElementById("dungquantam");
+        // testBtn.addEventListener("click", () => {
+        //     socket.send(JSON.stringify({
+        //         "message": "Chao",
+        //         "data": "chao.data"
+        //     }));
+        // })
     </script>
 </body>
 

@@ -15,7 +15,10 @@ class RealTime(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
-        pass
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_name,
+            self.channel_name
+        )
 
     def receive(self, text_data):
         data = json.loads(text_data)
