@@ -265,27 +265,9 @@
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true"
                             aria-expanded="true">
                             <img src="{% static '/images/web/noti-vector.svg' %}" alt="Thông báo">
+                            <span id="noti-count"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item noti-uncheck" href="#">
-                                <p class="noti-title">Cảnh báo: Xe ô tô A</p>
-                                <p class="noti-time">13:23 6/4/21 <span class="danger-circle">&#11044;</span> </p>
-                            </a>
-
-                            <a class="dropdown-item" href="#">
-                                <p class="noti-title">Xe ô tô B bắt đầu hoạt động</p>
-                                <p class="noti-time">14:20 6/4/21 <span class="active-circle">&#11044;</span> </p>
-                            </a>
-
-                            <a class="dropdown-item" href="#">
-                                <p class="noti-title">Xe ô tô C tạm dừng hoạt động</p>
-                                <p class="noti-time">14:29 6/4/21 <span class="deactive-circle">&#11044;</span> </p>
-                            </a>
-
-                            <a class="dropdown-item noti-uncheck" href="#">
-                                <p class="noti-title">Cảnh báo: Xe ô tô D</p>
-                                <p class="noti-time">14:57 6/4/21 <span class="warning-circle">&#11044;</span> </p>
-                            </a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -426,6 +408,7 @@
         });
     </script>
     <script>
+        let notiCount = 0;
         const switchStatus = (licensePlate, online=true) => {
             const displayCards = document.getElementById(licensePlate);
             const statusPara = displayCards.querySelector("p:not(.license-plate)")
@@ -446,6 +429,31 @@
             statusPara.innerHTML = `${spanHTML} ${text}`;
         }
         // switchStatus("85A -145", true);
+
+        const notify = () => {
+            const notiCountFrontEnd = document.getElementById("noti-count");
+            notiCount++;
+            notiCountFrontEnd.innerText = notiCount;
+        }
+
+        const notifyDetail = (alertType, licensePlate, time) => {
+            const notiTitle = document.createElement("p");
+            notiTitle.classList.add("noti-title");
+            notiTitle.innerText = `${alertType}: ${licensePlate}`;
+
+            const notiTime = document.createElement("p");
+            notiTime.classList.add("noti-time");
+            notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
+
+            const link = document.createElement("a");
+            link.classList.add("dropdown-item");
+            link.classList.add("dropdown-menu-right");
+            link.appendChild(notiTitle);
+            link.appendChild(notiTime);
+
+            const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
+            notiLinks.appendChild(link);
+        }
     </script>
     <script>
         const room = '{{ request.user.profile.company.roomCode }}';
@@ -462,6 +470,11 @@
 
             if (data["messageType"] === "status") {
                 switchStatus(data["licensePlate"], data["status"]);
+            }
+            else if (data["messageType"] === "notification") {
+                notify();
+                const { alertType, licensePlate, time } = data;
+                notifyDetail(alertType, licensePlate, time);
             }
         }
 

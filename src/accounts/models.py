@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 
 
 class Company(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["name"], name="name"),
+            models.UniqueConstraint(fields=["roomCode"], name="roomCode"),
+        ]
+
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=200, null=True, blank=True)
     roomCode = models.CharField(max_length=10, null=True, blank=True)
@@ -31,6 +37,11 @@ class Profile(models.Model):
 
 
 class Driver(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["licenseDriver"], name="licenseDriver"),
+        ]
+
     profile = models.OneToOneField(Profile, null=True, on_delete=models.CASCADE)
     licenseDriver = models.CharField(max_length=10, null=True, blank=True)
 
@@ -39,6 +50,11 @@ class Driver(models.Model):
 
 
 class Car(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["licensePlate"], name="licensePlate"),
+        ]
+
     name = models.CharField(max_length=50)
     licensePlate = models.CharField(max_length=20, null=True)
     boughtDate = models.DateTimeField(auto_now_add=True, null=True)

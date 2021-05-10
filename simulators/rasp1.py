@@ -32,7 +32,17 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        pass
+        while True:
+            time.sleep(5)
+            ws.send(
+                json.dumps(
+                    {
+                        "command": "alert",
+                        "name": random.choice(["Yawning", "Drowsiness"]),
+                        "time": str(datetime.now()),
+                    }
+                )
+            )
 
     thread.start_new_thread(run, ())
 

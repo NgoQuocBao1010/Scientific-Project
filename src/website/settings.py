@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "channels",
     # Web applications
     "accounts.apps.AccountsConfig",
+    "realtime.apps.RealtimeConfig",
 ]
 
 MIDDLEWARE = [
