@@ -33,7 +33,7 @@ def on_close(ws):
 def on_open(ws):
     def run(*args):
         while True:
-            time.sleep(5)
+            time.sleep(10)
             ws.send(
                 json.dumps(
                     {

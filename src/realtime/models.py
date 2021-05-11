@@ -26,6 +26,7 @@ class Alert(models.Model):
     drive = models.ForeignKey(Drive, null=True, on_delete=models.CASCADE)
     detect = models.CharField(max_length=50, choices=DECTECT_TYPE)
     timeOccured = models.DateTimeField(null=True)
+    isRead = models.BooleanField(null=True, blank=True, default=False)
 
     def __str__(self):
         return f"Drowsiness detection with drive {self.drive.id}"
