@@ -265,3 +265,9 @@ body {
 .container-fluid {
   width: 100%;
 }
+
+
+/* Hide component */
+.hide {
+  display: none !important;
+}

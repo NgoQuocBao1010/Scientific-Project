@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from accounts.models import RaspDevice
+from .models import Drive
 
 
 def detail(request, id):
@@ -14,3 +15,11 @@ def detail(request, id):
 
     context = {"pi": pi, "alerts": alerts}
     return render(request, "detail.html", context)
+
+
+# def detail(request, id):
+#     drive = Drive.objects.get(id=id)
+#     alerts = len(drive.alert_set.all())
+
+#     context = {"drive": drive, "alerts": alerts}
+#     return render(request, "detail.html", context)

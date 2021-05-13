@@ -321,7 +321,11 @@
                 </div>
 
                 <!-- Pictures Section -->
-                <div class="clip-section d-flex flex-column justify-content-center">
+                <div class="clip-section d-flex flex-column justify-content-center
+                {% if pi.status == 'offline' %}
+                 hide
+                {% endif %}
+                ">
                     <p class="component-title">Cảnh báo: </p>
                     <div class="embeded-clip-wrapper d-flex flex-column">
                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -361,6 +365,7 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
