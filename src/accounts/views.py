@@ -34,7 +34,10 @@ def home(request):
     company = request.user.profile.company
     cars = Car.objects.filter(company=company)
     lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')[:5]
-    print(lastestAlerts)
+    
+    unreadCounts = 0
+    for alert in lastestAlerts:
+        unreadCounts = (unreadCounts + 1) if not alert.isRead else unreadCounts
 
     # Handle add more cars
     if request.method == "POST":
@@ -59,7 +62,7 @@ def home(request):
 
         return redirect("home")
 
-    context = {"cars": cars, "notifications": lastestAlerts}
+    context = {"cars": cars, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "content.html", context)
 
 

@@ -1,5 +1,6 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.urls import reverse
 
 from accounts.models import RaspDevice
 from .models import *
@@ -39,6 +40,8 @@ class RealTime(WebsocketConsumer):
         drive = self.pi.drive_set.all().get(status="ongoing")
         carLiscense = self.pi.car.licensePlate
 
+        driveUrl = reverse("driveDetail", kwargs={'id': drive.id})
+
         try:
             Alert.objects.create(drive=drive, detect=alertType, timeOccured=timeOccured)
             print(f"Deteced {alertType} and saved!!")
@@ -51,6 +54,7 @@ class RealTime(WebsocketConsumer):
                 "alertType": alertType,
                 "licensePlate": carLiscense,
                 "time": timeOccured,
+                "driveUrl": driveUrl,
             }
         )
 
@@ -76,7 +80,7 @@ class RealTime(WebsocketConsumer):
     def disconnect(self, close_code):
         if self.pi:
             self.updatePiConnection(online=False)
-            print(self.pi, "is disconnected\n\n\n")
+            print(self.pi, "is disconnected\n")
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_name, self.channel_name
