@@ -1,0 +1,273 @@
+@import url('//fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
+@import url('//fonts.googleapis.com/css?family=Questrial');
+@import url('https://fonts.googleapis.com/css2?family=Raleway&family=Roboto:wght@100&display=swap');
+
+:root {
+  --bg-color: #FAF7F5;
+  --navy: #004680;
+  --dark-navy: #002A4D;
+  --black-pearl: #001E37;
+  --yellow: #FF9800;
+  --selective-yellow: #FFB800;
+  --amber: #FFBE0F;
+  --vivid-orange: #EB5E0B;
+  --green: #7BD96C;
+  --red: #F15E5E;
+  --cyan-blue: #649DCC;
+  --font1: 'Montserrat', sans-serif;
+  --font2: 'Questrial', sans-serif;
+  --font3: 'Raleway', sans-serif;
+  --video-ratio: calc(16 / 9);
+  /* --video-container-max-width: 640px; */
+  /* --video-container-x-padding-sum: 2rem; */
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  outline: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  font-family: var(--font2);
+  font-size: 1.1rem;
+  color: var(--navy);
+  min-height: 100vh;
+}
+
+.full-height-grow {
+  display: flex;
+  flex-direction: column;
+}
+
+.inline {
+  display: flex;
+  flex-direction: row;
+}
+
+.top-nav {
+  padding: 0 2rem 0 2rem;
+  margin: 0;
+}
+
+.top-nav .logo {
+  padding: 1rem;
+}
+
+.top-nav ul {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.top-nav .nav-item > a {
+  color: inherit;
+  font-family: var(--font1);
+  font-weight: 500;
+  font-size: 1.1rem;
+  text-decoration: none;
+  padding: 1.0rem;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.top-nav .nav-item>a:hover {
+  text-decoration: underline!important;
+}
+
+.top-nav .nav-item img {
+  margin: 0 0.5rem;
+}
+
+.container {
+  max-width: 100vw!important;
+  margin: 0 auto;
+  padding: 0!important;
+  flex-grow: 1;
+}
+
+/* BUTTON */
+.btn {
+  color: inherit;
+  padding: 1rem 1.5rem;
+  border-radius: 2rem;
+  text-decoration: none;
+  font-family: var(--font1);
+  font-weight: 500;
+  border-width: 0;
+  text-align: center;
+  transition: 0.5s;
+}
+
+.btn:hover {
+  color: inherit;
+  letter-spacing: 5px;
+  font-weight: bold;
+}
+
+.short-btn {
+  margin: auto;
+}
+
+.long-btn {
+  width: 80%;
+}
+
+.blue-btn {
+  /* background-color: var(--navy); */
+  color: var(--bg-color);
+  background-image: linear-gradient(to right top, var(--dark-navy), var(--navy));
+}
+
+.blue-btn:hover {
+  color: var(--bg-color);
+  background-image: linear-gradient(to right top, var(--black-pearl), var(--navy));
+}
+
+.yellow-btn {
+  color: var(--bg-color);
+  /* background-color: var(--yellow); */
+  background-image: linear-gradient(to right top, var(--yellow), var(--amber));
+}
+
+.yellow-btn:hover {
+  color: var(--bg-color);
+  background-image: linear-gradient(to right top, var(--vivid-orange), var(--amber));
+}
+
+.small-btn {
+  /* font-size: 1rem; */
+}
+
+.large-btn {
+  font-size: 1.25rem;
+}
+
+.required-star {
+  color: #F15E5E;
+}
+
+/* MODALS */
+.modal {
+  color: var(--dark-navy);
+}
+
+.modal .modal-content {
+  padding: 1rem;
+  background-color: var(--bg-color);
+}
+
+.modal .modal-content .form {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0;
+}
+
+.modal .modal-content .top {
+  display: flex;
+  align-self: center;
+}
+
+.modal .modal-content .top img {
+  margin-top: 0.5rem;
+}
+
+.modal .modal-content .title {
+  font-size: 1.25rem;
+  font-family: var(--font1);
+  font-weight: 500;
+  align-self: center;
+  margin: 0;
+}
+
+.modal .modal-content .subtitle {
+  align-self: center;
+  text-align: center;
+  width: 80%;
+}
+
+.modal .modal-content .form .messages {
+  color: var(--red);
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  align-self: center;
+}
+
+.modal .modal-content .form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  width: 100%;
+  align-items: center;
+}
+
+.modal .modal-content .buttons {
+  width: 100%;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal .modal-content .top {
+  margin-bottom: 1rem;
+}
+
+.form-field:first-child {
+  margin: 0;
+}
+
+.form-field input[type=text], input[type=password], input[type=email] {
+  width: 80%;
+  height: 100%;
+  padding-top: 15px;
+  border: none;
+  border-bottom: 1px solid var(--navy);
+  margin: 0;
+  margin-bottom: 0.3rem;
+  background-color: var(--bg-color);
+  color: var(--navy);
+}
+
+.form-field label {
+  position: absolute;
+  font-size: 1rem;
+  width: 70%;
+  height: auto;
+  pointer-events: none;
+  margin: 0;
+  left: 13%;
+}
+
+.input-label {
+  position: absolute;
+  top: 10px;
+  transition: all 0.4s ease;
+}
+
+.modal .modal-content .form-field input:focus + label .input-label,
+.modal .modal-content .form-field input:not(:placeholder-shown) + label .input-label {
+  transform: translateY(-110%);
+  font-size: 0.8rem;
+}
+
+.remember-forget {
+  display: flex;
+  flex-direction: row!important;
+  justify-content: space-between;
+  font-size: 1rem;
+  width: 80%!important;
+  align-self: center;
+}
+
+.container-fluid {
+  width: 100%;
+}
+
+
+/* Hide component */
+.hide {
+  display: none !important;
+}
