@@ -1,3 +1,4 @@
+from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.urls import reverse
@@ -5,9 +6,9 @@ from django.urls import reverse
 from accounts.models import RaspDevice
 from .models import *
 
+
 import json
 from datetime import datetime
-
 
 class RealTime(WebsocketConsumer):
     # Update when Raspberry Pi is connected and disconnected
@@ -58,8 +59,21 @@ class RealTime(WebsocketConsumer):
             }
         )
 
+    def getVideo(self, data):
+        self.sendSignal(
+            data
+        )
+    
+    def sendImgToBrowser(self, data):
+        self.sendSignal(
+            data
+        )
+
+
     commands = {
         "alert": alertDetected,
+        "getVideo": getVideo,
+        "sendImgToBrowser": sendImgToBrowser,
     }
 
     # ------------------- Websocket Method -------------------#
