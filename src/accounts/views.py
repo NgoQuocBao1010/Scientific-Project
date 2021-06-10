@@ -49,7 +49,7 @@ def home(request):
             if form.is_valid():
                 form.save()
         else:
-            freeRasp = RaspDevice.objects.get(car=None)
+            freeRasp = RaspDevice.objects.filter(car=None)[0]
             print(freeRasp)
             form = CarForm(request.POST)
 
@@ -70,6 +70,18 @@ def home(request):
 def logoutUser(request):
     logout(request)
     return redirect("welcome")
+
+
+@login_required(login_url="/")
+def driver(request):
+    company = request.user.profile.company
+    profiles = Profile.objects.filter(company=company).filter(role="driver")
+    
+    context = {'profiles': profiles}
+    return render(request, "driver.html", context)
+
+
+
 
 
 # Remove Cars

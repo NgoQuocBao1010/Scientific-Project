@@ -1,0 +1,344 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Driver</title>
+
+    <!-- Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <!-- Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <!-- Bootstrap JS-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Fontawesome -->
+    <script src="https://kit.fontawesome.com/8d1d703781.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static '/css/main.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static '/css/content.css' %}" type="text/css">
+</head>
+
+<body class="wrapper">
+    <!-- Register Modals | Account Modals -->
+    <div class="modal fade" id="AccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Register form  -->
+                <section class="form">
+                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                    <p class="title">THÔNG TIN TÀI KHOẢN</p>
+                    <p class="messages" id="register-message"></p>
+                    <form id="RegisterForm">
+                        <!-- Full name -->
+                        <div class="form-field">
+                            <input type="text" name="register-fname" id="register-fname" placeholder=" " required
+                                value="{{ request.user.username }}">
+                            <label for="register-fname">
+                                <span class="input-label">Họ tên <span class="required-star">*</span></span>
+                            </label>
+                        </div>
+                        <!-- Register email -->
+                        <div class="form-field">
+                            <input type="email" name="register-email" id="registers-email" placeholder=" " required
+                                value="{{ request.user.email }}">
+                            <label for=" register-email">
+                                <span class="input-label">Email <span class="required-star">*</span></span>
+                            </label>
+                        </div>
+                        <!-- Password -->
+                        <div class="form-field">
+                            <input type="password" name="register-password" id="register-password" placeholder=" "
+                                required>
+                            <label for="register-password">
+                                <span class="input-label">Mật khẩu <span class="required-star">*</span></span>
+                            </label>
+                        </div>
+                        <!-- Confirm password -->
+                        <div class="form-field">
+                            <input type="password" name="register-confirm" id="register-confirm" placeholder=" "
+                                required>
+                            <label for="register-confirm">
+                                <span class="input-label">Xác nhận mật khẩu <span class="required-star">*</span> </span>
+                            </label>
+                        </div>
+                        <!-- Sign in button  -->
+                        <div class="form-field buttons">
+                            <button id="RegisterBtn" type="submit" href="#" class="btn light-blue-btn long-btn">LƯU
+                                THÔNG TIN</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Device Modal -->
+    <div class="modal fade" id="DeviceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Edit form  -->
+                <section class="form">
+                    <p class="title">THÔNG TIN THIẾT BỊ</p>
+                    <p class="messages" id="device-message"></p>
+                    <form id="DeviceForm" method="POST">
+                        {% csrf_token %}
+                        <!-- Device ID -->
+                        <div class="form-field">
+                            <input type="text" name="name" id="device-name" placeholder=" " required>
+                            <label for="device-name">
+                                <span class="input-label">Tên thiết bị <span class="required-star">*</span></span>
+                            </label>
+                        </div>
+                        <!-- License plate -->
+                        <div class="form-field">
+                            <input type="text" name="licensePlate" id="device-license-plate" placeholder=" " required>
+                            <label for="licensePlate">
+                                <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
+                            </label>
+                        </div>
+                        <!-- Sign in button  -->
+                        <div class="form-field buttons">
+                            <button id="DeviceBtn" type="submit" href="#" class="btn blue-btn long-btn">LƯU THÔNG
+                                TIN</button>
+                            <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Search Modal -->
+    <div class="modal fade top" id="SearchModal" tabindex="-1" role="dialog" aria-labelledby="SearchModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-frame modal-top" role="">
+            <div class="modal-content">
+                <form class="search-bar align-middle d-flex justify-content-center" action="index.html" method="post">
+                    <input class="search-input" type="text" name="search-key" value="" placeholder="Nhập từ khóa...">
+                    <input class="btn search-btn" type="submit" name="search-btn light-blue-btn" value="TÌM">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="wrapper"> -->
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-header">
+                <img src="{% static '/images/web/branch-yellow.svg' %}">
+            </div>
+            <ul class="list-unstyled components">
+                <h4>Quản lý thiết bị</h4>
+                <li class="active">
+                    <a href="#" data-toggle="modal" data-target="#DeviceModal">Thêm thiết bị</a>
+                </li>
+            </ul>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="#">Trợ giúp</a>
+                </li>
+                <li>
+                    <a href="#">Liên hệ</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content">
+        <nav class="navbar navbar-expand top-nav sticky-top d-flex">
+            <!-- Top-nav components -->
+            <div class="mr-auto">
+                <button type="button" id="sidebarCollapse" class="btn-menu justify-content-start">
+                    <img src="{% static '/images/web/btn-menu.svg' %}" width="50">
+                </button>
+            </div>
+
+            <div class=" justify-content-end">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="modal" data-target="#SearchModal" href="#">
+                            <img src="{% static '/images/web/search-vector.svg' %}" alt="Tìm kiếm">
+                        </a>
+                    </li>
+                    <!-- Notifications -->
+                    <li class="nav-item dropdown" id="dropdown-notification">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true"
+                            aria-expanded="true">
+                            <img src="{% static '/images/web/noti-vector.svg' %}" alt="Thông báo">
+                            <span id="noti-count">{{ unreadNotis }}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            {% for noti in notifications %}
+                            <a class="dropdown-item 
+                                {% if not noti.isRead %}
+                                noti-uncheck
+                                {% endif %}
+                            " href="{% url 'driveDetail' noti.drive.id  %}">
+                                <p class="noti-title">{{ noti.detect }}: {{ noti.drive.device.car.licensePlate }}</p>
+                                <p class="noti-time">{{ noti.timeOccured }} <span class="danger-circle">&#11044;</span>
+                                </p>
+                            </a>
+                            {% endfor %}
+                            <a class="dropdown-item noti-more" href="#">
+                                See more
+                            </a>
+                        </div>
+                    </li>
+                    <!-- Logout -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                            <img src="{% static '/images/web/setting-vector.svg' %}" alt="Cài đặt">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#AccountModal">Tài
+                                khoản</a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Đăng xuất</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="content-container">
+            {% for drive in drs %}
+            <div style="background: lightblue; margin-bottom: 50px;" class="driver-container">
+                <br>
+                <h3>Canh cao: </h3>
+                <h3>Loai canh cao: {{ drive.detect }}</h3>
+                <h3>TG xay ra: {{ drive.timeOccured }}</h3>
+                <br>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var clipwidth = $('.embeded-clip').width();
+            $('.embeded-clip').height(clipwidth / 1.77);
+            // $('.clip-btn').width(clipwidth / 2);
+            // console.log($('.clip-btn').width() + ' ' + $('.embeded-clip').width());
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+
+        });
+    </script>
+    <script>
+        let notiCount = {{ unreadNotis }};
+
+        // Switch status of cars in page
+        const switchStatus = (licensePlate, online = true) => {
+            const displayCards = document.getElementById(licensePlate);
+            const statusPara = displayCards.querySelector("p:not(.license-plate)")
+            const statusCircle = statusPara.querySelector("span");
+
+            const text = (online) ? "online" : "offline";
+
+            if (online) {
+                statusCircle.classList.remove("deactive-circle");
+                statusCircle.classList.add("active-circle");
+            }
+            else {
+                statusCircle.classList.add("deactive-circle");
+                statusCircle.classList.remove("active-circle");
+            }
+
+            const spanHTML = statusCircle.outerHTML;
+            statusPara.innerHTML = `${spanHTML} ${text}`;
+        }
+
+        // Notify
+        const notify = () => {
+            const notiCountFrontEnd = document.getElementById("noti-count");
+            notiCount++;
+            notiCountFrontEnd.innerText = notiCount;
+        }
+
+        // Add notification to the dropdown 
+        const notifyDetail = (alertType, licensePlate, time, driveUrl) => {
+            // Dropdown container
+            const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
+
+            const notiTitle = document.createElement("p");
+            notiTitle.classList.add("noti-title");
+            notiTitle.innerText = `${alertType}: ${licensePlate}`;
+
+            const notiTime = document.createElement("p");
+            notiTime.classList.add("noti-time");
+            notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
+
+            const link = document.createElement("a");
+            link.href = `${driveUrl}`;
+            link.classList.add("dropdown-item");
+            link.classList.add("dropdown-menu-right");
+            link.classList.add("noti-uncheck");
+            link.appendChild(notiTitle);
+            link.appendChild(notiTime);
+
+            const preLinks = notiLinks.querySelectorAll("a:not(.noti-more)");
+
+            if (preLinks.length >= 5) {
+                const lastNotiIndex = preLinks.length - 1;
+                notiLinks.removeChild(preLinks[lastNotiIndex]);
+            }
+            notiLinks.prepend(link);
+        }
+    </script>
+    <script>
+        const room = '{{ request.user.profile.company.roomCode }}';
+
+        let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
+        let socket = new WebSocket(socketUrl);
+
+        socket.onopen = function (e) {
+            alert("Connection established");
+        };
+
+        socket.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+
+            // switching status whenever any car is online or offline
+            if (data["messageType"] === "status") {
+                switchStatus(data["licensePlate"], data["status"]);
+            }
+
+            // Notify when there are warnings
+            else if (data["messageType"] === "notification") {
+                notify();
+                const { alertType, licensePlate, time, driveUrl } = data;
+                notifyDetail(alertType, licensePlate, time, driveUrl);
+            }
+        }
+
+        socket.onclose = function (e) {
+            alert("Connection closed");
+        };
+    </script>
+</body>
+
+</html>

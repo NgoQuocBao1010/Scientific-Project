@@ -23,6 +23,7 @@ class Alert(models.Model):
         ("Drowsiness", "Drowsiness"),
         ("MissingFace", "MissingFace"),
     )
+    
     drive = models.ForeignKey(Drive, null=True, on_delete=models.CASCADE)
     detect = models.CharField(max_length=50, choices=DECTECT_TYPE)
     timeOccured = models.DateTimeField(null=True)

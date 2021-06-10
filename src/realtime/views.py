@@ -4,6 +4,21 @@ from accounts.models import RaspDevice
 from .models import Drive, Alert
 
 
+def drives(request):
+    company = request.user.profile.company
+    drs = Drive.objects.filter(device__car__company=company).order_by('-endTime')
+    
+    context = {'drs': drs}
+    return render(request, "drives.html", context)
+
+
+def alerts(request):
+    company = request.user.profile.company
+    lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')
+    
+    context = {'drs': lastestAlerts}
+    return render(request, "alerts.html", context)
+
 def detail(request, id):
     pi = RaspDevice.objects.get(id=id)
 
