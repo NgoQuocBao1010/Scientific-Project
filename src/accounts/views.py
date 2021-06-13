@@ -19,6 +19,7 @@ def welcome(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            print("Yes")
             login(request, user)
             return redirect("home")
         else:
@@ -28,16 +29,22 @@ def welcome(request):
     return render(request, "welcome.html", context)
 
 
-# Home page
-@login_required(login_url="/")
-def home(request):
-    company = request.user.profile.company
-    cars = Car.objects.filter(company=company)
+def getNotifications(company):
     lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')[:5]
     
     unreadCounts = 0
     for alert in lastestAlerts:
         unreadCounts = (unreadCounts + 1) if not alert.isRead else unreadCounts
+    
+    return lastestAlerts, unreadCounts
+
+# Home page
+@login_required(login_url="/")
+def home(request):
+    company = request.user.profile.company
+    cars = Car.objects.filter(company=company)
+    
+    lastestAlerts, unreadCounts = getNotifications(company)
 
     # Handle add more cars
     if request.method == "POST":
@@ -50,7 +57,6 @@ def home(request):
                 form.save()
         else:
             freeRasp = RaspDevice.objects.filter(car=None)[0]
-            print(freeRasp)
             form = CarForm(request.POST)
 
             if form.is_valid():
@@ -76,8 +82,10 @@ def logoutUser(request):
 def driver(request):
     company = request.user.profile.company
     profiles = Profile.objects.filter(company=company).filter(role="driver")
+
+    lastestAlerts, unreadCounts = getNotifications(company)
     
-    context = {'profiles': profiles}
+    context = {'profiles': profiles, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "driver.html", context)
 
 

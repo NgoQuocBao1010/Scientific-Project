@@ -1,10 +1,4 @@
-* Trang moi
-- Trang tai xe
-- Cac hanh trinh
-- Cac canh cao (see more)
-
-* Chuc nang moi
-- seach
-- them tai xe cho hanh trinh moi
-- Them att
-- Bo chuc nang dky
+Home -> xe -> chi tiet -> hanh trinh, xoa
+noti them start, end
+bao dong -> chi tiet chuyen xe
+chuyenxe -> realtime -> chi tiet chuyen xe

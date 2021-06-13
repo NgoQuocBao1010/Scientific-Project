@@ -30,7 +30,6 @@ def on_message(ws, message):
         im_bytes = im_file.getvalue()
 
         try:
-            # with open(resized_image, "rb") as f:
             f_data = base64.b64encode(im_bytes).decode("utf-8")
             ws.send(
                 json.dumps(

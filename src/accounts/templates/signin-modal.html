@@ -1,0 +1,44 @@
+<div class="modal fade" id="SignInModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Sign in form  -->
+            <section class="form">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <p class="title">ĐĂNG NHẬP</p>
+                {% for message in messages %}
+                <div class="messages" id="signin-message">{{ message }}</div>
+                {% endfor %}
+                <form id="SignInForm" method="POST">
+                    {% csrf_token %}
+                    <!-- User name -->
+                    <div class="form-field">
+                        <input type="text" name="login-username" id="login-email" placeholder=" " required>
+                        <label for="login-username">
+                            <span class="input-label">Tai khoan <span class="required-star">*</span></span>
+                        </label>
+                    </div>
+                    <!-- Password -->
+                    <div class="form-field">
+                        <input type="password" name="login-password" id="login-password" placeholder=" " required>
+                        <label for="login-password">
+                            <span class="input-label">Mật khẩu <span class="required-star">*</span></span>
+                        </label>
+                    </div>
+                    <!-- Remember -->
+                    <div class="form-field">
+                        <div class="row remember-forget">
+                            <div><input id="remember" type="checkbox" name="remember"> Ghi nhớ</div>
+                            <a href="#">Quên mật khẩu?</a>
+                        </div>
+                    </div>
+                    <!-- Sign in button  -->
+                    <div class="form-field buttons">
+                        <button id="SignInBtn" type="submit" href="#" class="btn blue-btn long-btn">ĐĂNG
+                            NHẬP</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>

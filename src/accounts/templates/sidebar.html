@@ -1,0 +1,32 @@
+{% load static %}
+<!-- <div class="wrapper"> -->
+<!-- Sidebar -->
+<nav id="sidebar">
+    <div class="sidebar-content">
+        <div class="sidebar-header">
+            <a href="{% url 'home' %}"><img src="{% static '/images/web/branch-yellow.svg' %}"></a>
+        </div>
+        <ul class="list-unstyled components">
+            <li class="active">
+                <a href="#" data-toggle="modal" data-target="#DeviceModal">Thêm thiết bị</a>
+            </li>
+            <li class="active">
+                <a href="{% url 'driver' %}">Quản lý tài xế</a>
+            </li>
+            <li class="active">
+                <a href="{% url 'alerts' %}">Xem các báo động</a>
+            </li>
+            <li class="active">
+                <a href="{% url 'drives' %}">Xem các chuyến xe</a>
+            </li>
+        </ul>
+        <ul class="list-unstyled">
+            <li>
+                <a href="#">Trợ giúp</a>
+            </li>
+            <li>
+                <a href="#">Liên hệ</a>
+            </li>
+        </ul>
+    </div>
+</nav>

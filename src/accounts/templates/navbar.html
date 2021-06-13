@@ -1,0 +1,53 @@
+{% load static %}
+<nav class="navbar navbar-expand top-nav sticky-top d-flex">
+    <!-- Top-nav components -->
+    <div class="mr-auto">
+        <button type="button" id="sidebarCollapse" class="btn-menu justify-content-start">
+            <img src="{% static '/images/web/btn-menu.svg' %}" width="50">
+        </button>
+    </div>
+
+    <div class=" justify-content-end">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="modal" data-target="#SearchModal" href="#">
+                    <img src="{% static '/images/web/search-vector.svg' %}" alt="Tìm kiếm">
+                </a>
+            </li>
+            <!-- Notifications -->
+            <li class="nav-item dropdown" id="dropdown-notification">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true"
+                    aria-expanded="true">
+                    <img src="{% static '/images/web/noti-vector.svg' %}" alt="Thông báo">
+                    <span id="noti-count">{{ unreadNotis }}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    {% for noti in notifications %}
+                    <a class="dropdown-item 
+                        {% if not noti.isRead %}
+                        noti-uncheck
+                        {% endif %}
+                    " href="{% url 'driveDetail' noti.drive.id  %}">
+                        <p class="noti-title">{{ noti.detect }}: {{ noti.drive.device.car.licensePlate }}</p>
+                        <p class="noti-time">{{ noti.timeOccured }} <span class="danger-circle">&#11044;</span> </p>
+                    </a>
+                    {% endfor %}
+                    <a class="dropdown-item noti-more" href="#">
+                        See more
+                    </a>
+                </div>
+            </li>
+            <!-- Logout -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                    <img src="{% static '/images/web/setting-vector.svg' %}" alt="Cài đặt">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#AccountModal">Tài
+                        khoản</a>
+                    <a class="dropdown-item" href="{% url 'logout' %}">Đăng xuất</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

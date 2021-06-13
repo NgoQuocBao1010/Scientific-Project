@@ -1,24 +1,28 @@
 from django.shortcuts import render
 
 from accounts.models import RaspDevice
+from accounts.views import getNotifications
 from .models import Drive, Alert
 
-
+# Drives management page
 def drives(request):
     company = request.user.profile.company
     drs = Drive.objects.filter(device__car__company=company).order_by('-endTime')
     
-    context = {'drs': drs}
+    lastestAlerts, unreadCounts = getNotifications(company)
+
+    context = {'drs': drs, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "drives.html", context)
 
-
+# Alerts management page
 def alerts(request):
     company = request.user.profile.company
-    lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')
+    lastestAlerts, unreadCounts = getNotifications(company)
     
-    context = {'drs': lastestAlerts}
+    context = {'drs': lastestAlerts, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "alerts.html", context)
 
+# Detail of a drive
 def detail(request, id):
     pi = RaspDevice.objects.get(id=id)
 
