@@ -78,7 +78,7 @@
             <a href="#" type="button" id="dropdownMenu-carxxx" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="true">&#8942;</a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu-carxxx">
-                <a class="dropdown-item" href="#">Chi tiết</a>
+                <a class="dropdown-item" href="{% url 'carDrives' car.id %}">Chi tiết</a>
                 <a class="dropdown-item" href="#" data-toggle="modal"
                     data-target="#DeviceModal{{ car.id }}">Chỉnh
                     sửa</a>

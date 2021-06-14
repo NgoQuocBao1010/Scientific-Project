@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from accounts.models import RaspDevice
+from accounts.models import RaspDevice, Car
 from accounts.views import getNotifications
 from .models import Drive, Alert
 
@@ -22,19 +22,6 @@ def alerts(request):
     context = {'drs': lastestAlerts, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "alerts.html", context)
 
-# Detail of a drive
-def detail(request, id):
-    pi = RaspDevice.objects.get(id=id)
-
-    if pi.status == "offline":
-        alerts = 0
-    else:
-        ongoingDrive = pi.drive_set.all().get(status="ongoing")
-        alerts = len(ongoingDrive.alert_set.all())
-
-    context = {"pi": pi, "alerts": alerts}
-    return render(request, "detail.html", context)
-
 
 def driveDetail(request, id):
     drive = Drive.objects.get(id=id)
@@ -55,3 +42,13 @@ def driveDetail(request, id):
 
     context = {"drive": drive, "alerts": alerts, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "driveDetail.html", context)
+
+
+def carDrives(request, id):
+    company = request.user.profile.company
+    car = Car.objects.get(id=id)
+    drives = Drive.objects.filter(device__car=car).order_by('-startTime')
+
+    lastestAlerts, unreadCounts = getNotifications(company)
+    context = {'drs': drives, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
+    return render(request, "car.html", context)

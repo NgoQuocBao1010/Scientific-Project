@@ -4,7 +4,7 @@
 {% for drive in drs %}
 <div style="background: lightblue; margin-bottom: 50px;" class="driver-container">
     <br>
-    <h3>Canh cao: </h3>
+    <h3>Canh cao {{ drive.drive.device.car.licensePlate }}: </h3>
     <h3>Loai canh cao: {{ drive.detect }}</h3>
     <h3>TG xay ra: {{ drive.timeOccured }}</h3>
     <br>

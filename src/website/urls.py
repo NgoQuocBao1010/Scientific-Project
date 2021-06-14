@@ -10,6 +10,7 @@ urlpatterns = [
     path("", include("accounts.urls")),
     path("drive/", include("realtime.urls")),
     path("alerts/", views.alerts, name="alerts"),
+    path("car/<str:id>/", views.carDrives, name="carDrives"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

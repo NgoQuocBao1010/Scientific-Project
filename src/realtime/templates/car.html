@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% for drive in drs %}
+<div   
+    style="
+        {% if drive.endTime %}
+        background: lightblue; 
+        {% else%}
+        background: lightgreen; 
+        {% endif %}
+
+        margin-bottom: 50px;"
+    
+    class="driver-container"
+
+    {% if drive.endTime %}
+    online="0" 
+    {% else%}
+    online="1" 
+    {% endif %}
+>
+    <br>
+    <h3>Chuyen xe: </h3>
+    <h3>TG bat dau: {{ drive.startTime }}</h3>
+    {% if drive.endTime %}
+    <h3>TG ket thuc: {{ drive.endTime }}</h3>
+    {% else %}
+    <h3>Xe dang hoat dong</h3>
+    {% endif %}
+    <br>
+</div>
+{% endfor %}
+{% endblock content %}
