@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% for drive in drs %}
+<div class="content-container">
+    <!-- Car Detail Information -->
+    <div class="car-detail">
+        <div class="avt col-lg-2 col-3">
+            <img src="{% static '/images/web/car-image.svg' %}" alt="">
+        </div>
+        <div class="info col-lg-10 col-9">
+            <p class="license-plate ">{{ drive.device.car.licensePlate }}</p>
+            <p class="device-id">Tên Ô-tô: {{ drive.device.car.name }}</p>
+            <div class="row">
+                <p class="col-5">Thời gian khởi hành:</p>
+                <p class="col-7">{{ drive.startTime }}</p>
+            </div>
+            <div class="row">
+                <p class="col-5">Cảnh báo trong chuyến đi: </p>
+                <p class="col-7" id="warning">
+                    {% if alerts > 0 %}
+                    <span class="warning-circle">&#11044;</span>
+                    Có dấu hiệu bất thường
+                    {% else %}
+                    <span class="deactive-circle">&#11044;</span>
+                    Không có dấu hiệu
+                    {% endif %}
+                </p>
+            </div>
+            <div class="row">
+                <p class="col-5">Độ cồn: </p>
+                <p class="col-7"> <img src="{% static '/images/web/alcohol-icon.svg' %}" alt=""> 0.00 BAC</p>
+            </div>
+            <div class="row" id="status">
+                {% if drive.device.status == "offline" %}
+                <p class="col-5">Thời gian kết thúc: </p>
+                <p class="col-7">{{ drive.endTime }}</p>
+                {% else %}
+                <p class="col-5">Trạng thái: </p>
+                <p class="col-7">Đang hoạt động</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Pictures Section -->
+        <div class="clip-section d-flex flex-column justify-content-center
+        {% if pi.status == 'offline' %}
+         hide
+        {% endif %}
+        ">
+            <p class="component-title">Cảnh báo: </p>
+            <div class="embeded-clip-wrapper d-flex flex-column">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block w-100" src="{% static '/images/web/face-example-1.jpg' %}"
+                                alt="First slide">
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <div class="buttons d-flex flex-row justify-content-center flex-grow-1">
+                    <a href="#" class="clip-btn light-blue-btn">Bình thường</a>
+                    <a href="#" class="clip-btn light-yellow-btn">Không ổn</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

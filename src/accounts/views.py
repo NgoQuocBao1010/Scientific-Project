@@ -56,15 +56,24 @@ def home(request):
             if form.is_valid():
                 form.save()
         else:
-            freeRasp = RaspDevice.objects.filter(car=None)[0]
+            # freeRasp = RaspDevice.objects.filter(car=None)[0]
             form = CarForm(request.POST)
+
+            raspName = request.POST.get("raspName")
+            raspPass = request.POST.get("raspPass")
 
             if form.is_valid():
                 newCar = form.save()
+
+                newRasp = RaspDevice.objects.create(
+                    name=raspName,
+                    password=raspPass,
+                    car=newCar
+                )
+                newRasp.save()
+
                 newCar.company = company
-                freeRasp.car = newCar
                 newCar.save()
-                freeRasp.save()
 
         return redirect("home")
 
@@ -87,8 +96,6 @@ def driver(request):
     
     context = {'profiles': profiles, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "driver.html", context)
-
-
 
 
 

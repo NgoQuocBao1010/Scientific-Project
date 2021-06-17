@@ -8,6 +8,8 @@
     <h3>Chuyen xe cua {{ drive.device.car.licensePlate }} </h3>
     <h3>TG bat dau: {{ drive.startTime }}</h3>
     <h3>TG ket thuc: {{ drive.endTime }}</h3>
+    <a href="{% url 'driveDetail' drive.id  %}"><i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i></a>
+
     <br>
 </div>
 {% endfor %}

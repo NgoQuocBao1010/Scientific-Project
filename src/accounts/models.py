@@ -74,7 +74,7 @@ class RaspDevice(models.Model):
     status = models.CharField(
         max_length=50, null=True, blank=True, choices=STATUS, default="offline"
     )
-    ipaddress = models.CharField(max_length=50, null=True, blank=True)
+    password = models.CharField(max_length=8, null=True, blank=True)
     dateAdded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

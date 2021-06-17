@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block modal %}
+
+
 {% for car in cars %}
+<!-- Edit Info Modal -->
 <div class="modal fade" id="DeviceModal{{ car.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -49,6 +52,28 @@
         </div>
     </div>
 </div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="ConfirmDeleteModal{{ car.id }}" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="alert">
+        <div class="modal-content">
+            <div class="top">
+                <img src="{% static '/images/web/warning-delete-vector.svg' %}" alt="Delete Icon" title="Delete"
+                    width="100vw">
+            </div>
+            <p class="title">Xác nhận xóa</p>
+            <p class="subtitle">Bạn có chắc muốn xóa thiết bị {{ car.licensePlate }}?</b></p>
+            <div class="buttons d-flex flex-row">
+                <button type="button" name="modal-btn-cancel" class="col-5 btn light-blue-btn" data-dismiss="modal"
+                    aria-hidden="true">TRỞ VỀ</button>
+                <a href="{% url 'removeCar' car.id %}" type="button" name="modal-btn-delete" class="col-5 btn light-red-btn"
+                    aria-hiddent="true"> XÓA </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End edit modal -->
 {% endfor %}
 {% endblock modal %}
 
@@ -63,14 +88,14 @@
         </div>
         <div class="info col-lg-9 col-7">
             <p class="license-plate">{{ car.licensePlate }}</p>
-            <p> <span
-            {% if car.raspdevice.status == 'offline' %} 
-            class="deactive-circle" 
-            {% else %}
-            class="active-circle" 
-            {% endif %}>&#11044;
-            </span>
-            {{ car.raspdevice.status }}
+            <p> <span 
+                {% if car.raspdevice.status == 'offline' %} 
+                class="deactive-circle" 
+                {% else %} 
+                class="active-circle"
+                {% endif %}>&#11044;
+                </span>
+                {{ car.raspdevice.status }}
             </p>
             <!-- <p> <img src="{% static '/images/web/alcohol-icon.svg' %}" alt=""> 0.00 BAC</p> -->
         </div>
@@ -79,11 +104,10 @@
                 aria-expanded="true">&#8942;</a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu-carxxx">
                 <a class="dropdown-item" href="{% url 'carDrives' car.id %}">Chi tiết</a>
-                <a class="dropdown-item" href="#" data-toggle="modal"
-                    data-target="#DeviceModal{{ car.id }}">Chỉnh
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#DeviceModal{{ car.id }}">Chỉnh
                     sửa</a>
                 <a class="dropdown-item" href="{% url 'removeCar' car.id %}" data-toggle="modal"
-                    data-target="#ConfirmDeleteModal">Xóa</a>
+                    data-target="#ConfirmDeleteModal{{ car.id }}">Xóa</a>
             </div>
         </div>
     </div>
