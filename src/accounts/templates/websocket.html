@@ -1,0 +1,91 @@
+<script>
+    let notiCount = {{ unreadNotis }};
+
+    // Switch status of cars in page
+    const switchStatus = (licensePlate, online = true) => {
+        const displayCards = document.getElementById(licensePlate);
+        const statusPara = displayCards.querySelector("p:not(.license-plate)")
+        const statusCircle = statusPara.querySelector("span");
+
+        const text = (online) ? "online" : "offline";
+
+        if (online) {
+            statusCircle.classList.remove("deactive-circle");
+            statusCircle.classList.add("active-circle");
+        }
+        else {
+            statusCircle.classList.add("deactive-circle");
+            statusCircle.classList.remove("active-circle");
+        }
+
+        const spanHTML = statusCircle.outerHTML;
+        statusPara.innerHTML = `${spanHTML} ${text}`;
+    }
+
+    // Notify
+    const notify = () => {
+        const notiCountFrontEnd = document.getElementById("noti-count");
+        notiCount++;
+        notiCountFrontEnd.innerText = notiCount;
+    }
+
+    // Add notification to the dropdown
+    const notifyDetail = (alertType, licensePlate, time, driveUrl) => {
+        // Dropdown container
+        const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
+
+        const notiTitle = document.createElement("p");
+        notiTitle.classList.add("noti-title");
+        notiTitle.innerText = `${alertType}: ${licensePlate}`;
+
+        const notiTime = document.createElement("p");
+        notiTime.classList.add("noti-time");
+        notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
+
+        const link = document.createElement("a");
+        link.href = `${driveUrl}`;
+        link.classList.add("dropdown-item");
+        link.classList.add("dropdown-menu-right");
+        link.classList.add("noti-uncheck");
+        link.appendChild(notiTitle);
+        link.appendChild(notiTime);
+
+        const preLinks = notiLinks.querySelectorAll("a:not(.noti-more)");
+
+        if (preLinks.length >= 5) {
+            const lastNotiIndex = preLinks.length - 1;
+            notiLinks.removeChild(preLinks[lastNotiIndex]);
+        }
+        notiLinks.prepend(link);
+    }
+</script>
+<script>
+    const room = "{{ request.user.profile.company.roomCode }}";
+
+    let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
+    let socket = new WebSocket(socketUrl);
+
+    socket.onopen = function (e) {
+        alert("Connection established");
+    };
+
+    socket.onmessage = function (e) {
+        let data = JSON.parse(e.data);
+
+        // switching status whenever any car is online or offline
+        if (data["messageType"] === "status") {
+            switchStatus(data["licensePlate"], data["status"]);
+        }
+
+        // Notify when there are warnings
+        else if (data["messageType"] === "notification") {
+            notify();
+            const { alertType, licensePlate, time, driveUrl } = data;
+            notifyDetail(alertType, licensePlate, time, driveUrl);
+        }
+    };
+
+    socket.onclose = function (e) {
+        alert("Connection closed");
+    };
+</script>

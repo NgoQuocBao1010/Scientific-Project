@@ -1,227 +1,229 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <title>SDS System</title>
 
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>SDS System</title>
+        <!-- Ajax -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Jquery -->
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"
+        ></script>
+        <!-- Popper -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"
+        ></script>
+        <!-- Bootstrap JS-->
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"
+        ></script>
+        <!-- Bootstrap CSS-->
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+        />
+        <!-- Fontawesome -->
+        <script
+            src="https://kit.fontawesome.com/8d1d703781.js"
+            crossorigin="anonymous"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="{% static '/css/main.css' %}"
+            type="text/css"
+        />
+        <link
+            rel="stylesheet"
+            href="{% static '/css/content.css' %}"
+            type="text/css"
+        />
+    </head>
 
-    <!-- Ajax -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Jquery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <!-- Popper -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <!-- Bootstrap JS-->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    <!-- Bootstrap CSS-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- Fontawesome -->
-    <script src="https://kit.fontawesome.com/8d1d703781.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static '/css/main.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static '/css/content.css' %}" type="text/css">
-</head>
+    <body class="wrapper">
+        <!-- Register Modals | Account Modals -->
+        {% include "signin-modal.html" %}
 
-<body class="wrapper">
-    <!-- Register Modals | Account Modals -->
-    {% include "signin-modal.html" %}
+        <!-- Device Modal -->
+        <div
+            class="modal fade"
+            id="DeviceModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Edit form  -->
+                    <section class="form">
+                        <p class="title">THÔNG TIN THIẾT BỊ</p>
+                        <p class="messages" id="device-message"></p>
+                        <form id="DeviceForm" method="POST">
+                            {% csrf_token %}
+                            <!-- Device ID -->
+                            <div class="form-field">
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="device-name"
+                                    placeholder=" "
+                                    required
+                                />
+                                <label for="device-name">
+                                    <span class="input-label"
+                                        >Tên thiết bị
+                                        <span class="required-star"
+                                            >*</span
+                                        ></span
+                                    >
+                                </label>
+                            </div>
+                            <!-- License plate -->
+                            <div class="form-field">
+                                <input
+                                    type="text"
+                                    name="licensePlate"
+                                    id="device-license-plate"
+                                    placeholder=" "
+                                    required
+                                />
+                                <label for="licensePlate">
+                                    <span class="input-label"
+                                        >Bảng số xe
+                                        <span class="required-star"
+                                            >*</span
+                                        ></span
+                                    >
+                                </label>
+                            </div>
+                            <!-- Raspberry Pi name -->
+                            <div class="form-field">
+                                <input
+                                    type="text"
+                                    name="raspName"
+                                    placeholder=" "
+                                    required
+                                />
+                                <label for="raspName">
+                                    <span class="input-label"
+                                        >Tên thiết bị
+                                        <span class="required-star"
+                                            >*</span
+                                        ></span
+                                    >
+                                </label>
+                            </div>
+                            <!-- Raspberry Pi password -->
+                            <div class="form-field">
+                                <input
+                                    type="text"
+                                    name="raspPass"
+                                    placeholder=" "
+                                    required
+                                    maxlength="8"
+                                />
+                                <label for="raspName">
+                                    <span class="input-label"
+                                        >Mật khẩu thiết bị
+                                        <span class="required-star"
+                                            >*</span
+                                        ></span
+                                    >
+                                </label>
+                            </div>
+                            <!-- Sign in button  -->
+                            <div class="form-field buttons">
+                                <button
+                                    id="DeviceBtn"
+                                    type="submit"
+                                    href="#"
+                                    class="btn blue-btn long-btn"
+                                >
+                                    LƯU THÔNG TIN
+                                </button>
+                                <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
 
-    <!-- Device Modal -->
-    <div class="modal fade" id="DeviceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Edit form  -->
-                <section class="form">
-                    <p class="title">THÔNG TIN THIẾT BỊ</p>
-                    <p class="messages" id="device-message"></p>
-                    <form id="DeviceForm" method="POST">
-                        {% csrf_token %}
-                        <!-- Device ID -->
-                        <div class="form-field">
-                            <input type="text" name="name" id="device-name" placeholder=" " required>
-                            <label for="device-name">
-                                <span class="input-label">Tên thiết bị <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- License plate -->
-                        <div class="form-field">
-                            <input type="text" name="licensePlate" id="device-license-plate" placeholder=" " required>
-                            <label for="licensePlate">
-                                <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Raspberry Pi name -->
-                        <div class="form-field">
-                            <input type="text" name="raspName" id="device-license-plate" placeholder=" " required>
-                            <label for="raspName">
-                                <span class="input-label">Tên thiết bị <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Raspberry Pi password -->
-                        <div class="form-field">
-                            <input type="text" name="raspPass" id="device-license-plate" placeholder=" " required
-                                maxlength="8">
-                            <label for="raspName">
-                                <span class="input-label">Mật khẩu thiết bị <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Sign in button  -->
-                        <div class="form-field buttons">
-                            <button id="DeviceBtn" type="submit" href="#" class="btn blue-btn long-btn">LƯU THÔNG
-                                TIN</button>
-                            <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
-                        </div>
+        <!-- Search Modal -->
+        <div
+            class="modal fade top"
+            id="SearchModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="SearchModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-frame modal-top" role="">
+                <div class="modal-content">
+                    <form
+                        class="
+                            search-bar
+                            align-middle
+                            d-flex
+                            justify-content-center
+                        "
+                        action="index.html"
+                        method="post"
+                    >
+                        <input
+                            class="search-input"
+                            type="text"
+                            name="search-key"
+                            value=""
+                            placeholder="Nhập từ khóa..."
+                        />
+                        <input
+                            class="btn search-btn"
+                            type="submit"
+                            name="search-btn light-blue-btn"
+                            value="TÌM"
+                        />
                     </form>
-                </section>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Search Modal -->
-    <div class="modal fade top" id="SearchModal" tabindex="-1" role="dialog" aria-labelledby="SearchModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-frame modal-top" role="">
-            <div class="modal-content">
-                <form class="search-bar align-middle d-flex justify-content-center" action="index.html" method="post">
-                    <input class="search-input" type="text" name="search-key" value="" placeholder="Nhập từ khóa...">
-                    <input class="btn search-btn" type="submit" name="search-btn light-blue-btn" value="TÌM">
-                </form>
+        {% block modal %} {% endblock %} {% include "sidebar.html" %}
+
+        <div id="content">
+            {% include "navbar.html" %}
+            <div class="content-container">
+                {% block content %} {% endblock %}
             </div>
         </div>
-    </div>
-    {% block modal %}
-    {% endblock %}
 
-    {% include "sidebar.html" %}
-
-    <div id="content">
-        {% include "navbar.html" %}
-        <div class="content-container">
-            {% block content %}
-            {% endblock %}
-        </div>
-    </div>
-    <!-- <div class="wrapper"> -->
-    <!-- Sidebar -->
-
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var clipwidth = $('.embeded-clip').width();
-            $('.embeded-clip').height(clipwidth / 1.77);
-            // $('.clip-btn').width(clipwidth / 2);
-            // console.log($('.clip-btn').width() + ' ' + $('.embeded-clip').width());
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var clipwidth = $(".embeded-clip").width();
+                $(".embeded-clip").height(clipwidth / 1.77);
+                // $('.clip-btn').width(clipwidth / 2);
+                // console.log($('.clip-btn').width() + ' ' + $('.embeded-clip').width());
             });
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#sidebarCollapse").on("click", function () {
+                    $("#sidebar").toggleClass("active");
+                });
+            });
+        </script>
 
-        });
-    </script>
-    <script>
-        let notiCount = {{ unreadNotis }};
-
-        // Switch status of cars in page
-        const switchStatus = (licensePlate, online = true) => {
-            const displayCards = document.getElementById(licensePlate);
-            const statusPara = displayCards.querySelector("p:not(.license-plate)")
-            const statusCircle = statusPara.querySelector("span");
-
-            const text = (online) ? "online" : "offline";
-
-            if (online) {
-                statusCircle.classList.remove("deactive-circle");
-                statusCircle.classList.add("active-circle");
-            }
-            else {
-                statusCircle.classList.add("deactive-circle");
-                statusCircle.classList.remove("active-circle");
-            }
-
-            const spanHTML = statusCircle.outerHTML;
-            statusPara.innerHTML = `${spanHTML} ${text}`;
-        }
-
-        // Notify
-        const notify = () => {
-            const notiCountFrontEnd = document.getElementById("noti-count");
-            notiCount++;
-            notiCountFrontEnd.innerText = notiCount;
-        }
-
-        // Add notification to the dropdown 
-        const notifyDetail = (alertType, licensePlate, time, driveUrl) => {
-            // Dropdown container
-            const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
-
-            const notiTitle = document.createElement("p");
-            notiTitle.classList.add("noti-title");
-            notiTitle.innerText = `${alertType}: ${licensePlate}`;
-
-            const notiTime = document.createElement("p");
-            notiTime.classList.add("noti-time");
-            notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
-
-            const link = document.createElement("a");
-            link.href = `${driveUrl}`;
-            link.classList.add("dropdown-item");
-            link.classList.add("dropdown-menu-right");
-            link.classList.add("noti-uncheck");
-            link.appendChild(notiTitle);
-            link.appendChild(notiTime);
-
-            const preLinks = notiLinks.querySelectorAll("a:not(.noti-more)");
-
-            if (preLinks.length >= 5) {
-                const lastNotiIndex = preLinks.length - 1;
-                notiLinks.removeChild(preLinks[lastNotiIndex]);
-            }
-            notiLinks.prepend(link);
-        }
-    </script>
-    <script>
-        const room = '{{ request.user.profile.company.roomCode }}';
-
-        let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
-        let socket = new WebSocket(socketUrl);
-
-        socket.onopen = function (e) {
-            alert("Connection established");
-        };
-
-        socket.onmessage = function (e) {
-            let data = JSON.parse(e.data);
-
-            // switching status whenever any car is online or offline
-            if (data["messageType"] === "status") {
-                switchStatus(data["licensePlate"], data["status"]);
-            }
-
-            // Notify when there are warnings
-            else if (data["messageType"] === "notification") {
-                notify();
-                const { alertType, licensePlate, time, driveUrl } = data;
-                notifyDetail(alertType, licensePlate, time, driveUrl);
-            }
-        }
-
-        socket.onclose = function (e) {
-            alert("Connection closed");
-        };
-    </script>
-</body>
-
+        {% block websocket %} {% endblock %}
+    </body>
 </html>

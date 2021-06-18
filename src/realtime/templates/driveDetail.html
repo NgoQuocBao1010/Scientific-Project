@@ -1,497 +1,125 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+{% block content %}
 
-<head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>SDS System</title>
-
-    <!-- Ajax -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Jquery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <!-- Popper -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <!-- Bootstrap JS-->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    <!-- Bootstrap CSS-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- Fontawesome -->
-    <script src="https://kit.fontawesome.com/8d1d703781.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static '/css/main.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static '/css/content.css' %}" type="text/css">
-</head>
-
-<body class="wrapper">
-    <!-- Register Modals | Account Modals -->
-    <div class="modal fade" id="AccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Register form  -->
-                <section class="form">
-                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <p class="title">THÔNG TIN TÀI KHOẢN</p>
-                    <p class="messages" id="register-message"></p>
-                    <form id="RegisterForm">
-                        <!-- Full name -->
-                        <div class="form-field">
-                            <input type="text" name="register-fname" id="register-fname" placeholder=" " required
-                                value="{{ request.user.username }}">
-                            <label for="register-fname">
-                                <span class="input-label">Họ tên <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Register email -->
-                        <div class="form-field">
-                            <input type="email" name="register-email" id="registers-email" placeholder=" " required
-                                value="{{ request.user.email }}">
-                            <label for=" register-email">
-                                <span class="input-label">Email <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Password -->
-                        <div class="form-field">
-                            <input type="password" name="register-password" id="register-password" placeholder=" "
-                                required>
-                            <label for="register-password">
-                                <span class="input-label">Mật khẩu <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Confirm password -->
-                        <div class="form-field">
-                            <input type="password" name="register-confirm" id="register-confirm" placeholder=" "
-                                required>
-                            <label for="register-confirm">
-                                <span class="input-label">Xác nhận mật khẩu <span class="required-star">*</span> </span>
-                            </label>
-                        </div>
-                        <!-- Sign in button  -->
-                        <div class="form-field buttons">
-                            <button id="RegisterBtn" type="submit" href="#" class="btn light-blue-btn long-btn">LƯU
-                                THÔNG TIN</button>
-                        </div>
-                    </form>
-                </section>
-            </div>
+<!-- Car Detail Information -->
+<div class="car-detail">
+    <div class="avt col-lg-2 col-3">
+        <img src="{% static '/images/web/car-image.svg' %}" alt="" />
+    </div>
+    <div class="info col-lg-10 col-9">
+        <p class="license-plate">{{ drive.device.car.licensePlate }}</p>
+        <p class="device-id">Tên Ô-tô: {{ drive.device.car.name }}</p>
+        <div class="row">
+            <p class="col-5">Thời gian khởi hành:</p>
+            <p class="col-7">{{ drive.startTime }}</p>
+        </div>
+        <div class="row">
+            <p class="col-5">Cảnh báo trong chuyến đi:</p>
+            <p class="col-7" id="warning">
+                {% if alerts > 0 %}
+                <span class="warning-circle">&#11044;</span>
+                Có dấu hiệu bất thường {% else %}
+                <span class="deactive-circle">&#11044;</span>
+                Không có dấu hiệu {% endif %}
+            </p>
+        </div>
+        <div class="row">
+            <p class="col-5">Độ cồn:</p>
+            <p class="col-7">
+                <img src="{% static '/images/web/alcohol-icon.svg' %}" alt="" />
+                0.00 BAC
+            </p>
+        </div>
+        <div class="row" id="status">
+            {% if drive.device.status == "offline" %}
+            <p class="col-5">Thời gian kết thúc:</p>
+            <p class="col-7">{{ drive.endTime }}</p>
+            {% else %}
+            <p class="col-5">Trạng thái:</p>
+            <p class="col-7">Đang hoạt động</p>
+            {% endif %}
         </div>
     </div>
 
-
-    <!-- Device Modal -->
-    <div class="modal fade" id="DeviceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Edit form  -->
-                <section class="form">
-                    <p class="title">THÔNG TIN THIẾT BỊ</p>
-                    <p class="messages" id="device-message"></p>
-                    <form id="DeviceForm" method="POST">
-                        {% csrf_token %}
-                        <!-- Device ID -->
-                        <div class="form-field">
-                            <input type="text" name="name" id="device-name" placeholder=" " required>
-                            <label for="device-name">
-                                <span class="input-label">Tên thiết bị <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- License plate -->
-                        <div class="form-field">
-                            <input type="text" name="licensePlate" id="device-license-plate" placeholder=" " required>
-                            <label for="licensePlate">
-                                <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Sign in button  -->
-                        <div class="form-field buttons">
-                            <button id="DeviceBtn" type="submit" href="#" class="btn blue-btn long-btn">LƯU THÔNG
-                                TIN</button>
-                            <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
-                        </div>
-                    </form>
-                </section>
-            </div>
-        </div>
-    </div>
-
-    {% for car in cars %}
-    <div class="modal fade" id="DeviceModal{{ car.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Edit form  -->
-                <section class="form">
-                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <p class="title">THÔNG TIN THIẾT BỊ</p>
-                    <p class="messages" id="device-message"></p>
-                    <form id="DeviceForm{{ car.id }}" method="POST">
-                        {% csrf_token %}
-                        <!-- Device ID -->
-                        <div class="form-field">
-                            <input type="text" name="device-id" id="device-id{{ car.id }}" readonly="readonly"
-                                value="{{ car.id }}">
-                            <label for="device-id">
-                                <span class="input-label">Mã số thiết bị <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Device Name -->
-                        <div class="form-field">
-                            <input type="text" name="name" id="device-name{{ car.id }}" placeholder="Car Name" required
-                                value="{{ car.name }}">
-                            <label for="name">
-                                <span class="input-label">Tên Thiết Bị <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- License plate -->
-                        <div class="form-field">
-                            <input type="text" name="licensePlate" id="device-license-plate{{ car.id }}" placeholder=" "
-                                required value="{{ car.licensePlate }}">
-                            <label for="licensePlate">
-                                <span class="input-label">Bảng số xe <span class="required-star">*</span></span>
-                            </label>
-                        </div>
-                        <!-- Sign in button  -->
-                        <div class="form-field buttons">
-                            <button id="DeviceBtn{{ car.id }}" type="submit" href="#"
-                                class="btn light-blue-btn long-btn">LƯU THÔNG
-                                TIN</button>
-                            <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
-                        </div>
-                    </form>
-                </section>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-
-    <!-- Confirm Delete Modal -->
-    <div class="modal fade" id="ConfirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="alert">
-            <div class="modal-content">
-                <div class="top">
-                    <img src="{% static '/images/web/warning-delete-vector.svg' %}" alt="Delete Icon" title="Delete"
-                        width="100vw">
-                </div>
-                <p class="title">Xác nhận xóa</p>
-                <p class="subtitle">Bạn có chắc muốn xóa thiết bị này?</b></p>
-                <div class="buttons d-flex flex-row">
-                    <button type="button" name="modal-btn-cancel" class="col-5 btn light-blue-btn" data-dismiss="modal"
-                        aria-hidden="true">TRỞ VỀ</button>
-                    <button type="button" name="modal-btn-delete" class="col-5 btn light-red-btn" data-dismiss="modal"
-                        aria-hiddent="true">XÓA</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search Modal -->
-    <div class="modal fade top" id="SearchModal" tabindex="-1" role="dialog" aria-labelledby="SearchModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-frame modal-top" role="">
-            <div class="modal-content">
-                <form class="search-bar align-middle d-flex justify-content-center" action="index.html" method="post">
-                    <input class="search-input" type="text" name="search-key" value="" placeholder="Nhập từ khóa...">
-                    <input class="btn search-btn" type="submit" name="search-btn light-blue-btn" value="TÌM">
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- <div class="wrapper"> -->
-    <!-- Sidebar -->
-    <nav id="sidebar">
-        <div class="sidebar-content">
-            <div class="sidebar-header">
-                <img src="{% static '/images/web/branch-yellow.svg' %}">
-            </div>
-            <ul class="list-unstyled components">
-                <h4>Quản lý thiết bị</h4>
-                <li class="active">
-                    <a href="#" data-toggle="modal" data-target="#DeviceModal">Thêm thiết bị</a>
-                </li>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Chỉnh
-                        sửa thiết bị</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a href="#">Thiết bị 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Thiết bị 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Thiết bị 3</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="list-unstyled">
-                <li>
-                    <a href="#">Trợ giúp</a>
-                </li>
-                <li>
-                    <a href="#">Liên hệ</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Page Content -->
-    <div id="content">
-        <nav class="navbar navbar-expand top-nav sticky-top d-flex">
-            <!-- Top-nav components -->
-            <div class="mr-auto">
-                <button type="button" id="sidebarCollapse" class="btn-menu justify-content-start">
-                    <img src="{% static '/images/web/btn-menu.svg' %}" width="50">
-                </button>
-            </div>
-
-            <div class=" justify-content-end">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="modal" data-target="#SearchModal" href="#">
-                            <img src="{% static '/images/web/search-vector.svg' %}" alt="Tìm kiếm">
-                        </a>
-                    </li>
-                    <!-- Notifications -->
-                    <li class="nav-item dropdown" id="dropdown-notification">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true"
-                            aria-expanded="true">
-                            <img src="{% static '/images/web/noti-vector.svg' %}" alt="Thông báo">
-                            <span id="noti-count">{{ unreadNotis }}</span>
-                        </a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                            {% for noti in notifications %}
-                            <a class="dropdown-item 
-                                {% if not noti.isRead %}
-                                noti-uncheck
-                                {% endif %}
-                            " 
-                            href="{% url 'driveDetail' noti.drive.id  %}">
-                                <p class="noti-title">{{ noti.detect }}: {{ noti.drive.device.car.licensePlate }}</p>
-                                <p class="noti-time">{{ noti.timeOccured }} <span class="danger-circle">&#11044;</span> </p>
-                            </a>
-                            {% endfor %}
-                            <a class="dropdown-item noti-more" href="#">
-                                See more
-                            </a>
-                        </div>
-                    </li>
-                     <!-- Logout  -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                            <img src="{% static '/images/web/setting-vector.svg' %}" alt="Cài đặt">
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#AccountModal">Tài
-                                khoản</a>
-                            <a class="dropdown-item" href="{% url 'logout' %}">Đăng xuất</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="content-container">
-            <!-- Car Detail Information -->
-            <div class="car-detail">
-                <div class="avt col-lg-2 col-3">
-                    <img src="{% static '/images/web/car-image.svg' %}" alt="">
-                </div>
-                <div class="info col-lg-10 col-9">
-                    <p class="license-plate ">{{ drive.device.car.licensePlate }}</p>
-                    <p class="device-id">Tên Ô-tô: {{ drive.device.car.name }}</p>
-                    <div class="row">
-                        <p class="col-5">Thời gian khởi hành:</p>
-                        <p class="col-7">{{ drive.startTime }}</p>
-                    </div>
-                    <div class="row">
-                        <p class="col-5">Cảnh báo trong chuyến đi: </p>
-                        <p class="col-7" id="warning">
-                            {% if alerts > 0 %}
-                            <span class="warning-circle">&#11044;</span>
-                            Có dấu hiệu bất thường
-                            {% else %}
-                            <span class="deactive-circle">&#11044;</span>
-                            Không có dấu hiệu
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div class="row">
-                        <p class="col-5">Độ cồn: </p>
-                        <p class="col-7"> <img src="{% static '/images/web/alcohol-icon.svg' %}" alt=""> 0.00 BAC</p>
-                    </div>
-                    <div class="row" id="status">
-                        {% if drive.device.status == "offline" %}
-                        <p class="col-5">Thời gian kết thúc: </p>
-                        <p class="col-7">{{ drive.endTime }}</p>
-                        {% else %}
-                        <p class="col-5">Trạng thái: </p>
-                        <p class="col-7">Đang hoạt động</p>
-                        {% endif %}
+    <!-- Pictures Section -->
+    <div
+        class="
+            clip-section
+            d-flex
+            flex-column
+            justify-content-center
+            {% if pi.status == 'offline' %}
+            hide
+            {% endif %}
+        "
+    >
+        <p class="component-title">Cảnh báo:</p>
+        <div class="embeded-clip-wrapper d-flex flex-column">
+            <div
+                id="carouselExampleIndicators"
+                class="carousel slide"
+                data-ride="carousel"
+            >
+                <ol class="carousel-indicators">
+                    <li
+                        data-target="#carouselExampleIndicators"
+                        data-slide-to="0"
+                        class="active"
+                    ></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img
+                            class="d-block w-100"
+                            src="{% static '/images/web/face-example-1.jpg' %}"
+                            alt="First slide"
+                        />
                     </div>
                 </div>
-
-                <!-- Pictures Section -->
-                <div class="clip-section d-flex flex-column justify-content-center
-                {% if pi.status == 'offline' %}
-                 hide
-                {% endif %}
-                ">
-                    <p class="component-title">Cảnh báo: </p>
-                    <div class="embeded-clip-wrapper d-flex flex-column">
-                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                            </ol>
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img class="d-block w-100" src="{% static '/images/web/face-example-1.jpg' %}"
-                                        alt="First slide">
-                                </div>
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
-                                data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
-                                data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
-                        <div class="buttons d-flex flex-row justify-content-center flex-grow-1">
-                            <a href="#" class="clip-btn light-blue-btn">Bình thường</a>
-                            <a href="#" class="clip-btn light-yellow-btn">Không ổn</a>
-                        </div>
-                    </div>
-                </div>
-                
+                <a
+                    class="carousel-control-prev"
+                    href="#carouselExampleIndicators"
+                    role="button"
+                    data-slide="prev"
+                >
+                    <span
+                        class="carousel-control-prev-icon"
+                        aria-hidden="true"
+                    ></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a
+                    class="carousel-control-next"
+                    href="#carouselExampleIndicators"
+                    role="button"
+                    data-slide="next"
+                >
+                    <span
+                        class="carousel-control-next-icon"
+                        aria-hidden="true"
+                    ></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+            <div
+                class="
+                    buttons
+                    d-flex
+                    flex-row
+                    justify-content-center
+                    flex-grow-1
+                "
+            >
+                <a href="#" class="clip-btn light-blue-btn">Bình thường</a>
+                <a href="#" class="clip-btn light-yellow-btn">Không ổn</a>
             </div>
         </div>
     </div>
+</div>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var clipwidth = $('.embeded-clip').width();
-            $('.embeded-clip').height(clipwidth / 1.77);
-            // $('.clip-btn').width(clipwidth / 2);
-            // console.log($('.clip-btn').width() + ' ' + $('.embeded-clip').width());
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
+{% endblock content %}
 
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-
-        });
-    </script>
-    <script>
-        let notiCount = {{ unreadNotis }};
-
-        const notify = () => {
-            const notiCountFrontEnd = document.getElementById("noti-count");
-            notiCount++;
-            notiCountFrontEnd.innerText = notiCount;
-        }
-
-        // Add notification to the dropdown 
-        const notifyDetail = (alertType, licensePlate, time, driveUrl) => {
-            // Dropdown container
-            const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
-
-            const notiTitle = document.createElement("p");
-            notiTitle.classList.add("noti-title");
-            notiTitle.innerText = `${alertType}: ${licensePlate}`;
-
-            const notiTime = document.createElement("p");
-            notiTime.classList.add("noti-time");
-            notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
-
-            const link = document.createElement("a");
-            link.href = `${driveUrl}`;
-            link.classList.add("dropdown-item");
-            link.classList.add("dropdown-menu-right");
-            link.classList.add("noti-uncheck");
-            link.appendChild(notiTitle);
-            link.appendChild(notiTime);
-            
-            const preLinks = notiLinks.querySelectorAll("a:not(.noti-more)");
-
-            if (preLinks.length >= 5) {
-                const lastNotiIndex = preLinks.length - 1;
-                notiLinks.removeChild(preLinks[lastNotiIndex]);
-            }
-            notiLinks.prepend(link);
-        }
-
-        const getImage = (imgByte) => {
-            const carousel = document.querySelector(".carousel-inner");
-            const indicator = document.querySelector(".carousel-indicators");
-
-            const imgContainer = document.createElement("div");
-            imgContainer.classList.add("carousel-item");
-            imgContainer.innerHTML = `
-                    <img class="d-block w-100" src="data:image/png;base64,${imgByte}"
-                        alt="Fourth slide">
-            `;
-            carousel.appendChild(imgContainer);
-
-            var imgCount = indicator.childElementCount;
-            console.log(imgCount);
-            indicator.innerHTML = indicator.innerHTML + `<li data-target="#carouselExampleIndicators" data-slide-to="${imgCount}"></li>`;
-        }
-    </script>
-    <script>
-        const room = '{{ request.user.profile.company.roomCode }}';
-        const driveID = '{{ drive.id }}';
-        const piDeviceID = '{{ drive.device.id }}';
-
-        let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
-        let socket = new WebSocket(socketUrl);
-
-        socket.onopen = function (e) {
-            alert("Connection established");
-            socket.send(JSON.stringify({
-                command: "getVideo",
-                piDeviceID: piDeviceID,
-                driveID: driveID,
-            }));
-        };
-
-        socket.onmessage = function (e) {
-            let data = JSON.parse(e.data);
-            console.log(data);
-
-            if (data["messageType"] === "notification") {
-                notify();
-                const { alertType, licensePlate, time, driveUrl } = data;
-                notifyDetail(alertType, licensePlate, time, driveUrl);
-            }
-            else if (data["messageType"] === "sendImg") {
-                if (data["driveID"] === driveID) {
-                    console.log("Here is the image");
-                    getImage(data["frame"]);
-                }
-            } 
-        }
-
-        socket.onclose = function (e) {
-            alert("Connection closed");
-        };
-    </script>
-</body>
-
-</html>
+{% block websocket %} 
+{% include "api.html" %}
+{% endblock %}

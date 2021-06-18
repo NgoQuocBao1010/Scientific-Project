@@ -26,7 +26,7 @@ def alerts(request):
 def driveDetail(request, id):
     drive = Drive.objects.get(id=id)
     alerts = drive.alert_set.all()[:1]
-    print(alerts)
+    
     for alert in alerts:
         alert.isRead = True
         alert.save()
