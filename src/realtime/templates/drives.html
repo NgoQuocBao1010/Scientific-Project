@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block modal %}
+{% include 'search-modal.html' %}
+{% endblock modal %}
+
+
 {% block content %}
 {% for drive in drs %}
 <div style="background: lightblue; 
@@ -14,3 +20,7 @@
 </div>
 {% endfor %}
 {% endblock content %}
+
+{% block websocket %} 
+{% include "websocket.html" %}
+{% endblock %}

@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+<h3>Các chuyến đi của {{ car.name }} ({{ car.licensePlate }})</h3>
 {% for drive in drs %}
 <div   
     style="
@@ -32,3 +34,7 @@
 </div>
 {% endfor %}
 {% endblock content %}
+
+{% block websocket %} 
+{% include "websocket.html" %}
+{% endblock %}

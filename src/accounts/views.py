@@ -43,7 +43,15 @@ def getNotifications(company):
 def home(request):
     company = request.user.profile.company
     cars = Car.objects.filter(company=company)
+
+    # Search filter
+    searchKey = request.GET.get("search-key")
+
+    if searchKey != '' and searchKey is not None:
+        cars = cars.filter(licensePlate__icontains=searchKey)
     
+
+    # Notifications manage
     lastestAlerts, unreadCounts = getNotifications(company)
 
     # Handle add more cars

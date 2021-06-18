@@ -82,7 +82,7 @@
                                 />
                                 <label for="device-name">
                                     <span class="input-label"
-                                        >Tên thiết bị
+                                        >Tên (Loại) Xe
                                         <span class="required-star"
                                             >*</span
                                         ></span
@@ -160,46 +160,9 @@
             </div>
         </div>
 
-        <!-- Search Modal -->
-        <div
-            class="modal fade top"
-            id="SearchModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="SearchModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-frame modal-top" role="">
-                <div class="modal-content">
-                    <form
-                        class="
-                            search-bar
-                            align-middle
-                            d-flex
-                            justify-content-center
-                        "
-                        action="index.html"
-                        method="post"
-                    >
-                        <input
-                            class="search-input"
-                            type="text"
-                            name="search-key"
-                            value=""
-                            placeholder="Nhập từ khóa..."
-                        />
-                        <input
-                            class="btn search-btn"
-                            type="submit"
-                            name="search-btn light-blue-btn"
-                            value="TÌM"
-                        />
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        {% block modal %} {% endblock %} {% include "sidebar.html" %}
+        {% block modal %} {% endblock %} 
+        
+        {% include "sidebar.html" %}
 
         <div id="content">
             {% include "navbar.html" %}

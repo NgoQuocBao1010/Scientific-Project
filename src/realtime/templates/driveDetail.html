@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 
+
 <!-- Car Detail Information -->
 <div class="car-detail">
     <div class="avt col-lg-2 col-3">
@@ -49,8 +50,8 @@
             d-flex
             flex-column
             justify-content-center
-            {% if pi.status == 'offline' %}
-            hide
+            {% if drive.device.status == 'offline' %}
+            hide-picture
             {% endif %}
         "
     >

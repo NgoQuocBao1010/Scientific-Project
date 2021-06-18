@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
+
+
+{% block modal %}
+{% include 'search-modal.html' %}
+{% endblock modal %}
+
+
 {% block content %}
-{% for drive in drs %}
-<div style="background: lightblue; margin-bottom: 50px;" class="driver-container">
+<h3>Danh sách các báo động</h3>
+{% for alert in alerts %}
+<div style="background: lightblue; margin-bottom: 50px;" class="alertr-container">
     <br>
-    <h3>Canh cao {{ drive.drive.device.car.licensePlate }}: </h3>
-    <h3>Loai canh cao: {{ drive.detect }}</h3>
-    <h3>TG xay ra: {{ drive.timeOccured }}</h3>
+    <h3>Canh cao {{ alert.drive.device.car.licensePlate }}: </h3>
+    <h3>Loai canh cao: {{ alert.detect }}</h3>
+    <h3>TG xay ra: {{ alert.timeOccured }}</h3>
     <br>
 </div>
 {% endfor %}
 {% endblock content %}
+
+{% block websocket %} 
+{% include "websocket.html" %}
+{% endblock %}
