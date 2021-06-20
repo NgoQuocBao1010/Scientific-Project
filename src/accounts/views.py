@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import string, random
 
 from .models import *
 from realtime.models import Alert
-from .forms import CarForm
+from .forms import CarForm, CreateUserForm
 
 # Welcome, Login, Register Page
 def welcome(request):
@@ -13,22 +14,48 @@ def welcome(request):
         return redirect("home")
 
     if request.method == "POST":
-        username = request.POST.get("login-username")
-        password = request.POST.get("login-password")
+        if (request.POST.get("login-username")):
+            username = request.POST.get("login-username")
+            password = request.POST.get("login-password")
 
-        user = authenticate(request, username=username, password=password)
+            user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            print("Yes")
-            login(request, user)
-            return redirect("home")
-        else:
-            messages.info(request, "Username or Password is incorrect")
+            if user is not None:
+                login(request, user)
+                return redirect("home")
+            else:
+                messages.info(request, "Username or Password is incorrect")
+            
+        
+        if request.POST.get("company-name"):
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+
+                
+                newCompanyName = request.POST.get("company-name")
+                characters = string.ascii_letters + string.digits
+                roomCode = ''.join(random.choice(characters) for i in range(10))
+
+                newComp = Company.objects.create(
+                    name=newCompanyName,
+                    roomCode=roomCode,
+                )
+
+                Profile.objects.create(
+                    user=user,
+                    company=newComp,
+                    name=user.username,
+                    role="admin",
+                )
+
+            else:
+                print(form.errors)
 
     context = {}
     return render(request, "welcome.html", context)
 
-
+# Manage notifications
 def getNotifications(company):
     lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')[:5]
     

@@ -77,24 +77,25 @@
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                     <p class="title">ĐĂNG KÝ</p>
                     <p class="messages" id="register-message"></p>
-                    <form id="RegisterForm">
+                    <form id="RegisterForm" method='POST'>
+                        {% csrf_token %}
                         <!-- Full name -->
                         <div class="form-field">
-                            <input type="text" name="register-fname" id="register-fname" placeholder=" " required>
-                            <label for="register-fname">
-                                <span class="input-label">Họ tên <span class="required-star">*</span></span>
+                            <input type="text" name="company-name" id="company-name" placeholder=" " required>
+                            <label for="company-name">
+                                <span class="input-label">Tên công ty <span class="required-star">*</span></span>
                             </label>
                         </div>
                         <!-- Register email -->
                         <div class="form-field">
-                            <input type="email" name="register-email" id="registers-email" placeholder=" " required>
+                            <input type="email" name="email" id="registers-email" placeholder=" " required>
                             <label for="register-email">
                                 <span class="input-label">Email <span class="required-star">*</span></span>
                             </label>
                         </div>
                         <!-- Password -->
                         <div class="form-field">
-                            <input type="password" name="register-password" id="register-password" placeholder=" "
+                            <input type="password" name="password1" id="register-password" placeholder=" "
                                 required>
                             <label for="register-password">
                                 <span class="input-label">Mật khẩu <span class="required-star">*</span></span>
@@ -102,7 +103,7 @@
                         </div>
                         <!-- Confirm password -->
                         <div class="form-field">
-                            <input type="password" name="register-confirm" id="register-confirm" placeholder=" "
+                            <input type="password" name="password2" id="register-confirm" placeholder=" "
                                 required>
                             <label for="register-confirm">
                                 <span class="input-label">Xác nhận mật khẩu <span class="required-star">*</span> </span>
@@ -221,7 +222,7 @@
                     <div class="cta-form">
                         <h1 class="title">THAM GIA VỚI CHÚNG TÔI</h1>
                         <p class="subtitle">Lorem ipsum dolor sit amet, consectetur</p>
-                        <form>
+                        <form method="POST">
                             <div class="form-group">
                                 <label for="cta-name">Họ và tên <span class="required-star">*</span></label>
                                 <input type="text" name="cta-name" class="form-control" id="cta-name">

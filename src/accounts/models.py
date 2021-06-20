@@ -65,6 +65,11 @@ class Car(models.Model):
 
 
 class RaspDevice(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["password"], name="password"),
+        ]
+    
     STATUS = (
         ("online", "online"),
         ("offline", "offline"),

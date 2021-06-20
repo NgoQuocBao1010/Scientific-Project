@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
+from django.contrib.auth.decorators import login_required
 
 from accounts.models import RaspDevice, Car
 from accounts.views import getNotifications
 from .models import Drive, Alert
 
 # Drives management page
+@login_required(login_url="/")
 def drives(request):
     company = request.user.profile.company
     drs = Drive.objects.filter(device__car__company=company).order_by('-endTime')
@@ -21,6 +23,7 @@ def drives(request):
     return render(request, "drives.html", context)
 
 # Alerts management page
+@login_required(login_url="/")
 def alerts(request):
     company = request.user.profile.company
     alerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')
@@ -41,8 +44,14 @@ def alerts(request):
 
 
 # Detail of an specific drive (start, end, alerts ...)
+@login_required(login_url="/")
 def driveDetail(request, id):
+    company = request.user.profile.company
     drive = Drive.objects.get(id=id)
+
+    if drive.device__car__company != company:
+        return HttpResponse('<h1>You are not authorized to view this page</h1>')
+
     alerts = drive.alert_set.all()[:1]
     
     for alert in alerts:
@@ -51,7 +60,6 @@ def driveDetail(request, id):
     
     alerts = len(alerts)
 
-    company = request.user.profile.company
     lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')[:5]
     
     unreadCounts = 0
@@ -63,9 +71,14 @@ def driveDetail(request, id):
 
 
 # Return every drives of individual car
+@login_required(login_url="/")
 def carDrives(request, id):
     company = request.user.profile.company
     car = Car.objects.get(id=id)
+
+    if car.company != company:
+        return HttpResponse('<h1>You are not authorized to view this page</h1>')
+    
     drives = Drive.objects.filter(device__car=car).order_by('-startTime')
 
     lastestAlerts, unreadCounts = getNotifications(company)
