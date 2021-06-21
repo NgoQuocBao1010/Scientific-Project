@@ -4,20 +4,24 @@
 
 {% block modal %}
 {% include 'search-modal.html' %}
+{% include 'sidebar.html' %}
 {% endblock modal %}
 
-
 {% block content %}
-<h3>Danh sách các báo động</h3>
-{% for alert in alerts %}
-<div style="background: lightblue; margin-bottom: 50px;" class="alertr-container">
-    <br>
-    <h3>Canh cao {{ alert.drive.device.car.licensePlate }}: </h3>
-    <h3>Loai canh cao: {{ alert.detect }}</h3>
-    <h3>TG xay ra: {{ alert.timeOccured }}</h3>
-    <br>
+{% include "navbar-search.html" %}
+<div class="content-container">
+    <h3>Danh sách các báo động</h3>
+    {% for alert in alerts %}
+    <div style="background: lightblue; margin-bottom: 50px;" class="alertr-container">
+        <br>
+        <h3>Canh cao {{ alert.drive.device.car.licensePlate }}: </h3>
+        <h3>Loai canh cao: {{ alert.detect }}</h3>
+        <h3>TG xay ra: {{ alert.timeOccured }}</h3>
+        <br>
+    </div>
+    {% endfor %}
 </div>
-{% endfor %}
+
 {% endblock content %}
 
 {% block websocket %} 

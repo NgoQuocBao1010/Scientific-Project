@@ -222,22 +222,24 @@
                     <div class="cta-form">
                         <h1 class="title">THAM GIA VỚI CHÚNG TÔI</h1>
                         <p class="subtitle">Lorem ipsum dolor sit amet, consectetur</p>
+                        <!-- Register Form -->
                         <form method="POST">
+                            {% csrf_token %}
                             <div class="form-group">
-                                <label for="cta-name">Họ và tên <span class="required-star">*</span></label>
-                                <input type="text" name="cta-name" class="form-control" id="cta-name">
+                                <label for="cta-name">Tên công ty <span class="required-star">*</span></label>
+                                <input type="text" name="company-name" class="form-control" id="cta-name">
                             </div>
                             <div class="form-group">
                                 <label for="cta-email">Email <span class="required-star">*</span></label>
-                                <input type="email" name="cta-email" class="form-control" id="cta-email">
+                                <input type="email" name="email" class="form-control" id="cta-email">
                             </div>
                             <div class="form-group">
                                 <label for="cta-password">Mật khẩu <span class="required-star">*</span></label>
-                                <input type="password" name="cta-password" class="form-control" id="cta-password">
+                                <input type="password" name="password1" class="form-control" id="cta-password">
                             </div>
                             <div class="form-group">
                                 <label for="cta-confirm">Xác nhận mật khẩu <span class="required-star">*</span> </label>
-                                <input type="password" name="cta-confirm" class="form-control" id="cta-confirm">
+                                <input type="password" name="password2" class="form-control" id="cta-confirm">
                             </div>
                             <div class="form-group">
                                 <button id="CtaBtn" type="submit" href="#" class="btn yellow-btn long-btn">ĐĂNG

@@ -32,22 +32,24 @@ def welcome(request):
             if form.is_valid():
                 user = form.save()
 
-                
-                newCompanyName = request.POST.get("company-name")
-                characters = string.ascii_letters + string.digits
-                roomCode = ''.join(random.choice(characters) for i in range(10))
+                try:
+                    newCompanyName = request.POST.get("company-name")
+                    characters = string.ascii_letters + string.digits
+                    roomCode = ''.join(random.choice(characters) for i in range(10))
 
-                newComp = Company.objects.create(
-                    name=newCompanyName,
-                    roomCode=roomCode,
-                )
+                    newComp = Company.objects.create(
+                        name=newCompanyName,
+                        roomCode=roomCode,
+                    )
 
-                Profile.objects.create(
-                    user=user,
-                    company=newComp,
-                    name=user.username,
-                    role="admin",
-                )
+                    Profile.objects.create(
+                        user=user,
+                        company=newComp,
+                        name=user.username,
+                        role="admin",
+                    )
+                except Exception as e:
+                    print(e)
 
             else:
                 print(form.errors)

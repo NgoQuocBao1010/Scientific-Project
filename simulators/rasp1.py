@@ -22,28 +22,31 @@ def on_message(ws, message):
 
     if data.get("piDeviceID") == ID:
         images = os.listdir(thisFolder)
-        imageUrl = os.path.join(thisFolder, images[0])
-        image = Image.open(imageUrl) 
-        resized_image = image.resize((640, 464))
-        im_file = BytesIO()
-        resized_image.save(im_file, format="PNG")
-        im_bytes = im_file.getvalue()
 
-        try:
-            f_data = base64.b64encode(im_bytes).decode("utf-8")
-            ws.send(
-                json.dumps(
-                    {
-                        "command": "sendImgToBrowser",
-                        "messageType": "sendImg",
-                        "driveID": data["driveID"],
-                        "frame": str(f_data),
-                    }
+        for image in images:
+            imageUrl = os.path.join(thisFolder, image)
+            image = Image.open(imageUrl) 
+            resized_image = image.resize((640, 464))
+            im_file = BytesIO()
+            resized_image.save(im_file, format="PNG")
+            im_bytes = im_file.getvalue()
+
+            try:
+                f_data = base64.b64encode(im_bytes).decode("utf-8")
+                ws.send(
+                    json.dumps(
+                        {
+                            "command": "sendImgToBrowser",
+                            "messageType": "sendImg",
+                            "driveID": data["driveID"],
+                            "frame": str(f_data),
+                            "time-happened": str(datetime.now()),
+                        }
+                    )
                 )
-            )
-            print("Sent image", imageUrl)
-        except Exception as e:
-            print(str)
+                print("Sent image", imageUrl)
+            except Exception as e:
+                print(str)
 
 
 def on_error(ws, error):

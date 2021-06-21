@@ -43,7 +43,7 @@ def on_open(ws):
                     }
                 )
             )
-            break
+            
         ws.close()
 
     thread.start_new_thread(run, ())

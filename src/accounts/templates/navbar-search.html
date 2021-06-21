@@ -1,4 +1,5 @@
 {% load static %}
+<!-- Nav Bar -->
 <nav class="navbar navbar-expand top-nav sticky-top d-flex">
     <!-- Top-nav components -->
     <div class="mr-auto">
@@ -9,6 +10,11 @@
 
     <div class=" justify-content-end">
         <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="modal" data-target="#SearchModal" href="#">
+                    <img src="{% static '/images/web/search-vector.svg' %}" alt="Tìm kiếm">
+                </a>
+            </li>
             <!-- Notifications -->
             <li class="nav-item dropdown" id="dropdown-notification">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-haspopup="true"

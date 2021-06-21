@@ -161,14 +161,10 @@
         </div>
 
         {% block modal %} {% endblock %} 
-        
-        {% include "sidebar.html" %}
 
         <div id="content">
-            {% include "navbar.html" %}
-            <div class="content-container">
-                {% block content %} {% endblock %}
-            </div>
+            {% block content %} 
+            {% endblock %}
         </div>
 
         <script type="text/javascript">

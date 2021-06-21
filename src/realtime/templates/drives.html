@@ -3,22 +3,26 @@
 
 {% block modal %}
 {% include 'search-modal.html' %}
+{% include 'sidebar.html' %}
 {% endblock modal %}
 
 
 {% block content %}
-{% for drive in drs %}
-<div style="background: lightblue; 
-    margin-bottom: 50px;" class="driver-container">
-    <br>
-    <h3>Chuyen xe cua {{ drive.device.car.licensePlate }} </h3>
-    <h3>TG bat dau: {{ drive.startTime }}</h3>
-    <h3>TG ket thuc: {{ drive.endTime }}</h3>
-    <a href="{% url 'driveDetail' drive.id  %}"><i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i></a>
+{% include 'navbar-search.html' %}
+<div class="content-container">
+    {% for drive in drs %}
+    <div style="background: lightblue; 
+        margin-bottom: 50px;" class="driver-container">
+        <br>
+        <h3>Chuyen xe cua {{ drive.device.car.licensePlate }} </h3>
+        <h3>TG bat dau: {{ drive.startTime }}</h3>
+        <h3>TG ket thuc: {{ drive.endTime }}</h3>
+        <a href="{% url 'driveDetail' drive.id  %}"><i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i></a>
 
-    <br>
+        <br>
+    </div>
+    {% endfor %}
 </div>
-{% endfor %}
 {% endblock content %}
 
 {% block websocket %} 
