@@ -17,6 +17,7 @@
         <h3>Canh cao {{ alert.drive.device.car.licensePlate }}: </h3>
         <h3>Loai canh cao: {{ alert.detect }}</h3>
         <h3>TG xay ra: {{ alert.timeOccured }}</h3>
+        <a style="color: whitesmoke;" class="btn btn-danger" href="{% url 'driveDetail' alert.drive.id %}">Xem chi tiết hành trình</a>
         <br>
     </div>
     {% endfor %}

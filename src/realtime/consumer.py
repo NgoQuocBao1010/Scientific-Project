@@ -24,23 +24,28 @@ class RealTime(WebsocketConsumer):
             except Exception as e:
                 print(str(e))
         else:
-            drive = self.pi.drive_set.all().get(status="ongoing")
+            drive = self.pi.drive_set.all().order_by('-startTime')[0]
             drive.status = "ended"
             drive.endTime = datetime.now()
             drive.save()
 
         carLiscense = self.pi.car.licensePlate
         self.sendSignal(
-            {"messageType": "status", "licensePlate": carLiscense, "status": online}
+            {
+                "messageType": "status", 
+                "licensePlate": carLiscense, 
+                "status": online, 
+                "piID": self.pi.id
+            }
         )
 
     # Save neccessary data when alerts is detected
     def alertDetected(self, data):
         alertType = data["name"]
         timeOccured = data["time"]
-        drive = self.pi.drive_set.all().get(status="ongoing")
-        carLiscense = self.pi.car.licensePlate
+        drive = self.pi.drive_set.all().order_by('-startTime')[0]
 
+        carLiscense = self.pi.car.licensePlate
         driveUrl = reverse("driveDetail", kwargs={'id': drive.id})
 
         try:
@@ -49,20 +54,32 @@ class RealTime(WebsocketConsumer):
         except Exception as e:
             print(str(e))
 
-        self.sendSignal(
-            {
-                "messageType": "notification",
-                "alertType": alertType,
-                "licensePlate": carLiscense,
-                "time": timeOccured,
-                "driveUrl": driveUrl,
-            }
-        )
+        if len(drive.alert_set.all()) == 1:
+            self.sendSignal(
+                {
+                    "messageType": "notification",
+                    "alertType": alertType,
+                    "licensePlate": carLiscense,
+                    "time": timeOccured,
+                    "driveUrl": driveUrl,
+                }
+            )
 
+
+    # Get video message
     def getVideo(self, data):
-        self.sendSignal(
-            data
-        )
+        driveID = data["driveID"]
+        drive = Drive.objects.get(id=driveID)
+        alerts = drive.alert_set.all().order_by('-timeOccured')
+
+        if len(alerts) > 0:
+            print(alerts[0].timeOccured)
+
+            data.setdefault("time-occured", str(alerts[0].timeOccured))
+
+            self.sendSignal(
+                data
+            )
     
     def sendImgToBrowser(self, data):
         self.sendSignal(

@@ -1,13 +1,13 @@
 import websocket
-
-
+import os
+from PIL import Image
 import _thread as thread
-
+from io import BytesIO
 import time
 from datetime import datetime
 import json
 import random
-
+import base64
 import socket
 
 HOSTNAME = socket.gethostname()
@@ -17,13 +17,40 @@ ID = "2"
 
 
 def on_message(ws, message):
+    thisFolder = "./simulators/images/"
     data = json.loads(message)
-    print(data)
+
+    if data.get("piDeviceID") == ID:
+        images = os.listdir(thisFolder)
+
+        for image in images:
+            imageUrl = os.path.join(thisFolder, image)
+            image = Image.open(imageUrl) 
+            resized_image = image.resize((640, 464))
+            im_file = BytesIO()
+            resized_image.save(im_file, format="PNG")
+            im_bytes = im_file.getvalue()
+
+            try:
+                f_data = base64.b64encode(im_bytes).decode("utf-8")
+                ws.send(
+                    json.dumps(
+                        {
+                            "command": "sendImgToBrowser",
+                            "messageType": "sendImg",
+                            "driveID": data["driveID"],
+                            "frame": str(f_data),
+                            "time-happened": str(datetime.now()),
+                        }
+                    )
+                )
+                print("Sent image", imageUrl)
+            except Exception as e:
+                print(str(e))
 
 
 def on_error(ws, error):
-    # print(error)
-    pass
+    print(error)
 
 
 def on_close(ws):
@@ -43,8 +70,6 @@ def on_open(ws):
                     }
                 )
             )
-            
-        ws.close()
 
     thread.start_new_thread(run, ())
 

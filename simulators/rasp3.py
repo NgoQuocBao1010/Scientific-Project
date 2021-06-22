@@ -13,7 +13,7 @@ import socket
 HOSTNAME = socket.gethostname()
 IP_ADDRESS = socket.gethostbyname(HOSTNAME)
 COMPANY_ROOM_CODE = "lsRHGGT111"
-ID = "1"
+ID = "6"
 
 
 def on_message(ws, message):
@@ -46,7 +46,7 @@ def on_message(ws, message):
                 )
                 print("Sent image", imageUrl)
             except Exception as e:
-                print(str(e))
+                print(str)
 
 
 def on_error(ws, error):
@@ -59,7 +59,9 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        time.sleep(1)
+        while True:
+            print("Nothing happened")
+        # time.sleep(5)
         # ws.send(
         #     json.dumps(
         #         {

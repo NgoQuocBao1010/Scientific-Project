@@ -124,18 +124,6 @@ def logoutUser(request):
     return redirect("welcome")
 
 
-@login_required(login_url="/")
-def driver(request):
-    company = request.user.profile.company
-    profiles = Profile.objects.filter(company=company).filter(role="driver")
-
-    lastestAlerts, unreadCounts = getNotifications(company)
-    
-    context = {'profiles': profiles, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
-    return render(request, "driver.html", context)
-
-
-
 # Remove Cars
 @login_required(login_url="/")
 def removeCar(request, id):

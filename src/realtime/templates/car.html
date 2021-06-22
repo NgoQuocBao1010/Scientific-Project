@@ -36,6 +36,7 @@
         {% else %}
         <h3>Xe dang hoat dong</h3>
         {% endif %}
+        <a href="{% url 'driveDetail' drive.id  %}"><i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i></a>
         <br>
     </div>
     {% endfor %}

@@ -62,6 +62,8 @@
     let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
     let socket = new WebSocket(socketUrl);
 
+    let imageTaken = false;
+
     socket.onopen = function (e) {
         alert("Connection established");
         socket.send(
@@ -82,9 +84,24 @@
             const { alertType, licensePlate, time, driveUrl } = data;
             notifyDetail(alertType, licensePlate, time, driveUrl);
         } else if (data["messageType"] === "sendImg") {
+            imageTaken = true;
             if (data["driveID"] === driveID) {
                 console.log("Here is the image");
                 getImage(data["frame"]);
+                const pictureSections = document.getElementById("pictures-section");
+                pictureSections.classList.remove("hide-picture");
+                imageTaken = true;
+            }
+        }
+        else if (data["messageType"] === "status") {
+            if (data["piID"] == piDeviceID && data["status"] && !imageTaken) {
+                socket.send(
+                    JSON.stringify({
+                        command: "getVideo",
+                        piDeviceID: piDeviceID,
+                        driveID: driveID,
+                    })
+                );
             }
         }
     };

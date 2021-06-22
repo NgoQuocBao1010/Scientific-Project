@@ -1,7 +1,8 @@
-Home -> xe -> chi tiet -> hanh trinh, xoa
-noti them start, end
 bao dong -> chi tiet chuyen xe
 chuyenxe -> realtime -> chi tiet chuyen xe
+
+/// Front end
+Chinh sua lai thoi gian
 
 Password:
 aaaaFFFFF12345
