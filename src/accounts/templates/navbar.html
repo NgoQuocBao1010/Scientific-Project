@@ -38,7 +38,7 @@
                     <img src="{% static '/images/web/setting-vector.svg' %}" alt="Cài đặt">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#AccountModal">Tài
+                    <a class="dropdown-item" href="{% url 'accountSettings' %}">Tài
                         khoản</a>
                     <a class="dropdown-item" href="{% url 'logout' %}">Đăng xuất</a>
                 </div>

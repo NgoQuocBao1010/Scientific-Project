@@ -59,7 +59,7 @@ def welcome(request):
 
 # Manage notifications
 def getNotifications(company):
-    lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')[:5]
+    lastestAlerts = Alert.objects.filter(drive__device__company=company).order_by('-timeOccured')[:5]
     
     unreadCounts = 0
     for alert in lastestAlerts:
@@ -93,7 +93,6 @@ def home(request):
             if form.is_valid():
                 form.save()
         else:
-            # freeRasp = RaspDevice.objects.filter(car=None)[0]
             form = CarForm(request.POST)
 
             raspName = request.POST.get("raspName")
@@ -105,7 +104,8 @@ def home(request):
                 newRasp = RaspDevice.objects.create(
                     name=raspName,
                     password=raspPass,
-                    car=newCar
+                    car=newCar,
+                    company=company
                 )
                 newRasp.save()
 
@@ -130,3 +130,13 @@ def removeCar(request, id):
     car = Car.objects.get(id=id)
     car.delete()
     return redirect("home")
+
+
+# Account settings
+@login_required(login_url="/")
+def accountSettings(request):
+    # Notifications manage
+    company = request.user.profile.company
+    lastestAlerts, unreadCounts = getNotifications(company)
+    context = {"notifications": lastestAlerts, "unreadNotis": unreadCounts}
+    return render(request, "account-setting.html", context)

@@ -4,6 +4,5 @@ from .models import *
 
 admin.site.register(Company)
 admin.site.register(Profile)
-admin.site.register(Driver)
 admin.site.register(Car)
 admin.site.register(RaspDevice)

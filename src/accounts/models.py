@@ -18,35 +18,16 @@ class Company(models.Model):
 
 
 class Profile(models.Model):
-    ROLES = (
-        ("admin", "admin"),
-        ("driver", "driver"),
-    )
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=20, null=True, blank=True)
     address = models.CharField(max_length=50, null=True, blank=True)
-    email = models.CharField(max_length=30, null=True, blank=True)
-    role = models.CharField(max_length=20, choices=ROLES)
     dateCreated = models.DateTimeField(auto_now_add=True)
     profilePic = models.ImageField(default="huongtram.png", null=True, blank=True)
 
     def __str__(self):
         return self.name + " profile"
-
-
-class Driver(models.Model):
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["licenseDriver"], name="licenseDriver"),
-        ]
-
-    profile = models.OneToOneField(Profile, null=True, on_delete=models.CASCADE)
-    licenseDriver = models.CharField(max_length=10, null=True, blank=True)
-
-    def __str__(self):
-        return "Driver " + self.profile.name
 
 
 class Car(models.Model):
@@ -81,6 +62,7 @@ class RaspDevice(models.Model):
     )
     password = models.CharField(max_length=8, null=True, blank=True)
     dateAdded = models.DateTimeField(auto_now_add=True)
+    company = models.ForeignKey(Company, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} from {self.company}'
