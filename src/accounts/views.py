@@ -6,7 +6,7 @@ import string, random
 
 from .models import *
 from realtime.models import Alert
-from .forms import CarForm, CreateUserForm
+from .forms import CarForm, CreateUserForm, ProfileForm
 
 # Welcome, Login, Register Page
 def welcome(request):
@@ -94,22 +94,16 @@ def home(request):
                 form.save()
         else:
             form = CarForm(request.POST)
-
-            raspName = request.POST.get("raspName")
             raspPass = request.POST.get("raspPass")
 
             if form.is_valid():
                 newCar = form.save()
 
-                newRasp = RaspDevice.objects.create(
-                    name=raspName,
-                    password=raspPass,
-                    car=newCar,
-                    company=company
-                )
-                newRasp.save()
-
+                rasp = RaspDevice.objects.get(password=raspPass)
+                rasp.car = newCar
+                rasp.company = company
                 newCar.company = company
+                rasp.save()
                 newCar.save()
 
         return redirect("home")
@@ -135,8 +129,16 @@ def removeCar(request, id):
 # Account settings
 @login_required(login_url="/")
 def accountSettings(request):
+    profile = Profile.objects.get(user=request.user)
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=profile)
+
+        if form.is_valid():
+            form.save()
+        print(request.POST)
+    
     # Notifications manage
     company = request.user.profile.company
     lastestAlerts, unreadCounts = getNotifications(company)
-    context = {"notifications": lastestAlerts, "unreadNotis": unreadCounts}
+    context = {"profile": profile, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "account-setting.html", context)

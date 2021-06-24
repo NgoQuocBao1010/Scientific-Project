@@ -40,17 +40,18 @@
     const getImage = (imgByte) => {
         const carousel = document.querySelector(".carousel-inner");
         const indicator = document.querySelector(".carousel-indicators");
+        const imgCount = indicator.childElementCount;
 
         const imgContainer = document.createElement("div");
         imgContainer.classList.add("carousel-item");
+        if (imgCount == 0) imgContainer.classList.add("active");
+
         imgContainer.innerHTML = `
                 <img class="d-block w-100" src="data:image/png;base64,${imgByte}"
                     alt="Fourth slide">
         `;
         carousel.appendChild(imgContainer);
 
-        var imgCount = indicator.childElementCount;
-        console.log(imgCount);
         indicator.innerHTML = indicator.innerHTML + `<li data-target="#carouselExampleIndicators" data-slide-to="${imgCount}"></li>`;
     }
 </script>
