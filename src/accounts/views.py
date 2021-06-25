@@ -8,6 +8,7 @@ from .models import *
 from realtime.models import Alert
 from .forms import CarForm, CreateUserForm, ProfileForm
 
+
 # Welcome, Login, Register Page
 def welcome(request):
     if request.user.is_authenticated:

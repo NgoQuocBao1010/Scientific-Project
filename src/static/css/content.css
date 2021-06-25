@@ -9,6 +9,10 @@
     font-style: var(--font2);
 }
 
+.card.online {
+    background-color: rgba(123, 217, 108, 0.4);
+}
+
 .card-body,
 .card-detail {
     font-size: 1.2rem;

@@ -9,16 +9,85 @@
 
 {% block content %}
 {% include 'navbar-search.html' %}
+<style>
+    .driver-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        border-radius: 20px;
+    }
+
+    .driver-container h3 {
+        margin: 0;
+        padding: 0;
+        font-size: 18px;
+    }
+
+    .driver-container__info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .driver-container__info i {
+        font-size: 50px;
+    }
+
+    .driver-container__info h3 {
+        font-size: 18px;
+    }
+
+    .driver-container__time i {
+        margin: 0 5px;
+    }
+
+
+    .driver-container a {
+        text-decoration: none;
+    }
+
+    .driver-container .fa-arrow-up {
+        font-size: 30px;
+        color: var(--navy)
+    }
+</style>
 <div class="content-container">
     {% for drive in drs %}
-    <div style="background: lightblue; 
-        margin-bottom: 50px;" class="driver-container">
-        <br>
-        <h3>Chuyen xe cua {{ drive.device.car.licensePlate }} </h3>
-        <h3>TG bat dau: {{ drive.startTime }}</h3>
-        <h3>TG ket thuc: {{ drive.endTime }}</h3>
-        <a href="{% url 'driveDetail' drive.id  %}"><i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i></a>
+    <div   
+        style="
+            {% if drive.endTime %}
+            background: lightblue; 
+            {% else%}
+            background: rgba(123, 217, 108, 0.4);; 
+            {% endif %}
 
+            margin-bottom: 50px;"
+        
+        class="driver-container"
+
+        {% if drive.endTime %}
+        online="0" 
+        {% else%}
+        online="1" 
+        {% endif %}
+    >
+        <br>
+        <div class="driver-container__info">
+            <i class="fas fa-car-side"></i>
+            <h3>{{ drive.device.car.licensePlate }} </h3>
+        </div>
+        <div class="driver-container__time">
+            <h3><i class="fas fa-play"></i> {{ drive.startTime }}</h3>
+            {% if drive.endTime %}
+            <h3><i class="fas fa-stop"></i> {{ drive.endTime }}</h3>
+            {% else %}
+            <h3>Xe dang hoat dong</h3>
+            {% endif %}
+        </div>
+        
+        <a href="{% url 'driveDetail' drive.id  %}"><i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i></a>
         <br>
     </div>
     {% endfor %}

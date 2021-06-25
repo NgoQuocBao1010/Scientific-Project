@@ -9,7 +9,7 @@ from .models import Drive, Alert
 @login_required(login_url="/")
 def drives(request):
     company = request.user.profile.company
-    drs = Drive.objects.filter(device__car__company=company).order_by('-endTime')
+    drs = Drive.objects.filter(device__company=company).order_by('-startTime')
 
     # Search filter
     searchKey = request.GET.get("search-key")
@@ -52,7 +52,7 @@ def driveDetail(request, id):
     if drive.device.car.company != company:
         return HttpResponse('<h1>You are not authorized to view this page</h1>')
 
-    alerts = drive.alert_set.all()[:1]
+    alerts = drive.alert_set.all()
     
     for alert in alerts:
         alert.isRead = True

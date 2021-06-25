@@ -83,7 +83,14 @@
 <div class="content-container">
     <!-- Car information -->
     {% for car in cars %}
-    <div class="card" id="{{ car.licensePlate }}">
+    <div 
+        class="card
+            {% if car.raspdevice.status == 'online' %}
+            online
+            {% endif %} 
+        " 
+        id="{{ car.licensePlate }}"
+    >
         <!-- <h5 class="card-header">Featured</h5> -->
         <div class="card-body row">
             <div class="avt col-lg-2 col-3">

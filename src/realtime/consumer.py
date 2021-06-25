@@ -13,6 +13,7 @@ from datetime import datetime
 class RealTime(WebsocketConsumer):
     # Update when Raspberry Pi is connected and disconnected
     def updatePiConnection(self, online=True):
+        driveID =  None
         self.pi.status = "online" if online else "offline"
         self.pi.save()
 
@@ -27,6 +28,7 @@ class RealTime(WebsocketConsumer):
             drive = self.pi.drive_set.all().order_by('-startTime')[0]
             drive.status = "ended"
             drive.endTime = datetime.now()
+            driveID = drive.id
             drive.save()
 
         carLiscense = self.pi.car.licensePlate
@@ -35,7 +37,8 @@ class RealTime(WebsocketConsumer):
                 "messageType": "status", 
                 "licensePlate": carLiscense, 
                 "status": online, 
-                "piID": self.pi.id
+                "piID": self.pi.id,
+                "driveID": driveID,
             }
         )
 
@@ -54,17 +57,16 @@ class RealTime(WebsocketConsumer):
         except Exception as e:
             print(str(e))
 
-        if len(drive.alert_set.all()) == 1:
-            self.sendSignal(
-                {
-                    "messageType": "notification",
-                    "alertType": alertType,
-                    "licensePlate": carLiscense,
-                    "time": timeOccured,
-                    "driveUrl": driveUrl,
-                }
-            )
-
+       
+        self.sendSignal(
+            {
+                "messageType": "notification",
+                "alertType": alertType,
+                "licensePlate": carLiscense,
+                "time": timeOccured,
+                "driveUrl": driveUrl,
+            }
+        )
 
     # Get video message
     def getVideo(self, data):

@@ -12,10 +12,12 @@
         if (online) {
             statusCircle.classList.remove("deactive-circle");
             statusCircle.classList.add("active-circle");
+            displayCards.classList.add("online");
         }
         else {
             statusCircle.classList.add("deactive-circle");
             statusCircle.classList.remove("active-circle");
+            displayCards.classList.remove("online");
         }
 
         const spanHTML = statusCircle.outerHTML;
@@ -63,7 +65,7 @@
     const room = "{{ request.user.profile.company.roomCode }}";
 
     let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
-    let socket = new WebSocket(socketUrl);
+    let socket = new ReconnectingWebSocket(socketUrl);
 
     socket.onopen = function (e) {
         alert("Connection established");

@@ -1,6 +1,7 @@
 <script>
     let notiCount = {{ unreadNotis }};
 
+    // Show notification
     const notify = () => {
         const notiCountFrontEnd = document.getElementById("noti-count");
         notiCount++;
@@ -61,7 +62,7 @@
     const piDeviceID = "{{ drive.device.id }}";
 
     let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
-    let socket = new WebSocket(socketUrl);
+    let socket = new ReconnectingWebSocket(socketUrl);
 
     let imageTaken = false;
 
@@ -80,11 +81,14 @@
         let data = JSON.parse(e.data);
         console.log(data);
 
+        // handle notifications
         if (data["messageType"] === "notification") {
             notify();
             const { alertType, licensePlate, time, driveUrl } = data;
             notifyDetail(alertType, licensePlate, time, driveUrl);
-        } else if (data["messageType"] === "sendImg") {
+        }
+        // Receive message from server 
+        else if (data["messageType"] === "sendImg") {
             imageTaken = true;
             if (data["driveID"] === driveID) {
                 console.log("Here is the image");
@@ -103,6 +107,18 @@
                         driveID: driveID,
                     })
                 );
+            }
+            if (data["driveID"] == driveID && !data["status"]) {
+                console.log(`Chuyen xe ${driveID} da ket thuc`)
+                const statusInfo = document.getElementById("status");
+                const today = new Date();
+                const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                const dateTime = date+' '+time;
+                statusInfo.innerHTML = `
+                    <p class="col-5">Thời gian kết thúc:</p>
+                    <p class="col-7">${dateTime}</p>
+                `;
             }
         }
     };

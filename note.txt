@@ -1,5 +1,4 @@
-bao dong -> chi tiet chuyen xe
-chuyenxe -> realtime -> chi tiet chuyen xe
+Error: trang chi tiet hanh trinh, neu xe dang chay thi moi hanh trinh se chay
 
 /// Front end
 Chinh sua lai thoi gian
