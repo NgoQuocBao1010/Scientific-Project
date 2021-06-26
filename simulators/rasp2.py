@@ -26,6 +26,7 @@ def on_message(ws, message):
         for image in images:
             imageUrl = os.path.join(thisFolder, image)
             image = Image.open(imageUrl) 
+            image = image.convert("L")
             resized_image = image.resize((640, 464))
             im_file = BytesIO()
             resized_image.save(im_file, format="PNG")

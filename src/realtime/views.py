@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 from accounts.models import RaspDevice, Car
 from accounts.views import getNotifications
@@ -26,24 +27,22 @@ def drives(request):
 @login_required(login_url="/")
 def alerts(request):
     company = request.user.profile.company
-    alerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')
-    lastestAlerts = alerts[:5]
+    drs = Drive.objects.filter(device__company=company, alert__gt=0).order_by('-startTime').annotate(total=Count('id'))
+    
 
     # Search filter
     searchKey = request.GET.get("search-key")
 
     if searchKey != '' and searchKey is not None:
-        alerts = alerts.filter(drive__device__car__licensePlate__icontains=searchKey)
+        drs = drs.filter(device__car__licensePlate__icontains=searchKey)
     
-    unreadCounts = 0
-    for alert in lastestAlerts:
-        unreadCounts = (unreadCounts + 1) if not alert.isRead else unreadCounts
+    lastestAlerts, unreadCounts = getNotifications(company)
     
-    context = {'alerts': alerts, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
+    context = {'drs': drs, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "alerts.html", context)
 
 
-# Detail of an specific drive (start, end, alerts ...)
+# Detail of an specific drive (start, end, alerts ...) 
 @login_required(login_url="/")
 def driveDetail(request, id):
     company = request.user.profile.company
@@ -60,11 +59,7 @@ def driveDetail(request, id):
     
     alerts = len(alerts)
 
-    lastestAlerts = Alert.objects.filter(drive__device__car__company=company).order_by('-timeOccured')[:5]
-    
-    unreadCounts = 0
-    for alert in lastestAlerts:
-        unreadCounts = (unreadCounts + 1) if not alert.isRead else unreadCounts
+    lastestAlerts, unreadCounts = getNotifications(company)
 
     context = {"drive": drive, "alerts": alerts, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "driveDetail.html", context)

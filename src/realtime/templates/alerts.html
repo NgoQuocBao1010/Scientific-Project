@@ -11,13 +11,13 @@
 {% include "navbar-search.html" %}
 <div class="content-container">
     <h3>Danh sách các báo động</h3>
-    {% for alert in alerts %}
+    {% for drive in drs %}
     <div style="background: lightblue; margin-bottom: 50px;" class="alertr-container">
         <br>
-        <h3>Canh cao {{ alert.drive.device.car.licensePlate }}: </h3>
-        <h3>Loai canh cao: {{ alert.detect }}</h3>
-        <h3>TG xay ra: {{ alert.timeOccured }}</h3>
-        <a style="color: whitesmoke;" class="btn btn-danger" href="{% url 'driveDetail' alert.drive.id %}">Xem chi tiết hành trình</a>
+        <h3>Chuyến xe {{ drive.device.car.licensePlate }}</h3>
+        <h3>Nhận được {{ drive.alert_set.all|length }} cảnh cáo</h3>
+        
+        <a style="color: whitesmoke;" class="btn btn-danger" href="{% url 'driveDetail' drive.id %}">Xem chi tiết chuyến xe</a>
         <br>
     </div>
     {% endfor %}

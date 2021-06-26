@@ -79,9 +79,16 @@
             <h3>{{ drive.device.car.licensePlate }} </h3>
         </div>
         <div class="driver-container__time">
-            <h3><i class="fas fa-play"></i> {{ drive.startTime }}</h3>
+            <h3>
+                <!-- <i class="fas fa-play"></i>  -->
+                Khởi hành: 
+                {{ drive.startTime }}
+            </h3>
             {% if drive.endTime %}
-            <h3><i class="fas fa-stop"></i> {{ drive.endTime }}</h3>
+            <h3>
+                Kết thúc: 
+                {{ drive.endTime }}
+            </h3>
             {% else %}
             <h3>Xe dang hoat dong</h3>
             {% endif %}

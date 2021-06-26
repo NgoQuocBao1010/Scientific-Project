@@ -38,7 +38,7 @@
                 </p>
             </div>
             <div class="row" id="status">
-                {% if drive.device.status == "offline" %}
+                {% if drive.status == "ended" %}
                 <p class="col-5">Thời gian kết thúc:</p>
                 <p class="col-7">{{ drive.endTime }}</p>
                 {% else %}
