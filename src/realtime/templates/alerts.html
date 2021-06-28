@@ -9,16 +9,158 @@
 
 {% block content %}
 {% include "navbar-search.html" %}
+<style>
+    .alerts-container {
+        display: flex;
+        padding: 10px 20px;
+        border-radius: 20px;
+        align-items: center;
+    }
+
+    .alerts-container__info {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .alerts-container__info i {
+        font-size: 50px;
+        margin-bottom: 10px;
+    }
+
+    .alerts-container__info .break-line {
+        width: 100%;
+        height: 2px;
+        margin: 10px 0;
+        background-color: var(--navy);
+
+        transition: all .2s ease-in;
+    }
+
+    .alerts-container .button {
+        text-decoration: none;
+        border: 2px solid var(--navy);
+		padding: 20px 40px;
+        margin-left: auto;
+		color: var(--navy);
+		cursor: pointer;
+		position: relative;
+		overflow: hidden;
+		transition: all .5s;
+        z-index: 1000;
+    }
+
+    .alerts-container .button:before{
+        width: 100%;
+        height: 100%;
+        content: '';
+        margin: auto;
+        position: absolute;
+        top:  -100%;
+        left: -100%;
+        background: var(--navy);
+        transition: all .5s;
+        z-index: 1;
+    }
+
+    .alerts-container .button:hover {
+        color: white;
+    }
+
+    .alerts-container .button:hover::before {
+        top: 0;
+		left: 0;
+    }
+</style>
+
+<style>
+    .dedcription-btn {
+  width: 300px;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  border-radius: 30px;
+  background-color: #fcfcfc;
+  color: var(--navy);
+  font-size: 18px;
+  padding: 9px 0;
+  transition: all 0.3s;
+  padding-left: 20px;
+  margin-left: auto;
+  box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.06);
+}
+.dedcription-btn .btn-icon {
+  background-color: var(--navy);
+  width: 92px;
+  height: 45px;
+  float: right;
+  position: absolute;
+  border-radius: 30px 30px 30px 0;;
+  right: 0px;
+  top: 0px;
+  transition: all 0.3s;
+}
+.name-descripeion {
+  position: relative;
+  z-index: 9999;
+}
+.btn-icon::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 45px solid #fcfcfc;
+  border-right: 40px solid transparent;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+.dedcription-btn:hover .btn-icon {
+  width: 100%;
+  border-radius: 30px;
+}
+.dedcription-btn:hover .btn-icon::after {
+  display: none;
+  opacity: 0.1;
+}
+.btn-icon i {
+  position: absolute;
+  right: 25px;
+  top: 15px;
+  color: #fff;
+}
+.dedcription-btn:hover {
+  color: #fff!important;
+}
+
+.hover-box {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+</style>
 <div class="content-container">
     <h3>Danh sách các báo động</h3>
+
     {% for drive in drs %}
-    <div style="background: lightblue; margin-bottom: 50px;" class="alertr-container">
-        <br>
-        <h3>Chuyến xe {{ drive.device.car.licensePlate }}</h3>
+    <div style="background: lightblue; margin-bottom: 50px;" class="alerts-container">
+        <div class="alerts-container__info">
+            <i class="fas fa-car-crash"></i>
+            <h3>{{ drive.device.car.licensePlate }}</h3>
+            <div class="break-line"></div>
+            <h5>Khởi hành lúc {{ drive.startTime.time }}, ngày {{ drive.startTime.date }}</h5>
+        </div>
         <h3>Nhận được {{ drive.alert_set.all|length }} cảnh cáo</h3>
         
-        <a style="color: whitesmoke;" class="btn btn-danger" href="{% url 'driveDetail' drive.id %}">Xem chi tiết chuyến xe</a>
-        <br>
+        <a class="dedcription-btn" href="{% url 'driveDetail' drive.id %}">
+            <span class="name-descripeion">Xem chi tiết chuyến xe</span>
+            <div class="btn-icon book">
+                <i class="fas fa-exclamation-triangle"></i>          
+            </div>
+        </a>
     </div>
     {% endfor %}
 </div>
