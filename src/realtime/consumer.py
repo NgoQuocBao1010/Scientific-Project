@@ -44,6 +44,9 @@ class RealTime(WebsocketConsumer):
 
     # Save neccessary data when alerts is detected
     def alertDetected(self, data):
+        if self.unsignedPi:
+            return
+        
         alertType = data["name"]
         timeOccured = data["time"]
         drive = self.pi.drive_set.all().order_by('-startTime')[0]
@@ -75,8 +78,7 @@ class RealTime(WebsocketConsumer):
         alerts = drive.alert_set.all().order_by('-timeOccured')
 
         if len(alerts) > 0:
-            print(alerts[0].timeOccured)
-
+            # print(alerts[0].timeOccured)
             data.setdefault("time-occured", str(alerts[0].timeOccured))
 
             self.sendSignal(
@@ -87,23 +89,38 @@ class RealTime(WebsocketConsumer):
         self.sendSignal(
             data
         )
+    
+    def getRoomCode(self, data):
+        print("Dang gui")
+        roomCode = self.pi.company.roomCode
+        data.setdefault("roomCode", roomCode)
+
+        self.sendSignal(
+            data
+        )
 
 
     commands = {
         "alert": alertDetected,
         "getVideo": getVideo,
         "sendImgToBrowser": sendImgToBrowser,
+        "getRoomCode": getRoomCode,
     }
 
     # ------------------- Websocket Method -------------------#
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["roomCode"]
         self.piID = str(self.scope["url_route"]["kwargs"]["piID"])
-        self.pi = False
 
+        self.pi = False
+        self.unsignedPi = False
+        
+        if self.room_name == "general":
+            self.unsignedPi = True
+        
         if self.piID != "none":
             self.pi = RaspDevice.objects.get(id=self.piID)
-            self.updatePiConnection()
+            if not self.unsignedPi: self.updatePiConnection()
             print(self.pi, "is connected")
 
         # print(self.room_name, self.piID, self.scope)
@@ -112,7 +129,7 @@ class RealTime(WebsocketConsumer):
 
     def disconnect(self, close_code):
         if self.pi:
-            self.updatePiConnection(online=False)
+            if not self.unsignedPi: self.updatePiConnection(online=False)
             print(self.pi, "is disconnected\n")
 
         async_to_sync(self.channel_layer.group_discard)(

@@ -175,6 +175,7 @@
     border-right: 1px solid var(--navy);
     min-width: 20vw;
     font-family: var(--font1);
+    z-index: 1000;
 }
 
 #dropdown-notification .dropdown-menu .dropdown-item {

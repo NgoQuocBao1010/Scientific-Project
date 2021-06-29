@@ -89,12 +89,19 @@
         }
         // Receive message from server 
         else if (data["messageType"] === "sendImg") {
-            imageTaken = true;
             if (data["driveID"] === driveID) {
                 console.log("Here is the image");
                 getImage(data["frame"]);
                 const pictureSections = document.getElementById("pictures-section");
                 pictureSections.classList.remove("hide-picture");
+
+                if (!imageTaken) {
+                    const loading = document.querySelector(".loading-section");
+                    loading.remove()
+                    console.log(loading)
+                }
+                
+
                 imageTaken = true;
             }
         }

@@ -7,6 +7,46 @@
 
 {% block content %}
 {% include "navbar.html" %}
+<style>
+.loading-section {
+    display:flex;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.loading-section div {
+    width: 20px;
+    height: 20px;
+    background-color: var(--navy);
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    margin: 0 5px;
+    animation-name: up-and-down;
+    animation-duration: 0.4s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.loading-section .two {
+    animation-delay: 0.1s;
+}
+.loading-section .three {
+    animation-delay: 0.2s;
+}
+@keyframes up-and-down {
+  to {
+    opacity: 0.2;
+    transform: translateY(-20px);
+    -webkit-transform: translateY(-20px);
+    -moz-transform: translateY(-20px);
+    -ms-transform: translateY(-20px);
+    -o-transform: translateY(-20px);
+    }
+}
+</style>
 <div class="content-container">
     <!-- Car Detail Information -->
     <div class="car-detail">
@@ -47,7 +87,12 @@
                 {% endif %}
             </div>
         </div>
-
+        
+        <div class="loading-section">
+            <div class="one"></div>
+            <div class="two"></div>
+            <div class="three"></div>
+        </div>
         <!-- Pictures Section -->
         <div
             class="
