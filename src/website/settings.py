@@ -18,7 +18,7 @@ SECRET_KEY = "u6bb66(n+2-h^zp!(s7tb@ycq$&(g4n&#db4a^7&fu^3hsw8fu"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [IP_ADDRESS, "127.0.0.1"]
+ALLOWED_HOSTS = [IP_ADDRESS, "127.0.0.1", "2a3b6495b1e4.ngrok.io"]
 
 
 # Application definition
@@ -116,7 +116,7 @@ TIME_FORMAT = "H:i"
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Ho_Chi_Minh"
 
 USE_I18N = True
 

@@ -60,13 +60,13 @@
             {% if drive.endTime %}
             background: lightblue; 
             {% else%}
-            background: rgba(123, 217, 108, 0.4);; 
+            background: rgba(123, 217, 108, 0.4);
             {% endif %}
 
             margin-bottom: 50px;"
         
         class="driver-container"
-
+        id="{{ drive.id }}"
         {% if drive.endTime %}
         online="0" 
         {% else%}
@@ -82,19 +82,21 @@
             <h3>
                 <!-- <i class="fas fa-play"></i>  -->
                 Khởi hành: 
-                {{ drive.startTime }}
+                {{ drive.startTime.time }}, ngày {{ drive.startTime.date }}
             </h3>
             {% if drive.endTime %}
             <h3>
                 Kết thúc: 
-                {{ drive.endTime }}
+                {{ drive.endTime.time }}, ngày {{ drive.endTime.date }}
             </h3>
             {% else %}
             <h3>Xe dang hoat dong</h3>
             {% endif %}
         </div>
         
-        <a href="{% url 'driveDetail' drive.id  %}"><i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i></a>
+        <a href="{% url 'driveDetail' drive.id  %}">
+            <i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i>
+        </a>
         <br>
     </div>
     {% endfor %}
@@ -102,5 +104,124 @@
 {% endblock content %}
 
 {% block websocket %} 
-{% include "websocket.html" %}
+<script>
+    let notiCount = {{ unreadNotis }};
+
+    // Switch status of cars in page
+    const addDrive = (data) => {
+        const licensePlate = data["licensePlate"];
+        const status = data["status"];
+        const driveID = data["driveID"];
+        const driveUrl = data["driveUrl"];
+
+        const today = new Date();
+        const date = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`;
+        const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        const dateTime = `${time}, ngày ${date}`;
+
+        if (status) {
+            const container = document.querySelector(".content-container");
+            const newDriveContainer = document.createElement("div");
+            newDriveContainer.classList.add("driver-container");
+            newDriveContainer.style.background = "rgba(123, 217, 108, 0.4)";
+            newDriveContainer.style.marginBottom = "50px";
+            newDriveContainer.id = driveID;
+
+            newDriveContainer.innerHTML = `
+            <br>
+            <div class="driver-container__info">
+                <i class="fas fa-car-side"></i>
+                <h3>${licensePlate}</h3>
+            </div>
+            <div class="driver-container__time">
+                <h3>
+                    Khởi hành: ${dateTime}
+                </h3>
+                <h3>Xe dang hoat dong</h3>
+            </div>
+        
+            <a href="${driveUrl}">
+                <i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i>
+            </a>
+            <br>
+            `;
+            container.prepend(newDriveContainer);
+        }
+        else {
+            const endedDrive =  document.getElementById(driveID);
+            endedDrive.style.background = "lightblue";
+
+            const endTime =  endedDrive.querySelector(".driver-container__time h3:nth-child(2)");
+            endTime.innerText = `Kết thúc: ${dateTime}`;
+        }
+    }
+
+    // Notify
+    const notify = () => {
+        const notiCountFrontEnd = document.getElementById("noti-count");
+        notiCount++;
+        notiCountFrontEnd.innerText = notiCount;
+    }
+
+    // Add notification to the dropdown
+    const notifyDetail = (alertType, licensePlate, time, driveUrl) => {
+        // Dropdown container
+        const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
+
+        const notiTitle = document.createElement("p");
+        notiTitle.classList.add("noti-title");
+        notiTitle.innerText = `${alertType}: ${licensePlate}`;
+
+        const notiTime = document.createElement("p");
+        notiTime.classList.add("noti-time");
+        notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
+
+        const link = document.createElement("a");
+        link.href = `${driveUrl}`;
+        link.classList.add("dropdown-item");
+        link.classList.add("dropdown-menu-right");
+        link.classList.add("noti-uncheck");
+        link.appendChild(notiTitle);
+        link.appendChild(notiTime);
+
+        const preLinks = notiLinks.querySelectorAll("a:not(.noti-more)");
+
+        if (preLinks.length >= 5) {
+            const lastNotiIndex = preLinks.length - 1;
+            notiLinks.removeChild(preLinks[lastNotiIndex]);
+        }
+        notiLinks.prepend(link);
+    }
+</script>
+<script>
+    const room = "{{ request.user.profile.company.roomCode }}";
+
+    let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
+    let socket = new ReconnectingWebSocket(socketUrl);
+
+    socket.onopen = function (e) {
+        alert("Connection established");
+    };
+
+    socket.onmessage = function (e) {
+        let data = JSON.parse(e.data);
+        console.log(data);
+
+        // switching status whenever any car is online or offline
+        if (data["messageType"] === "status") {
+            addDrive(data);
+        }
+
+        // Notify when there are warnings
+        else if (data["messageType"] === "notification") {
+            notify();
+            const { alertType, licensePlate, time, driveUrl } = data;
+            notifyDetail(alertType, licensePlate, time, driveUrl);
+        }
+    };
+
+    socket.onclose = function (e) {
+        alert("Connection closed");
+    };
+</script>
 {% endblock %}

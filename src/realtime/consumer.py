@@ -6,7 +6,6 @@ from django.urls import reverse
 from accounts.models import RaspDevice
 from .models import *
 
-
 import json
 from datetime import datetime
 
@@ -19,16 +18,21 @@ class RealTime(WebsocketConsumer):
 
         if online:
             try:
-                Drive.objects.create(
+                newDrive = Drive.objects.create(
                     device=self.pi, startTime=datetime.now(), status="ongoing"
                 )
+                driveID = newDrive.id
+                driveUrl = reverse("driveDetail", kwargs={'id': driveID})
+                print(f"\n[DATABASE]: New Drive {driveID} is added\n")
             except Exception as e:
                 print(str(e))
         else:
             drive = self.pi.drive_set.all().order_by('-startTime')[0]
             drive.status = "ended"
+            print(f"\n[DATABASE]: Drive {drive.id} is ended\n")
             drive.endTime = datetime.now()
             driveID = drive.id
+            driveUrl = reverse("driveDetail", kwargs={'id': driveID})
             drive.save()
 
         carLiscense = self.pi.car.licensePlate
@@ -39,6 +43,7 @@ class RealTime(WebsocketConsumer):
                 "status": online, 
                 "piID": self.pi.id,
                 "driveID": driveID,
+                "driveUrl": driveUrl,
             }
         )
 
@@ -56,7 +61,7 @@ class RealTime(WebsocketConsumer):
 
         try:
             Alert.objects.create(drive=drive, detect=alertType, timeOccured=timeOccured)
-            print(f"Deteced {alertType} and saved!!")
+            print(f"\n[DATABASE]: Deteced {alertType} and saved!!\n")
         except Exception as e:
             print(str(e))
 
@@ -90,14 +95,22 @@ class RealTime(WebsocketConsumer):
             data
         )
     
+    # send room code to unconfig rasp
     def getRoomCode(self, data):
-        print("Dang gui")
-        roomCode = self.pi.company.roomCode
-        data.setdefault("roomCode", roomCode)
+        if self.unsignedPi:
+            print("Dang gui")
+            roomCode = self.pi.company.roomCode
+            data.setdefault("roomCode", roomCode)
 
-        self.sendSignal(
-            data
-        )
+            self.sendSignal(
+                data
+            )
+        else:
+            self.sendSignal(
+                {
+                    "message": "Gui con di me may"
+                }
+            )
 
 
     commands = {
@@ -121,7 +134,7 @@ class RealTime(WebsocketConsumer):
         if self.piID != "none":
             self.pi = RaspDevice.objects.get(id=self.piID)
             if not self.unsignedPi: self.updatePiConnection()
-            print(self.pi, "is connected")
+            print(f"[DATABASE]: {self.pi} is connected")
 
         # print(self.room_name, self.piID, self.scope)
         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
@@ -130,7 +143,7 @@ class RealTime(WebsocketConsumer):
     def disconnect(self, close_code):
         if self.pi:
             if not self.unsignedPi: self.updatePiConnection(online=False)
-            print(self.pi, "is disconnected\n")
+            print(f"[DATABASE]: {self.pi} is disconnected!")
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_name, self.channel_name

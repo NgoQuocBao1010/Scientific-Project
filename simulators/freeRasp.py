@@ -12,11 +12,12 @@ import socket
 
 HOSTNAME = socket.gethostname()
 IP_ADDRESS = socket.gethostbyname(HOSTNAME)
-ID = "10"
+ID = "12"
 
 
 def on_message(ws, message):
     data = json.loads(message)
+    print(data)
 
     if data["id"] == ID:
         print('Done!!!')
@@ -49,8 +50,9 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    url = f"ws://{HOSTNAME}:8000/ws/realtime/general/{ID}/"
-    # url = f"ws://localhost:8000/ws/realtime/{COMPANY_ROOM_CODE}/{ID}/"
+    url = f"ws://2a3b6495b1e4.ngrok.io/ws/realtime/general/{ID}/"
+    # print(IP_ADDRESS)
+    # url = f"ws://localhost:8000/ws/realtime/general/{ID}/"
 
     ws = websocket.WebSocketApp(
         url, on_message=on_message, on_error=on_error, on_close=on_close
