@@ -98,7 +98,7 @@ class RealTime(WebsocketConsumer):
     # send room code to unconfig rasp
     def getRoomCode(self, data):
         if self.unsignedPi:
-            print("Dang gui")
+            print("[ROOMCODE] Room code is sent to the rasp!!")
             roomCode = self.pi.company.roomCode
             data.setdefault("roomCode", roomCode)
 
@@ -108,11 +108,11 @@ class RealTime(WebsocketConsumer):
         else:
             self.sendSignal(
                 {
-                    "message": "Gui con di me may"
+                    "message": "4123 BAD REQUEST"
                 }
             )
 
-
+    # List of commands
     commands = {
         "alert": alertDetected,
         "getVideo": getVideo,
@@ -129,21 +129,22 @@ class RealTime(WebsocketConsumer):
         self.unsignedPi = False
         
         if self.room_name == "general":
+            print(f"[SERVER]: Pi is in general room")
             self.unsignedPi = True
         
         if self.piID != "none":
             self.pi = RaspDevice.objects.get(id=self.piID)
             if not self.unsignedPi: self.updatePiConnection()
-            print(f"[DATABASE]: {self.pi} is connected")
+            print(f"[SERVER]: {self.pi} is connected")
 
         # print(self.room_name, self.piID, self.scope)
         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
         self.accept()
 
     def disconnect(self, close_code):
-        if self.pi:
+        if self.pi and not self.unsignedPi:
             if not self.unsignedPi: self.updatePiConnection(online=False)
-            print(f"[DATABASE]: {self.pi} is disconnected!")
+            print(f"[SERVER]: {self.pi} is disconnected!")
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_name, self.channel_name

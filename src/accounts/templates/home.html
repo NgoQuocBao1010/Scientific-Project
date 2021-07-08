@@ -4,6 +4,96 @@
 {% block modal %}
 {% for car in cars %}
 <!-- Edit Info Modal -->
+<!-- Add Device Modal -->
+<div
+class="modal fade"
+id="DeviceModal"
+tabindex="-1"
+role="dialog"
+aria-labelledby="exampleModalLabel"
+aria-hidden="true"
+>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <!-- Edit form  -->
+        <section class="form">
+            <p class="title">THÔNG TIN THIẾT BỊ</p>
+            <p class="messages" id="device-message"></p>
+            <form id="DeviceForm" method="POST">
+                {% csrf_token %}
+                <!-- Device ID -->
+                <div class="form-field">
+                    <input
+                        type="text"
+                        name="name"
+                        id="device-name"
+                        placeholder=" "
+                        required
+                    />
+                    <label for="device-name">
+                        <span class="input-label"
+                            >Tên (Loại) Xe
+                            <span class="required-star"
+                                >*</span
+                            ></span
+                        >
+                    </label>
+                </div>
+                <!-- License plate -->
+                <div class="form-field">
+                    <input
+                        type="text"
+                        name="licensePlate"
+                        id="device-license-plate"
+                        placeholder=" "
+                        required
+                    />
+                    <label for="licensePlate">
+                        <span class="input-label"
+                            >Bảng số xe
+                            <span class="required-star"
+                                >*</span
+                            ></span
+                        >
+                    </label>
+                </div>
+                <!-- Raspberry Pi password -->
+                <div class="form-field">
+                    <input
+                        type="text"
+                        name="raspPass"
+                        placeholder=" "
+                        required
+                        maxlength="8"
+                    />
+                    <label for="raspName">
+                        <span class="input-label"
+                            >Mật khẩu thiết bị
+                            <span class="required-star"
+                                >*</span
+                            ></span
+                        >
+                    </label>
+                </div>
+                <!-- Sign in button  -->
+                <div class="form-field buttons">
+                    <button
+                        id="DeviceBtn"
+                        type="submit"
+                        href="#"
+                        class="btn blue-btn long-btn"
+                    >
+                        LƯU THÔNG TIN
+                    </button>
+                    <!-- if this form is used in adding action, then the button will display THEM THIET BI and its color is yellow -->
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+</div>
+
+<!-- Invidual Device Modal -->
 <div class="modal fade" id="DeviceModal{{ car.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -81,6 +171,9 @@
 {% block content %}
 {% include "navbar-search.html" %}
 <div class="content-container">
+    {% for err, msg in errors.items %}
+    <h5 style="font-size: 12px; color: red;">{{ msg }}</h5>
+    {% endfor %}
     <!-- Car information -->
     {% for car in cars %}
     <div 

@@ -6,7 +6,7 @@ import string, random
 
 from .models import *
 from realtime.models import Alert
-from .forms import CarForm, CreateUserForm, ProfileForm
+from .forms import CarForm, CreateUserForm, ProfileForm, AddCarForm
 
 
 # Welcome, Login, Register Page
@@ -74,6 +74,8 @@ def home(request):
     company = request.user.profile.company
     cars = Car.objects.filter(company=company)
 
+    formsErrors = {}
+
     # Search filter
     searchKey = request.GET.get("search-key")
 
@@ -88,29 +90,52 @@ def home(request):
     if request.method == "POST":
         carID = request.POST.get("device-id")
 
+        # Edit Car Form
         if carID:
             editedCar = Car.objects.get(id=carID)
             form = CarForm(request.POST, instance=editedCar)
             if form.is_valid():
                 form.save()
+            else:
+                for err in form.errors:
+                    print(err)
+
+        # Add new car Form
         else:
             form = CarForm(request.POST)
             raspPass = request.POST.get("raspPass")
 
             if form.is_valid():
-                newCar = form.save()
+                newCar = form.save(commit=False)
 
-                rasp = RaspDevice.objects.get(password=raspPass)
-                rasp.car = newCar
-                rasp.company = company
-                newCar.company = company
-                rasp.save()
-                newCar.save()
+                try:
+                    rasp = RaspDevice.objects.get(password=raspPass)
+                    rasp.car = newCar
+                    rasp.company = company
+                    newCar.company = company
 
-        return redirect("home")
+                    # Saving
+                    newCar.save()
+                    rasp.save()
+                except Exception as e:
+                    print(str(e))
+                    formsErrors.setdefault("Rasp", "Mật khẩu thiết bị không tồn tại")
+            # Errors handler
+            else:
+                for field in form:
+                    for err in field.errors:
+                        # print("Errors", field.label, err)
+                        formsErrors.setdefault(field.label, err)
 
-    context = {"cars": cars, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
-    return render(request, "content.html", context)
+
+    print(formsErrors)
+    context = {
+        "cars": cars, 
+        "notifications": lastestAlerts, 
+        "unreadNotis": unreadCounts, 
+        "errors": formsErrors
+    }
+    return render(request, "home.html", context)
 
 
 @login_required(login_url="/")
@@ -143,3 +168,18 @@ def accountSettings(request):
     lastestAlerts, unreadCounts = getNotifications(company)
     context = {"profile": profile, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "account-setting.html", context)
+
+
+@login_required(login_url="/")
+def test(request):
+    form = AddCarForm()
+
+    if request.method == "POST":
+        form = AddCarForm(request.POST)
+
+        if form.is_valid():
+            form.save(company=request.user.profile.company)
+            return redirect("test")
+
+    context = {"form": form}
+    return render(request, "test.html", context)
