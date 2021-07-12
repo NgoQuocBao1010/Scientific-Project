@@ -17,7 +17,7 @@ def welcome(request):
 
     formsErrors = {}
     if request.method == "POST":
-        if (request.POST.get("login-username")):
+        if request.POST.get("login-username"):
             username = request.POST.get("login-username")
             password = request.POST.get("login-password")
 
@@ -71,7 +71,6 @@ def home(request):
     if searchKey != '' and searchKey is not None:
         cars = cars.filter(licensePlate__icontains=searchKey)
     
-
     # Notifications manage
     lastestAlerts, unreadCounts = getNotifications(company)
 
@@ -100,6 +99,7 @@ def home(request):
                     for err in field.errors:
                         # print("Errors", field.label, err)
                         formsErrors.setdefault(field.label, err)
+                form = AddCarForm(None)
 
     context = {
         "cars": cars, 

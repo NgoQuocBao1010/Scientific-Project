@@ -50,9 +50,9 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    url = f"ws://2a3b6495b1e4.ngrok.io/ws/realtime/general/{ID}/"
+    # url = f"ws://2a3b6495b1e4.ngrok.io/ws/realtime/general/{ID}/"
     # print(IP_ADDRESS)
-    # url = f"ws://localhost:8000/ws/realtime/general/{ID}/"
+    url = f"ws://localhost:8000/ws/realtime/general/{ID}/"
 
     ws = websocket.WebSocketApp(
         url, on_message=on_message, on_error=on_error, on_close=on_close

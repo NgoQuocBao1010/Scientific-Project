@@ -32,6 +32,7 @@ class AddCarForm(forms.Form):
     
     carName = forms.CharField(max_length=50)
     licensePlate = forms.CharField(max_length=20)
+    rasID = forms.CharField(max_length=1, min_length=1)
     rasPass = forms.CharField(max_length=8, min_length=8)
 
     def clean_carName(self):
@@ -51,21 +52,38 @@ class AddCarForm(forms.Form):
             raise ValidationError("Biển số xe đã tồn tại")
         
         return data
-    
-    def clean_rasPass(self):
-        data =  self.cleaned_data.get("rasPass")
-        rasp = RaspDevice.objects.filter(password__iexact=data)
+
+    def clean_rasID(self):
+        data =  self.cleaned_data.get("rasID")
+
+        rasp = RaspDevice.objects.filter(id=data)
 
         if rasp[0].company and rasp[0].company != self.company:
             raise ValidationError(f"Thiết bị không thuộc sở hữu của công ty bạn")
 
         if len(rasp) == 0:
-            raise ValidationError("Mật khẩu không tồn tại thiết bị")
+            raise ValidationError("Không tồn tại thiết bị")
         
         if rasp[0].car:
             raise ValidationError(f"Thiết bị đã kết nối với xe khác")
         
         return data
+    
+    def clean_rasPass(self):
+        data =  self.cleaned_data.get("rasPass")
+        inputId = self.cleaned_data.get("rasID")
+
+        try:
+            password = RaspDevice.objects.get(id=inputId).password
+
+            if password != data:
+                raise ValidationError(f"Mật khẩu thiết bị không đúng")
+
+        except RaspDevice.DoesNotExist:
+            print("not found")
+        
+        return data
+            
     
     def save(self):
         name = self.cleaned_data.get("carName")
@@ -160,7 +178,7 @@ class CreateUserForm(forms.Form):
             name=user.username,
         )
 
-        print(f"\n[SERVER]: {user} and {newCom}")
+        print(f"\n[SERVER]: Reigister successfully {user}, {password1} and {newCom}")
         return user
     
     

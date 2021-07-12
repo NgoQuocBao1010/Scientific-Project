@@ -15,7 +15,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 10px 20px;
-        border-radius: 20px;
+        border-radius: 1000px;
     }
 
     .driver-container h3 {
@@ -33,14 +33,17 @@
 
     .driver-container__info i {
         font-size: 50px;
+        margin-bottom: 1rem;
     }
 
     .driver-container__info h3 {
-        font-size: 18px;
+        font-size: 1.5rem;
     }
 
-    .driver-container__time i {
-        margin: 0 5px;
+    .driver-container__time h3 {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        margin: .5rem;
     }
 
 
@@ -54,6 +57,12 @@
     }
 </style>
 <div class="content-container">
+    <h3>Danh sách các chuyến xe</h3>
+    
+    {% if drs|length == 0 %}
+    <h4 style="margin-top: 2rem;">Không có chuyến xe nào được ghi nhận</h4>
+    {% endif %}
+
     {% for drive in drs %}
     <div   
         style="

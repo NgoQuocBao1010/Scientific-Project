@@ -125,6 +125,10 @@
 <div class="content-container">
     <h3>Danh sách các báo động</h3>
 
+    {% if drs|length == 0 %}
+    <h4 style="margin-top: 2rem;">Không có cảnh cáo nào được ghi nhận</h4>
+    {% endif %}
+
     {% for drive in drs %}
     <div style="background: lightblue; margin-bottom: 50px;" class="alerts-container">
         <div class="alerts-container__info">

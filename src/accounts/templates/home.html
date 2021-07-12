@@ -51,6 +51,22 @@
                             </span>
                         </label>
                     </div>
+                    <!-- Raspberry Pi ID -->
+                    <div class="form-field">
+                        <input
+                            type="text"
+                            name="rasID"
+                            placeholder=" "
+                            required
+                            maxlength="1"
+                        />
+                        <label for="rasID">
+                            <span class="input-label">
+                                ID thiết bị
+                                <span class="required-star">*</span>
+                            </span>
+                        </label>
+                    </div>
                     <!-- Raspberry Pi password -->
                     <div class="form-field">
                         <input
@@ -59,6 +75,7 @@
                             placeholder=" "
                             required
                             maxlength="8"
+                            minlength="8"
                         />
                         <label for="raspName">
                             <span class="input-label">
@@ -168,6 +185,11 @@
     <h5 style="font-size: 15px; color: red;">{{ msg }}</h5>
     {% endfor %}
     <!-- Car information -->
+    {% if cars|length == 0 %}
+    <h2>Công ty bạn chưa bổ sung xe</h2>
+    {% endif %}
+
+
     {% for car in cars %}
     <div 
         class="card
