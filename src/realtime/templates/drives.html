@@ -76,7 +76,12 @@
         <br>
         <div class="driver-container__info">
             <i class="fas fa-car-side"></i>
-            <h3>{{ drive.device.car.licensePlate }} </h3>
+
+            {% if drive.device.car %}
+            <h3> {{ drive.device.car.licensePlate }} </h3>
+            {% else %}
+            <h3> Xe không còn tồn tại </h3>
+            {% endif %}
         </div>
         <div class="driver-container__time">
             <h3>

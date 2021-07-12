@@ -11,9 +11,11 @@ from .forms import CarForm, CreateUserForm, ProfileForm, AddCarForm
 
 # Welcome, Login, Register Page
 def welcome(request):
+    form = CreateUserForm()
     if request.user.is_authenticated:
         return redirect("home")
 
+    formsErrors = {}
     if request.method == "POST":
         if (request.POST.get("login-username")):
             username = request.POST.get("login-username")
@@ -26,36 +28,22 @@ def welcome(request):
                 return redirect("home")
             else:
                 messages.info(request, "Username or Password is incorrect")
+                formsErrors.setdefault("Username Password", "Username or Password is incorrect")
             
         
-        if request.POST.get("company-name"):
+        if request.POST.get("companyName"):
             form = CreateUserForm(request.POST)
             if form.is_valid():
-                user = form.save()
-
-                try:
-                    newCompanyName = request.POST.get("company-name")
-                    characters = string.ascii_letters + string.digits
-                    roomCode = ''.join(random.choice(characters) for i in range(10))
-
-                    newComp = Company.objects.create(
-                        name=newCompanyName,
-                        roomCode=roomCode,
-                    )
-
-                    Profile.objects.create(
-                        user=user,
-                        company=newComp,
-                        name=user.username,
-                        role="admin",
-                    )
-                except Exception as e:
-                    print(e)
+                form.save()
 
             else:
-                print(form.errors)
-
-    context = {}
+                for field in form:
+                    for err in field.errors:
+                        # print("Errors", field.label, err)
+                        formsErrors.setdefault(field.label, err)
+    context = {
+        "errors": formsErrors,
+    }
     return render(request, "welcome.html", context)
 
 # Manage notifications
@@ -73,7 +61,8 @@ def getNotifications(company):
 def home(request):
     company = request.user.profile.company
     cars = Car.objects.filter(company=company)
-
+    
+    form = AddCarForm(company=company)
     formsErrors = {}
 
     # Search filter
@@ -102,33 +91,16 @@ def home(request):
 
         # Add new car Form
         else:
-            form = CarForm(request.POST)
-            raspPass = request.POST.get("raspPass")
+            form = AddCarForm(request.POST, company=company)
 
             if form.is_valid():
-                newCar = form.save(commit=False)
-
-                try:
-                    rasp = RaspDevice.objects.get(password=raspPass)
-                    rasp.car = newCar
-                    rasp.company = company
-                    newCar.company = company
-
-                    # Saving
-                    newCar.save()
-                    rasp.save()
-                except Exception as e:
-                    print(str(e))
-                    formsErrors.setdefault("Rasp", "Mật khẩu thiết bị không tồn tại")
-            # Errors handler
+                form.save()
             else:
                 for field in form:
                     for err in field.errors:
                         # print("Errors", field.label, err)
                         formsErrors.setdefault(field.label, err)
 
-
-    print(formsErrors)
     context = {
         "cars": cars, 
         "notifications": lastestAlerts, 
