@@ -65,7 +65,7 @@ def on_open(ws):
             json.dumps(
                 {
                     "command": "alert",
-                    "name": random.choice(["Yawning", "Drowsiness"]),
+                    "name": random.choice(["Alcohol", "Drowsiness"]),
                     "time": str(datetime.now()),
                 }
             )

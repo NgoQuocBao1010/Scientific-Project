@@ -76,6 +76,12 @@
                 });
             });
         </script>
+        <script>
+            if(performance.navigation.type == 2){
+                console.log("Page is reloading");
+                location.reload(true);
+            }
+        </script>
 
         {% block websocket %} {% endblock %}
     </body>

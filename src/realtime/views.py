@@ -29,7 +29,6 @@ def alerts(request):
     company = request.user.profile.company
     drs = Drive.objects.filter(device__company=company, alert__gt=0).order_by('-startTime').annotate(total=Count('id'))
     
-
     # Search filter
     searchKey = request.GET.get("search-key")
 
@@ -52,7 +51,8 @@ def driveDetail(request, id):
         return HttpResponse('<h1>You are not authorized to view this page</h1>')
 
     alerts = drive.alert_set.all()
-    
+    alcohol = alerts.filter(detect="Alcohol").exists()
+
     for alert in alerts:
         alert.isRead = True
         alert.save()
@@ -61,7 +61,13 @@ def driveDetail(request, id):
 
     lastestAlerts, unreadCounts = getNotifications(company)
 
-    context = {"drive": drive, "alerts": alerts, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
+    context = {
+        "drive": drive, 
+        "alerts": alerts, 
+        "alcohol": alcohol, 
+        "notifications": lastestAlerts, 
+        "unreadNotis": unreadCounts
+    }
     return render(request, "driveDetail.html", context)
 
 

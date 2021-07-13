@@ -58,7 +58,7 @@
                             name="rasID"
                             placeholder=" "
                             required
-                            maxlength="1"
+                            maxlength="8"
                         />
                         <label for="rasID">
                             <span class="input-label">
@@ -206,14 +206,14 @@
             </div>
             <div class="info col-lg-9 col-7">
                 <p class="license-plate">{{ car.name }} ( Biển số xe: {{ car.licensePlate }})</p>
-                <p> <span 
-                    {% if car.raspdevice.status == 'offline' %} 
-                    class="deactive-circle" 
-                    {% else %} 
-                    class="active-circle"
-                    {% endif %}>&#11044;
-                    </span>
-                    {{ car.raspdevice.status }}
+                <p>
+                    {% if car.raspdevice.status == 'offline' %}
+                    <span class="deactive-circle">&#11044;</span>
+                    Không hoạt động
+                    {% else %}
+                    <span class="active-circle">&#11044;</span>
+                    Đang hoạt động
+                    {% endif %}
                 </p>
                 <!-- <p> <img src="{% static '/images/web/alcohol-icon.svg' %}" alt=""> 0.00 BAC</p> -->
             </div>
@@ -235,6 +235,6 @@
 </div>
 {% endblock content%}
 
-{% block websocket %} 
+{% block websocket %}
 {% include "websocket.html" %}
 {% endblock %}

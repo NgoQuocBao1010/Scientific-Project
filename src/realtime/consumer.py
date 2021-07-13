@@ -90,6 +90,7 @@ class RealTime(WebsocketConsumer):
                 data
             )
     
+    # Display image to browser
     def sendImgToBrowser(self, data):
         self.sendSignal(
             data
@@ -98,7 +99,7 @@ class RealTime(WebsocketConsumer):
     # send room code to unconfig rasp
     def getRoomCode(self, data):
         if self.unsignedPi:
-            print("[ROOMCODE] Room code is sent to the rasp!!")
+            print("\n[SERVER] Room code is sent to the rasp!!\n")
             roomCode = self.pi.company.roomCode
             data.setdefault("roomCode", roomCode)
 
@@ -129,22 +130,21 @@ class RealTime(WebsocketConsumer):
         self.unsignedPi = False
         
         if self.room_name == "general":
-            print(f"[SERVER]: Pi is in general room")
+            print(f"\n[SERVER]: Pi is in general room\n")
             self.unsignedPi = True
         
         if self.piID != "none":
             self.pi = RaspDevice.objects.get(id=self.piID)
             if not self.unsignedPi: self.updatePiConnection()
-            print(f"[SERVER]: {self.pi} is connected")
+            print(f"\n[SERVER]: {self.pi} is connected\n")
 
-        # print(self.room_name, self.piID, self.scope)
         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
         self.accept()
 
     def disconnect(self, close_code):
         if self.pi and not self.unsignedPi:
             if not self.unsignedPi: self.updatePiConnection(online=False)
-            print(f"[SERVER]: {self.pi} is disconnected!")
+            print(f"\n[SERVER]: {self.pi} is disconnected!\n")
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_name, self.channel_name

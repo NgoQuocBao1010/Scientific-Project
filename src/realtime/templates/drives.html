@@ -60,60 +60,63 @@
     <h3>Danh sách các chuyến xe</h3>
     
     {% if drs|length == 0 %}
-    <h4 style="margin-top: 2rem;">Không có chuyến xe nào được ghi nhận</h4>
+    <h4 style="margin-top: 2rem;" id="empty-message">Không có chuyến xe nào được ghi nhận</h4>
     {% endif %}
 
-    {% for drive in drs %}
-    <div   
-        style="
+    <div class="drive-wrapper">
+        {% for drive in drs %}
+        <div   
+            style="
+                {% if drive.endTime %}
+                background: lightblue; 
+                {% else%}
+                background: rgba(123, 217, 108, 0.4);
+                {% endif %}
+
+                margin-bottom: 50px;"
+            
+            class="driver-container"
+            id="{{ drive.id }}"
             {% if drive.endTime %}
-            background: lightblue; 
+            online="0" 
             {% else%}
-            background: rgba(123, 217, 108, 0.4);
+            online="1" 
             {% endif %}
+        >
+            <br>
+            <div class="driver-container__info">
+                <i class="fas fa-car-side"></i>
 
-            margin-bottom: 50px;"
-        
-        class="driver-container"
-        id="{{ drive.id }}"
-        {% if drive.endTime %}
-        online="0" 
-        {% else%}
-        online="1" 
-        {% endif %}
-    >
-        <br>
-        <div class="driver-container__info">
-            <i class="fas fa-car-side"></i>
-
-            {% if drive.device.car %}
-            <h3> {{ drive.device.car.licensePlate }} </h3>
-            {% else %}
-            <h3> Xe không còn tồn tại </h3>
-            {% endif %}
+                {% if drive.device.car %}
+                <h3> {{ drive.device.car.licensePlate }} </h3>
+                {% else %}
+                <h3> Xe không còn tồn tại </h3>
+                {% endif %}
+            </div>
+            <div class="driver-container__time">
+                <h3>
+                    <!-- <i class="fas fa-play"></i>  -->
+                    Khởi hành: 
+                    {{ drive.startTime.time }}, ngày {{ drive.startTime.date }}
+                </h3>
+                {% if drive.endTime %}
+                <h3>
+                    Kết thúc: 
+                    {{ drive.endTime.time }}, ngày {{ drive.endTime.date }}
+                </h3>
+                {% else %}
+                <h3>Xe dang hoat dong</h3>
+                {% endif %}
+            </div>
+            
+            <a href="{% url 'driveDetail' drive.id  %}">
+                <i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i>
+            </a>
+            <br>
         </div>
-        <div class="driver-container__time">
-            <h3>
-                <!-- <i class="fas fa-play"></i>  -->
-                Khởi hành: 
-                {{ drive.startTime.time }}, ngày {{ drive.startTime.date }}
-            </h3>
-            {% if drive.endTime %}
-            <h3>
-                Kết thúc: 
-                {{ drive.endTime.time }}, ngày {{ drive.endTime.date }}
-            </h3>
-            {% else %}
-            <h3>Xe dang hoat dong</h3>
-            {% endif %}
-        </div>
-        
-        <a href="{% url 'driveDetail' drive.id  %}">
-            <i style="transform: rotate(90deg);" class="fas fa-arrow-up"></i>
-        </a>
-        <br>
+        {% endfor %}
     </div>
-    {% endfor %}
+    
 </div>
 {% endblock content %}
 
@@ -123,6 +126,9 @@
 
     // Switch status of cars in page
     const addDrive = (data) => {
+        const emptyMessage = document.getElementById("empty-message");
+        if (emptyMessage) document.querySelector(".content-container").removeChild(emptyMessage);
+        
         const licensePlate = data["licensePlate"];
         const status = data["status"];
         const driveID = data["driveID"];
@@ -134,7 +140,7 @@
         const dateTime = `${time}, ngày ${date}`;
 
         if (status) {
-            const container = document.querySelector(".content-container");
+            const container = document.querySelector(".drive-wrapper");
             const newDriveContainer = document.createElement("div");
             newDriveContainer.classList.add("driver-container");
             newDriveContainer.style.background = "rgba(123, 217, 108, 0.4)";

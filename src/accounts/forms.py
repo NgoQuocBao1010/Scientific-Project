@@ -32,7 +32,7 @@ class AddCarForm(forms.Form):
     
     carName = forms.CharField(max_length=50)
     licensePlate = forms.CharField(max_length=20)
-    rasID = forms.CharField(max_length=1, min_length=1)
+    rasID = forms.CharField(max_length=8)
     rasPass = forms.CharField(max_length=8, min_length=8)
 
     def clean_carName(self):
@@ -84,7 +84,6 @@ class AddCarForm(forms.Form):
         
         return data
             
-    
     def save(self):
         name = self.cleaned_data.get("carName")
         licensePlate = self.cleaned_data.get("licensePlate")

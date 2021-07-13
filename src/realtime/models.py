@@ -14,14 +14,13 @@ class Drive(models.Model):
     endTime = models.DateTimeField(null=True)
 
     def __str__(self):
-        return f"Drive #{self.id} by {self.device}"
+        return f"Drive #{self.id} by {self.device.car}, {self.device}"
 
 
 class Alert(models.Model):
     DECTECT_TYPE = (
-        ("Yawning", "Yawning"),
+        ("Alcohol", "Alcohol"),
         ("Drowsiness", "Drowsiness"),
-        ("MissingFace", "MissingFace"),
     )
     
     drive = models.ForeignKey(Drive, null=True, on_delete=models.CASCADE)
@@ -30,4 +29,4 @@ class Alert(models.Model):
     isRead = models.BooleanField(null=True, blank=True, default=False)
 
     def __str__(self):
-        return f"Drowsiness detection with drive {self.drive.id}"
+        return f"{self.detect} detection with drive {self.drive.id}"

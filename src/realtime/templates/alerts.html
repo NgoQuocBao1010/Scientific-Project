@@ -129,33 +129,169 @@
     <h4 style="margin-top: 2rem;">Không có cảnh cáo nào được ghi nhận</h4>
     {% endif %}
 
-    {% for drive in drs %}
-    <div style="background: lightblue; margin-bottom: 50px;" class="alerts-container">
-        <div class="alerts-container__info">
-            <i class="fas fa-car-crash"></i>
-            <h3>{{ drive.device.car.licensePlate }}</h3>
-            <div class="break-line"></div>
-            <h5>Khởi hành lúc {{ drive.startTime.time }}, ngày {{ drive.startTime.date }}</h5>
-        </div>
-
-        <div class="alerts-container__warn">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h5>{{ drive.alert_set.all|length }} cảnh cáo</h5>
-        </div>
-        
-        
-        <a class="dedcription-btn" href="{% url 'driveDetail' drive.id %}">
-            <span class="name-descripeion">Chi tiết</span>
-            <div class="btn-icon book">
-                <i class="fas fa-exclamation-triangle"></i>          
+    <div class="drive-wrapper">
+        {% for drive in drs %}
+        <div style="background: lightblue; margin-bottom: 50px;" class="alerts-container" id="{{ drive.id }}">
+            <div class="alerts-container__info">
+                <i class="fas fa-car-crash"></i>
+                <h3>{{ drive.device.car.licensePlate }}</h3>
+                <div class="break-line"></div>
+                <h5>Khởi hành lúc {{ drive.startTime.time }}, ngày {{ drive.startTime.date }}</h5>
             </div>
-        </a>
+
+            <div class="alerts-container__warn">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h5>{{ drive.alert_set.all|length }} cảnh cáo</h5>
+            </div>
+            
+            
+            <a class="dedcription-btn" href="{% url 'driveDetail' drive.id %}">
+                <span class="name-descripeion">Chi tiết</span>
+                <div class="btn-icon book">
+                    <i class="fas fa-exclamation-triangle"></i>          
+                </div>
+            </a>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 
 {% endblock content %}
 
 {% block websocket %} 
-{% include "websocket.html" %}
+<script>
+    let notiCount = {{ unreadNotis }};
+    let ongoingDrives = [];
+
+    const notify = () => {
+        const notiCountFrontEnd = document.getElementById("noti-count");
+        notiCount++;
+        notiCountFrontEnd.innerText = notiCount;
+    }
+
+    // Add notification to the dropdown
+    const notifyDetail = (alertType, licensePlate, time, driveUrl) => {
+        // Dropdown container
+        const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
+
+        const notiTitle = document.createElement("p");
+        notiTitle.classList.add("noti-title");
+        notiTitle.innerText = `${alertType}: ${licensePlate}`;
+
+        const notiTime = document.createElement("p");
+        notiTime.classList.add("noti-time");
+        notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
+
+        const link = document.createElement("a");
+        link.href = `${driveUrl}`;
+        link.classList.add("dropdown-item");
+        link.classList.add("dropdown-menu-right");
+        link.classList.add("noti-uncheck");
+        link.appendChild(notiTitle);
+        link.appendChild(notiTime);
+
+        const preLinks = notiLinks.querySelectorAll("a:not(.noti-more)");
+
+        if (preLinks.length >= 5) {
+            const lastNotiIndex = preLinks.length - 1;
+            notiLinks.removeChild(preLinks[lastNotiIndex]);
+        }
+        notiLinks.prepend(link);
+    }
+
+    const addAlert = (licensePlate) => {
+        const drive = ongoingDrives.find(drive => drive.licensePlate === licensePlate);
+        drive.alerts++;
+
+        const driveContainer = document.getElementById(drive.id);
+        if (driveContainer) {
+            const alertDisplay = driveContainer.querySelector(".alerts-container__warn h5");
+            alertDisplay.innerHTML = `${drive.alerts} cảnh cáo`;
+        }
+        else {
+            const drivesWrapper = document.querySelector(".drive-wrapper");
+            const newAlertContainer = document.createElement("div");
+            newAlertContainer.classList.add("alerts-container");
+            newAlertContainer.style.background = "lightblue";
+            newAlertContainer.style.marginBottom = "50px";
+            newAlertContainer.id = drive.id;
+            
+            newAlertContainer.innerHTML = `
+                <div class="alerts-container__info">
+                    <i class="fas fa-car-crash"></i>
+                    <h3>${drive.licensePlate}</h3>
+                    <div class="break-line"></div>
+                    <h5>Khởi hành lúc ${drive.startTime}</h5>
+                </div>
+
+                <div class="alerts-container__warn">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h5>${drive.alerts} cảnh cáo</h5>
+                </div>
+                
+                
+                <a class="dedcription-btn" href="${drive.driveUrl}">
+                    <span class="name-descripeion">Chi tiết</span>
+                    <div class="btn-icon book">
+                        <i class="fas fa-exclamation-triangle"></i>          
+                    </div>
+                </a>
+            `;
+            drivesWrapper.prepend(newAlertContainer);
+        }
+    }
+
+</script>
+<script>
+    const room = "{{ request.user.profile.company.roomCode }}";
+
+    let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
+    let socket = new ReconnectingWebSocket(socketUrl);
+
+    socket.onopen = function (e) {
+        alert("Connection established");
+    };
+
+    socket.onmessage = function (e) {
+        let data = JSON.parse(e.data);
+        console.log(data);
+
+        if (data["messageType"] === "status") {
+            if (data["status"]) {
+                const today = new Date();
+                const date = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`;
+                const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                const dateTime = `${time}, ngày ${date}`;
+
+                const newDrive = {
+                    id: data["driveID"],
+                    startTime: dateTime,
+                    licensePlate: data["licensePlate"],
+                    driveUrl: data["driveUrl"],
+                    alerts: 0,
+                }
+
+                ongoingDrives.push(newDrive);
+            }
+            else {
+                ongoingDrives = ongoingDrives.filter(drive => {
+                    return drive.licensePlate !== data["licensePlate"];
+                });
+            }
+            console.log(ongoingDrives);
+        }
+
+        // Notify when there are warnings
+        if (data["messageType"] === "notification") {
+            notify();
+            const { alertType, licensePlate, time, driveUrl } = data;
+            notifyDetail(alertType, licensePlate, time, driveUrl);
+            addAlert(licensePlate);
+        }
+    };
+
+    socket.onclose = function (e) {
+        alert("Connection closed");
+    };
+</script>
 {% endblock %}

@@ -7,7 +7,7 @@
         const statusPara = displayCards.querySelector("p:not(.license-plate)")
         const statusCircle = statusPara.querySelector("span");
 
-        const text = (online) ? "online" : "offline";
+        const text = (online) ? "Đang hoạt động" : "Không hoạt động";
 
         if (online) {
             statusCircle.classList.remove("deactive-circle");
