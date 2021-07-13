@@ -40,7 +40,6 @@ def alerts(request):
     context = {'drs': drs, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "alerts.html", context)
 
-
 # Detail of an specific drive (start, end, alerts ...) 
 @login_required(login_url="/")
 def driveDetail(request, id):
@@ -69,7 +68,6 @@ def driveDetail(request, id):
         "unreadNotis": unreadCounts
     }
     return render(request, "driveDetail.html", context)
-
 
 # Return every drives of individual car
 @login_required(login_url="/")
