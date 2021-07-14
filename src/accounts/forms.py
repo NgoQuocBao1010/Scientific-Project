@@ -4,6 +4,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 import random, string
 
@@ -90,13 +92,26 @@ class AddCarForm(forms.Form):
         rasPass = self.cleaned_data.get("rasPass")
 
         rasp = RaspDevice.objects.get(password__iexact=rasPass)
+        roomCode = "general" if not rasp.company else rasp.company.roomCode
         newCar = Car.objects.create(name=name, licensePlate=licensePlate, company=self.company)
 
         rasp.car = newCar
         rasp.company = self.company
         rasp.save()
 
-        print(f"\n[SERVER]: {rasp.name} => {newCar} => {self.company}")
+
+        message = {
+            "id": rasp.id,
+            "command": "resetRasp",
+            "roomCode": self.company.roomCode,
+        }
+
+        layer = get_channel_layer()
+        async_to_sync(layer.group_send)(
+            roomCode, {"type": "randomFunc", "message": message}
+        )
+
+        print(f"\n[SERVER]: Connection {rasp.name} => {newCar} => {self.company}, a signal is sent to general room")
     
 
 class CreateUserForm(forms.Form):

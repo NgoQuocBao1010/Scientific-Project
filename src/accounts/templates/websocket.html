@@ -68,7 +68,7 @@
     let socket = new ReconnectingWebSocket(socketUrl);
 
     socket.onopen = function (e) {
-        alert("Connection established");
+        console.log("Connection established");
     };
 
     socket.onmessage = function (e) {
@@ -89,6 +89,6 @@
     };
 
     socket.onclose = function (e) {
-        alert("Connection closed");
+        console.log("Connection closed");
     };
 </script>

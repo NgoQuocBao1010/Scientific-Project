@@ -13,6 +13,12 @@ class RealTime(WebsocketConsumer):
     # Update when Raspberry Pi is connected and disconnected
     def updatePiConnection(self, online=True):
         driveID =  None
+
+        if not self.pi.car and not online:
+            checkRasp = RaspDevice.objects.get(id=self.pi.id)
+            if checkRasp.car:
+                self.pi = checkRasp
+
         self.pi.status = "online" if online else "offline"
         self.pi.save()
 
@@ -35,7 +41,12 @@ class RealTime(WebsocketConsumer):
             driveUrl = reverse("driveDetail", kwargs={'id': driveID})
             drive.save()
 
-        carLiscense = self.pi.car.licensePlate
+        if not self.pi.car:
+            print(f"\n[SERVER]: Activity from {self.pi} that has no car!\n")
+            carLiscense = "Xe không xác định"
+        else:
+            carLiscense = self.pi.car.licensePlate
+        
         self.sendSignal(
             {
                 "messageType": "status", 
@@ -56,7 +67,12 @@ class RealTime(WebsocketConsumer):
         timeOccured = data["time"]
         drive = self.pi.drive_set.all().order_by('-startTime')[0]
 
-        carLiscense = self.pi.car.licensePlate
+        if not self.pi.car:
+            print(f"\n[SERVER]: Drowsiness detection from {self.pi} that has no car!\n")
+            carLiscense = "Xe không xác định"
+        else:
+            carLiscense = self.pi.car.licensePlate
+
         driveUrl = reverse("driveDetail", kwargs={'id': drive.id})
 
         try:
@@ -99,19 +115,16 @@ class RealTime(WebsocketConsumer):
     # send room code to unconfig rasp
     def getRoomCode(self, data):
         if self.unsignedPi:
-            print("\n[SERVER] Room code is sent to the rasp!!\n")
-            roomCode = self.pi.company.roomCode
-            data.setdefault("roomCode", roomCode)
+            if self.pi.company:
+                roomCode = self.pi.company.roomCode
+                data.setdefault("roomCode", roomCode)
 
-            self.sendSignal(
-                data
-            )
-        else:
-            self.sendSignal(
-                {
-                    "message": "4123 BAD REQUEST"
-                }
-            )
+                self.sendSignal(
+                    data
+                )
+                print("\n[SERVER] Room code is sent to the rasp!!\n")
+            else:
+                print(f"\n[SERVER] Can't send room code to {self.pi} cuz there no room field!!\n")
 
     # List of commands
     commands = {

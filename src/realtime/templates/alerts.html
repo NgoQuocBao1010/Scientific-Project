@@ -134,7 +134,11 @@
         <div style="background: lightblue; margin-bottom: 50px;" class="alerts-container" id="{{ drive.id }}">
             <div class="alerts-container__info">
                 <i class="fas fa-car-crash"></i>
+                {% if drive.device.car %}
                 <h3>{{ drive.device.car.licensePlate }}</h3>
+                {% else %}
+                <h3>Xe không xác định</h3>
+                {% endif %}
                 <div class="break-line"></div>
                 <h5>Khởi hành lúc {{ drive.startTime.time }}, ngày {{ drive.startTime.date }}</h5>
             </div>

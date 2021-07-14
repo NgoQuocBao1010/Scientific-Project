@@ -13,12 +13,13 @@ import socket
 HOSTNAME = socket.gethostname()
 IP_ADDRESS = socket.gethostbyname(HOSTNAME)
 COMPANY_ROOM_CODE = "lsRHGGT111"
-ID = "2"
+ID = "6"
 
 
 def on_message(ws, message):
     thisFolder = "./simulators/images/"
     data = json.loads(message)
+    print(data)
 
     if data.get("piDeviceID") == ID:
         images = os.listdir(thisFolder)
@@ -60,17 +61,15 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        while True:
-            time.sleep(10)
-            ws.send(
-                json.dumps(
-                    {
-                        "command": "alert",
-                        "name": random.choice(["Alcohol", "Drowsiness"]),
-                        "time": str(datetime.now()),
-                    }
-                )
+        ws.send(
+            json.dumps(
+                {
+                    "command": "alert",
+                    "name": random.choice(["Alcohol", "Drowsiness"]),
+                    "time": str(datetime.now()),
+                }
             )
+        )
 
     thread.start_new_thread(run, ())
 

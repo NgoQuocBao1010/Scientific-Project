@@ -94,12 +94,14 @@ def home(request):
 
             if form.is_valid():
                 form.save()
+                return redirect("home")
+
             else:
                 for field in form:
                     for err in field.errors:
                         # print("Errors", field.label, err)
                         formsErrors.setdefault(field.label, err)
-                form = AddCarForm(None)
+                form = AddCarForm()
 
     context = {
         "cars": cars, 
