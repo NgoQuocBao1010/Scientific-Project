@@ -69,9 +69,15 @@ def on_open(ws):
                     MESSAGE.get("roomCode")
                 )
             )
-            print(f"{ROOM_CODE}")
+            print(f"In room {ROOM_CODE}")
         else:
             print("Detecting Drowsiness ....")
+            time.sleep(3)
+            ws.send(
+                json.dumps(
+                    MESSAGE.get("alert")
+                )
+            )
 
     thread.start_new_thread(run, ())
 
