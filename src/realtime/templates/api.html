@@ -67,7 +67,7 @@
     let imageTaken = false;
 
     socket.onopen = function (e) {
-        alert("Connection established");
+        console.log("Connection established");
         socket.send(
             JSON.stringify({
                 command: "getVideo",
@@ -85,6 +85,7 @@
         if (data["messageType"] === "notification") {
             notify();
             const { alertType, licensePlate, time, driveUrl } = data;
+            if (!popUpVisible) popUp(licensePlate, driveUrl);
             notifyDetail(alertType, licensePlate, time, driveUrl);
         }
         // Receive message from server 
@@ -131,6 +132,6 @@
     };
 
     socket.onclose = function (e) {
-        alert("Connection closed");
+        console.log("Connection closed");
     };
 </script>
