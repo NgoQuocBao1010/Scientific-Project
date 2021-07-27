@@ -1,0 +1,162 @@
+{% load static %}
+<style>
+.popup {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    overflow: hidden;
+    display: none;
+
+    font-size: 14px;
+}
+
+.fade-in {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    animation: fadein .5s;
+}
+
+.fade-out {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    animation: fadeout 3s forwards;
+}
+
+.popup .content {
+    padding: 1rem;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 30%;
+    min-width: 250px;
+    min-height: 100px;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.popup .content img {
+    width: 50px;
+    aspect-ratio: 1 / 1;
+}
+
+.popup .content .subtitle {
+    text-align: center;
+    width: 50%;
+}
+
+.popup .content .btn {
+    font-size: 12px;
+    padding: .5rem 1rem;
+    background: #FF9800;
+    border-radius: 1000px;
+    text-decoration: none;
+
+    transition: all .3s ease;
+}
+
+.popup .content .btn:hover {
+    color: white;
+    background: black;
+    font-weight: 500;
+}
+
+.popup .content i {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 1rem;
+    cursor: pointer;
+}
+
+@keyframes fadein {
+    from {
+        transform: translateX(130%);
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0);
+        opacity: 1; 
+    }
+}
+
+@keyframes fadeout {
+    to { 
+        transform: translateX(130%);
+        opacity: 0;
+    }
+}
+</style>
+
+
+<!-- Alert Modals -->
+<div
+class="popup"
+id="AlertModal"
+>
+    <div class="content">
+        <div class="top">
+            <img
+                src="{% static '/images/web/flame-vector.svg' %}"
+                alt="Flame Icon"
+                title="Flame"
+            />
+        </div>
+        <p class="subtitle">
+            Phát hiện tài xế có dấu hiệu bất thường khi đang điều
+            khiển phương tiện
+            <b id="warning-car">56H P2 - 34.179</b>
+        </p>
+        <div class="button">
+            <a
+                type="button"
+                class="btn"
+            >
+                Xử lý ngay
+            </a>
+        </div>
+        <i class="fas fa-times"></i>
+    </div>
+</div>
+
+<!-- Javascript -->
+<script>
+    let popUpVisible = false;
+
+    const popUp = (licensePlate, driveUrl) => {
+        const alertModal = document.getElementById("AlertModal");
+        
+        alertModal.classList.remove("fade-out");
+        alertModal.classList.add("fade-in");
+
+        alertModal.style.display = "flex";
+        
+        alertModal.querySelector("#warning-car").innerText = licensePlate;
+        alertModal.querySelector("a.btn").href = driveUrl;
+
+        popUpVisible = true;
+
+        setTimeout(fadeOut, 3000);
+    }
+
+    const fadeOut = () => {
+        const alertModal = document.getElementById("AlertModal");
+        alertModal.classList.remove("fade-in");
+        alertModal.classList.add("fade-out");
+        
+        // alertModal.style.display = "none";
+
+        popUpVisible = false;
+    }
+</script>

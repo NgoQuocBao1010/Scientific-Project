@@ -51,14 +51,12 @@
     </head>
 
     <body class="wrapper">
-        <!-- Register Modals | Account Modals -->
-        {% include "signin-modal.html" %}
-
-        {% block modal %} {% endblock %} 
+        {% include "signin-modal.html" %} 
+        {% include "alert-modal.html" %} 
+        {% block modal %} {% endblock %}
 
         <div id="content">
-            {% block content %} 
-            {% endblock %}
+            {% block content %} {% endblock %}
         </div>
         <script src="{% static 'js/reconnecting-websocket.js' %}"></script>
         <script type="text/javascript">
@@ -77,7 +75,7 @@
             });
         </script>
         <script>
-            if(performance.navigation.type == 2){
+            if (performance.navigation.type == 2) {
                 console.log("Page is reloading");
                 location.reload(true);
             }

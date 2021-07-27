@@ -84,6 +84,8 @@
         else if (data["messageType"] === "notification") {
             notify();
             const { alertType, licensePlate, time, driveUrl } = data;
+
+            if (!popUpVisible) popUp(licensePlate, driveUrl);
             notifyDetail(alertType, licensePlate, time, driveUrl);
         }
     };

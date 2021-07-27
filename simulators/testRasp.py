@@ -12,8 +12,8 @@ import socket
 
 HOSTNAME = socket.gethostname()
 IP_ADDRESS = socket.gethostbyname(HOSTNAME)
-COMPANY_ROOM_CODE = "lsRHGGT111"
-ID = "1"
+COMPANY_ROOM_CODE = "8LQLuq1lv3"
+ID = "18"
 
 
 def on_message(ws, message):
@@ -60,7 +60,7 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_open(ws):
     def run(*args):
-        time.sleep(2)
+        time.sleep(1)
         ws.send(
             json.dumps(
                 {
@@ -70,9 +70,6 @@ def on_open(ws):
                 }
             )
         )
-        time.sleep(1)
-        
-        ws.close()
 
     thread.start_new_thread(run, ())
 

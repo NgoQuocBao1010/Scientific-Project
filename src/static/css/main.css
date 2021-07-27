@@ -108,7 +108,7 @@ body {
 
 .btn:hover {
   color: inherit;
-  letter-spacing: 5px;
+  /* letter-spacing: 5px; */
   font-weight: bold;
 }
 
