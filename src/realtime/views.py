@@ -46,7 +46,7 @@ def driveDetail(request, id):
     company = request.user.profile.company
     drive = Drive.objects.get(id=id)
 
-    if drive.device.car.company != company:
+    if drive.device.company != company:
         return HttpResponse('<h1>You are not authorized to view this page</h1>')
 
     alerts = drive.alert_set.all()

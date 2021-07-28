@@ -116,7 +116,7 @@ class AddCarForm(forms.Form):
 
 class CreateUserForm(forms.Form):
     companyName = forms.CharField(max_length=50)
-    email = forms.EmailField(max_length=20)
+    email = forms.EmailField(max_length=50)
     password1 = forms.CharField(max_length=50)
     password2 = forms.CharField(max_length=50)
 
@@ -167,11 +167,10 @@ class CreateUserForm(forms.Form):
 
         if password2 != password1:
             raise ValidationError(f"Mật khẩu không trùng khớp")
-        
-        return password2
 
     
     def save(self):
+        print(self.cleaned_data)
         email =  self.cleaned_data.get("email")
         password1 =  self.cleaned_data.get("password1")
 

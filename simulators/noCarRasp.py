@@ -13,7 +13,7 @@ import socket
 HOSTNAME = socket.gethostname()
 IP_ADDRESS = socket.gethostbyname(HOSTNAME)
 COMPANY_ROOM_CODE = "lsRHGGT111"
-ID = "6"
+ID = "14"
 
 
 def on_message(ws, message):
@@ -60,15 +60,17 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        ws.send(
-            json.dumps(
-                {
-                    "command": "alert",
-                    "name": random.choice(["Alcohol", "Drowsiness"]),
-                    "time": str(datetime.now()),
-                }
+        while True:
+            time.sleep(3)
+            ws.send(
+                json.dumps(
+                    {
+                        "command": "alert",
+                        "name": random.choice(["Alcohol", "Drowsiness"]),
+                        "time": str(datetime.now()),
+                    }
+                )
             )
-        )
 
     thread.start_new_thread(run, ())
 

@@ -69,7 +69,12 @@ class RealTime(WebsocketConsumer):
         
         alertType = data["name"]
         timeOccured = data["time"]
-        drive = self.pi.drive_set.all().order_by('-startTime')[0]
+        drives = self.pi.drive_set.all().order_by('-startTime')
+
+        if not drives:
+            return
+        
+        drive = drives[0]
 
         if not self.pi.car:
             print(f"[SERVER]: Drowsiness detection from {self.pi} that has no car!\n")

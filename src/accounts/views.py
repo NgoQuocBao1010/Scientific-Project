@@ -35,6 +35,7 @@ def welcome(request):
                 form.save()
 
             else:
+                print(form.errors.items())
                 formsErrors = form.errors.values()
                 form = CreateUserForm(None)
 
