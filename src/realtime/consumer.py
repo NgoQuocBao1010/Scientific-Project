@@ -16,14 +16,17 @@ class RealTime(WebsocketConsumer):
         driveID =  None
 
         # Check if user add car to rasp during the drive
-        if not self.pi.car and not online:
+        if not online:
             checkRasp = RaspDevice.objects.get(id=self.pi.id)
-            if checkRasp.car:
-                self.pi = checkRasp
+            self.pi = checkRasp
 
         self.pi.status = "online" if online else "offline"
+
         self.pi.save()
 
+        if not online and not self.pi.car:
+            return
+        
         if online:  # Update new drive to database 
             try:
                 newDrive = Drive.objects.create(
@@ -36,7 +39,7 @@ class RealTime(WebsocketConsumer):
             except Exception as e:
                 print(str(e))
         
-        else:  # End the ongoing drives 
+        else:  # End the ongoing drives when there is car
             drive = self.pi.drive_set.all().order_by('-startTime')[0]
             drive.status = "ended"
             print(f"[SERVER]: Drive {drive.id} is ended\n")

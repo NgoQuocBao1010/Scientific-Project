@@ -5,8 +5,8 @@ from accounts.models import RaspDevice, Company
 
 class Drive(models.Model):
     STATUS = (
-        (1, "ongoing"),
-        (0, "ended"),
+        ("ongoing", "ongoing"),
+        ("ended", "ended"),
     )
     device = models.ForeignKey(RaspDevice, null=True, on_delete=models.CASCADE)
     startTime = models.DateTimeField(null=True)
