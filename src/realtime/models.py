@@ -5,8 +5,8 @@ from accounts.models import RaspDevice, Company
 
 class Drive(models.Model):
     STATUS = (
-        ("ongoing", "ongoing"),
-        ("ended", "ended"),
+        (1, "ongoing"),
+        (0, "ended"),
     )
     device = models.ForeignKey(RaspDevice, null=True, on_delete=models.CASCADE)
     startTime = models.DateTimeField(null=True)
@@ -19,8 +19,9 @@ class Drive(models.Model):
 
 class Alert(models.Model):
     DECTECT_TYPE = (
-        ("Alcohol", "Alcohol"),
-        ("Drowsiness", "Drowsiness"),
+        ("Noeye", "Không thấy khuôn mặt"),
+        ("Drowsiness", "Không tỉnh táo"),
+        ("Alcohol", "Đồ uống có cồn"),
     )
     
     drive = models.ForeignKey(Drive, null=True, on_delete=models.CASCADE)

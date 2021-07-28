@@ -80,6 +80,54 @@
                 location.reload(true);
             }
         </script>
+        {{ unreadNotis|json_script:"unreadNotis" }}
+        <script>
+            let notiCount = JSON.parse(document.getElementById('unreadNotis').textContent);
+
+            let vietnameseAlerts = {
+                Noeye: "Không thấy khuôn mặt",
+                Alcohol: "Đồ uống có cồn",
+                Drowsiness: "Không tỉnh táo",
+            }
+
+            // Notify
+            const notify = () => {
+                const notiCountFrontEnd = document.getElementById("noti-count");
+                notiCount++;
+                notiCountFrontEnd.innerText = notiCount;
+            }
+
+            // Add notification to the dropdown
+            const notifyDetail = (alertType, licensePlate, time, driveUrl) => {
+        // Dropdown container
+        const notiLinks = document.querySelector("#dropdown-notification .dropdown-menu-right");
+
+        const notiTitle = document.createElement("p");
+        notiTitle.classList.add("noti-title");
+        notiTitle.innerText = `${vietnameseAlerts[alertType]}: ${licensePlate}`;
+
+        const notiTime = document.createElement("p");
+        notiTime.classList.add("noti-time");
+        notiTime.innerHTML = `${time} <span class="danger-circle">&#11044;</span>`;
+
+        const link = document.createElement("a");
+        link.href = `${driveUrl}`;
+        link.classList.add("dropdown-item");
+        link.classList.add("dropdown-menu-right");
+        link.classList.add("noti-uncheck");
+        link.appendChild(notiTitle);
+        link.appendChild(notiTime);
+
+        const preLinks = notiLinks.querySelectorAll("a:not(.noti-more)");
+
+        if (preLinks.length >= 5) {
+            const lastNotiIndex = preLinks.length - 1;
+            notiLinks.removeChild(preLinks[lastNotiIndex]);
+        }
+        notiLinks.prepend(link);
+    }
+    
+        </script>
 
         {% block websocket %} {% endblock %}
     </body>

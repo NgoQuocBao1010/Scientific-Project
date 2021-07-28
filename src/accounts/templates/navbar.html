@@ -24,15 +24,15 @@
                         {% endif %}
                     " href="{% url 'driveDetail' noti.drive.id  %}">
                         {% if noti.drive.device.car %}
-                        <p class="noti-title">{{ noti.detect }}: {{ noti.drive.device.car.licensePlate }}</p>
+                        <p class="noti-title">{{ noti.get_detect_display }}: {{ noti.drive.device.car.licensePlate }}</p>
                         {% else %}
-                        <p class="noti-title">{{ noti.detect }}: Xe không xác định</p>
+                        <p class="noti-title">{{ noti.get_detect_display }}: Xe không xác định</p>
                         {% endif %}
                         <p class="noti-time">{{ noti.timeOccured.date }} lúc {{ noti.timeOccured.time }}<span class="danger-circle">&#11044;</span> </p>
                     </a>
                     {% endfor %}
                     <a class="dropdown-item noti-more" href="{% url 'alerts' %}">
-                        See more
+                        Xem các cảnh cáo khác
                     </a>
                 </div>
             </li>

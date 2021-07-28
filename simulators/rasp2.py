@@ -61,23 +61,24 @@ def on_close(ws):
 def on_open(ws):
     def run(*args):
         while True:
-            time.sleep(10)
+            time.sleep(3)
             ws.send(
                 json.dumps(
                     {
                         "command": "alert",
-                        "name": random.choice(["Alcohol", "Drowsiness"]),
+                        "name": random.choice(["Alcohol", "Drowsiness", "Noeye"]),
                         "time": str(datetime.now()),
                     }
                 )
             )
+            # pass
 
     thread.start_new_thread(run, ())
 
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    # url = f"ws://{HOSTNAME}:8000/ws/realtime/{COMPANY_ROOM_CODE}/{ID}/"
+    url = f"ws://{HOSTNAME}:8000/ws/realtime/{COMPANY_ROOM_CODE}/{ID}/"
     url = f"ws://localhost:8000/ws/realtime/{COMPANY_ROOM_CODE}/{ID}/"
 
     ws = websocket.WebSocketApp(
@@ -85,3 +86,6 @@ if __name__ == "__main__":
     )
     ws.on_open = on_open
     ws.run_forever()
+
+
+

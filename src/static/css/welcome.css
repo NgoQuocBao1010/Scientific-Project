@@ -185,7 +185,8 @@
   .features-content .rectangle {
     margin: 1.25rem;
     padding: 0.2em 0.8em;
-    font-family: var(--font3);
+    font-family: 'Raleway', sans-serif !important;
+    font-weight: 400;
     font-size: 1rem;
       background: var(--selective-yellow);
       text-align: center;

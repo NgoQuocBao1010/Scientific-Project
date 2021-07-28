@@ -15,7 +15,7 @@ def welcome(request):
     if request.user.is_authenticated:
         return redirect("home")
 
-    formsErrors = {}
+    formsErrors = []
     if request.method == "POST":
         if request.POST.get("login-username"):
             username = request.POST.get("login-username")
@@ -27,9 +27,7 @@ def welcome(request):
                 login(request, user)
                 return redirect("home")
             else:
-                messages.info(request, "Username or Password is incorrect")
-                formsErrors.setdefault("Username Password", "Username or Password is incorrect")
-            
+                messages.info(request, "Email hoặc mật khẩu không hợp lệ")
         
         if request.POST.get("companyName"):
             form = CreateUserForm(request.POST)
@@ -37,10 +35,9 @@ def welcome(request):
                 form.save()
 
             else:
-                for field in form:
-                    for err in field.errors:
-                        # print("Errors", field.label, err)
-                        formsErrors.setdefault(field.label, err)
+                formsErrors = form.errors.values()
+                form = CreateUserForm(None)
+
     context = {
         "errors": formsErrors,
     }

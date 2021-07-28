@@ -10,10 +10,12 @@ import json
 from datetime import datetime
 
 class RealTime(WebsocketConsumer):
+
     # Update when Raspberry Pi is connected and disconnected
     def updatePiConnection(self, online=True):
         driveID =  None
 
+        # Check if user add car to rasp during the drive
         if not self.pi.car and not online:
             checkRasp = RaspDevice.objects.get(id=self.pi.id)
             if checkRasp.car:
@@ -22,27 +24,29 @@ class RealTime(WebsocketConsumer):
         self.pi.status = "online" if online else "offline"
         self.pi.save()
 
-        if online:
+        if online:  # Update new drive to database 
             try:
                 newDrive = Drive.objects.create(
                     device=self.pi, startTime=datetime.now(), status="ongoing"
                 )
                 driveID = newDrive.id
                 driveUrl = reverse("driveDetail", kwargs={'id': driveID})
-                print(f"\n[DATABASE]: New Drive {driveID} is added\n")
+                print(f"[SERVER]: New Drive {driveID} is added\n")
+
             except Exception as e:
                 print(str(e))
-        else:
+        
+        else:  # End the ongoing drives 
             drive = self.pi.drive_set.all().order_by('-startTime')[0]
             drive.status = "ended"
-            print(f"\n[DATABASE]: Drive {drive.id} is ended\n")
+            print(f"[SERVER]: Drive {drive.id} is ended\n")
             drive.endTime = datetime.now()
             driveID = drive.id
             driveUrl = reverse("driveDetail", kwargs={'id': driveID})
             drive.save()
 
         if not self.pi.car:
-            print(f"\n[SERVER]: Activity from {self.pi} that has no car!\n")
+            print(f"[SERVER]: Activity from {self.pi} that has no car!\n")
             carLiscense = "Xe không xác định"
         else:
             carLiscense = self.pi.car.licensePlate
@@ -68,7 +72,7 @@ class RealTime(WebsocketConsumer):
         drive = self.pi.drive_set.all().order_by('-startTime')[0]
 
         if not self.pi.car:
-            print(f"\n[SERVER]: Drowsiness detection from {self.pi} that has no car!\n")
+            print(f"[SERVER]: Drowsiness detection from {self.pi} that has no car!\n")
             carLiscense = "Xe không xác định"
         else:
             carLiscense = self.pi.car.licensePlate
@@ -77,11 +81,10 @@ class RealTime(WebsocketConsumer):
 
         try:
             Alert.objects.create(drive=drive, detect=alertType, timeOccured=timeOccured)
-            print(f"\n[DATABASE]: Deteced {alertType} and saved!!\n")
+            print(f"[SERVER]: Deteced {alertType} and saved!!\n")
         except Exception as e:
             print(str(e))
 
-       
         self.sendSignal(
             {
                 "messageType": "notification",
@@ -96,12 +99,12 @@ class RealTime(WebsocketConsumer):
     def getVideo(self, data):
         driveID = data["driveID"]
         drive = Drive.objects.get(id=driveID)
-        alerts = drive.alert_set.all().order_by('-timeOccured')
+        alerts = drive.alert_set.all().exclude(detect="Alcohol").order_by('-timeOccured')
 
         if len(alerts) > 0:
-            # print(alerts[0].timeOccured)
             data.setdefault("time-occured", str(alerts[0].timeOccured))
-
+            data.setdefault("alertType", str(alerts[0].detect))
+            print(data)
             self.sendSignal(
                 data
             )
@@ -122,9 +125,9 @@ class RealTime(WebsocketConsumer):
                 self.sendSignal(
                     data
                 )
-                print("\n[SERVER] Room code is sent to the rasp!!\n")
+                print("[SERVER] Room code is sent to the rasp!!\n")
             else:
-                print(f"\n[SERVER] Can't send room code to {self.pi} cuz there no room field!!\n")
+                print(f"[SERVER] Can't send room code to {self.pi} cuz there no room field!!\n")
 
     # List of commands
     commands = {
@@ -148,8 +151,8 @@ class RealTime(WebsocketConsumer):
         
         if self.piID != "none":
             self.pi = RaspDevice.objects.get(id=self.piID)
-            if not self.unsignedPi: self.updatePiConnection()
             print(f"\n[SERVER]: {self.pi} is connected\n")
+            if not self.unsignedPi: self.updatePiConnection()
 
         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
         self.accept()
@@ -157,7 +160,7 @@ class RealTime(WebsocketConsumer):
     def disconnect(self, close_code):
         if self.pi and not self.unsignedPi:
             if not self.unsignedPi: self.updatePiConnection(online=False)
-            print(f"\n[SERVER]: {self.pi} is disconnected!\n")
+            print(f"[SERVER]: {self.pi} is disconnected!\n")
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_name, self.channel_name

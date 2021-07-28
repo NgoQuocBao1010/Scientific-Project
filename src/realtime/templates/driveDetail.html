@@ -9,12 +9,21 @@
 {% include "navbar.html" %}
 <style>
 .loading-section {
-    display:flex;
-    justify-content: center;
     margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.loading-section div {
+
+.loading-animation {
+    display:flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.loading-animation div {
     width: 20px;
     height: 20px;
     background-color: var(--navy);
@@ -30,10 +39,10 @@
     animation-direction: alternate;
 }
 
-.loading-section .two {
+.loading-animation .two {
     animation-delay: 0.1s;
 }
-.loading-section .three {
+.loading-animation .three {
     animation-delay: 0.2s;
 }
 @keyframes up-and-down {
@@ -65,7 +74,8 @@
                 <p class="col-7" id="warning">
                     {% if alerts > 0 %}
                     <span class="warning-circle">&#11044;</span>
-                    Có dấu hiệu bất thường {% else %}
+                    Phát hiện {{ alerts }} dấu hiệu bất thường 
+                    {% else %}
                     <span class="deactive-circle">&#11044;</span>
                     Không có dấu hiệu {% endif %}
                 </p>
@@ -93,10 +103,14 @@
         </div>
         
         <div class="loading-section">
-            <div class="one"></div>
-            <div class="two"></div>
-            <div class="three"></div>
+            <h5>Đang kết nối với thiết bị Raspberry</h5>
+            <div class="loading-animation">
+                <div class="one"></div>
+                <div class="two"></div>
+                <div class="three"></div>
+            </div>
         </div>
+        
         <!-- Pictures Section -->
         <div
             class="

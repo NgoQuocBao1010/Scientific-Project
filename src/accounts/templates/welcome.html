@@ -54,11 +54,6 @@
                     <section class="form">
                         <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                         <p class="title">ĐĂNG NHẬP</p>
-                        {% for message in messages %}
-                        <div class="messages" id="signin-message">
-                            {{ message }}
-                        </div>
-                        {% endfor %}
                         <form id="SignInForm" method="POST">
                             <input
                                 autocomplete="off"
@@ -79,7 +74,7 @@
                                 />
                                 <label for="login-username">
                                     <span class="input-label"
-                                        >Tai khoan
+                                        >Email
                                         <span class="required-star"
                                             >*</span
                                         ></span
@@ -118,6 +113,12 @@
                                     </div>
                                     <a href="#">Quên mật khẩu?</a>
                                 </div>
+                            </div>
+
+                            <div class="form-field">
+                                {% for message in messages %}
+                                <h5 style="font-size: 14px; color: red">{{ message|striptags }}</h5>
+                                {% endfor %}
                             </div>
                             <!-- Sign in button  -->
                             <div class="form-field buttons">
@@ -227,6 +228,12 @@
                                     </span>
                                 </label>
                             </div>
+
+                            <div class="form-field">
+                                {% for msg in errors %}
+                                <h5 style="font-size: 14px; color: red">{{ msg|striptags }}</h5>
+                                {% endfor %}
+                            </div>
                             <!-- Sign in button  -->
                             <div class="form-field buttons">
                                 <button
@@ -240,47 +247,6 @@
                             </div>
                         </form>
                     </section>
-                </div>
-            </div>
-        </div>
-
-        <!-- Alert Modals -->
-        <div
-            class="modal fade"
-            id="AlertModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalLabel"
-            data-backdrop="static"
-            data-keyboard="false"
-        >
-            <div class="modal-dialog" role="alert">
-                <div class="modal-content">
-                    <div class="top">
-                        <img
-                            src="{% static '/images/web/flame-vector.svg' %}"
-                            alt="Flame Icon"
-                            title="Flame"
-                            width="100vw"
-                        />
-                    </div>
-                    <p class="title">Cảnh báo!</p>
-                    <p class="subtitle">
-                        Phát hiện tài xế có dấu hiệu bất thường khi đang điều
-                        khiển phương tiện
-                        <b id="warning-car">56H P2 - 34.179</b>
-                    </p>
-                    <div class="buttons d-flex flex-column">
-                        <button
-                            type="button"
-                            name="modal-btn"
-                            class="btn long-btn yellow-btn"
-                            data-dismiss="modal"
-                            aria-hidden="true"
-                        >
-                            XỬ LÝ NGAY
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -308,19 +274,11 @@
                             >ĐĂNG KÝ</a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a data-toggle="modal" data-target="#AlertModal"
-                            >CẢNH BÁO</a
-                        >
-                    </li>
                 </ul>
             </nav>
         </header>
 
         <div class="container">
-            {% for err, msg in errors.items %}
-            <h5 style="font-size: 15px; color: red">{{ msg }}</h5>
-            {% endfor %}
             <!-- SECTION 1: ABOUT SECTION -->
             <section class="section1 about-section">
                 <div class="img-wrapper">

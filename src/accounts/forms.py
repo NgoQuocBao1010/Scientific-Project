@@ -155,13 +155,14 @@ class CreateUserForm(forms.Form):
         containsUppercase = any(letter.isupper() for letter in password1)
 
         if not containsNum or not containsUppercase:
-            raise ValidationError(f"Mật khẩu cần chứa chữ hoa và số")
+            raise ValidationError(f"Mật khẩu cần chứa chữ hoa và chữ số")
             
         return password1
 
-    def clean_password2(self):
-        password2 =  self.cleaned_data.get("password2")
-        password1 =  self.cleaned_data.get("password1")
+    def clean(self):
+        cleaned_data = super().clean()
+        password2 =  cleaned_data.get("password2")
+        password1 =  cleaned_data.get("password1")
 
 
         if password2 != password1:
