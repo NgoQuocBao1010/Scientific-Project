@@ -13,6 +13,7 @@ from datetime import datetime
 
 from .models import Car, Profile, RaspDevice, Company
 from realtime.models import Drive
+from .customPrint import MyCustomPrint
 
 
 class CarForm(ModelForm):
@@ -85,7 +86,7 @@ class AddCarForm(forms.Form):
                 raise ValidationError(f"Mật khẩu thiết bị không đúng")
 
         except RaspDevice.DoesNotExist:
-            print("not found")
+            pass
         
         return data
             
@@ -124,9 +125,7 @@ class AddCarForm(forms.Form):
             async_to_sync(layer.group_send)(
                 roomCode, {"type": "randomFunc", "message": message}
             )
-            print(f"[SERVER]: New Drive {driveID} is added\n")
-
-
+            MyCustomPrint(f"New Drive {driveID} is added", style="info")
 
         message = {
             "id": rasp.id,
@@ -139,7 +138,7 @@ class AddCarForm(forms.Form):
             roomCode, {"type": "randomFunc", "message": message}
         )
 
-        print(f"\n[SERVER]: Connection {rasp.name} => {newCar} => {self.company}, a signal is sent to general room")
+        MyCustomPrint(f"Connection {rasp.name} => {newCar} => {self.company}, a signal is sent to general room", style="success")
     
 
 class CreateUserForm(forms.Form):
@@ -198,7 +197,6 @@ class CreateUserForm(forms.Form):
 
     
     def save(self):
-        print(self.cleaned_data)
         email =  self.cleaned_data.get("email")
         password1 =  self.cleaned_data.get("password1")
 
@@ -220,7 +218,7 @@ class CreateUserForm(forms.Form):
             name=user.username,
         )
 
-        print(f"\n[SERVER]: Reigister successfully {user}, {password1} and {newCom}")
+        MyCustomPrint(f"Reigister successfully {user}, {password1} and {newCom}", style="success")
         return user
     
     

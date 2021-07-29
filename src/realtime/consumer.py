@@ -4,6 +4,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.urls import reverse
 
 from accounts.models import RaspDevice
+from accounts.customPrint import MyCustomPrint
 from .models import *
 
 import json
@@ -34,22 +35,23 @@ class RealTime(WebsocketConsumer):
                 )
                 driveID = newDrive.id
                 driveUrl = reverse("driveDetail", kwargs={'id': driveID})
-                print(f"[SERVER]: New Drive {driveID} is added\n")
+                MyCustomPrint(f"New Drive {driveID} is added")
 
             except Exception as e:
-                print(str(e))
+                MyCustomPrint(str(e), style="error")
         
         else:  # End the ongoing drives when there is car
             drive = self.pi.drive_set.all().order_by('-startTime')[0]
             drive.status = "ended"
-            print(f"[SERVER]: Drive {drive.id} is ended\n")
             drive.endTime = datetime.now()
             driveID = drive.id
             driveUrl = reverse("driveDetail", kwargs={'id': driveID})
             drive.save()
 
+            MyCustomPrint(f"Drive {driveID} is ended")
+
         if not self.pi.car:
-            print(f"[SERVER]: Activity from {self.pi} that has no car!\n")
+            MyCustomPrint(f"Activity from {self.pi} that has no car!", style="warning")
             carLiscense = "Xe không xác định"
         else:
             carLiscense = self.pi.car.licensePlate
@@ -84,7 +86,7 @@ class RealTime(WebsocketConsumer):
             self.pi = checkRasp
 
         if not self.pi.car:
-            print(f"[SERVER]: Drowsiness detection from {self.pi} that has no car!\n")
+            MyCustomPrint(f"Drowsiness detection from {self.pi} that has no car!", style="warning")
             carLiscense = "Xe không xác định"
         else:
             carLiscense = self.pi.car.licensePlate
@@ -93,9 +95,9 @@ class RealTime(WebsocketConsumer):
 
         try:
             Alert.objects.create(drive=drive, detect=alertType, timeOccured=timeOccured)
-            print(f"[SERVER]: Deteced {alertType} and saved!!\n")
+            MyCustomPrint(f"Deteced {alertType} from {drive} and saved!!", style="warning")
         except Exception as e:
-            print(str(e))
+            MyCustomPrint(str(e), style="error")
 
         self.sendSignal(
             {
@@ -116,10 +118,10 @@ class RealTime(WebsocketConsumer):
         if len(alerts) > 0:
             data.setdefault("time-occured", str(alerts[0].timeOccured))
             data.setdefault("alertType", str(alerts[0].detect))
-            print(data)
             self.sendSignal(
                 data
             )
+            MyCustomPrint(f"Request video to {drive.device}")
     
     # Display image to browser
     def sendImgToBrowser(self, data):
@@ -137,9 +139,9 @@ class RealTime(WebsocketConsumer):
                 self.sendSignal(
                     data
                 )
-                print("[SERVER] Room code is sent to the rasp!!\n")
+                MyCustomPrint("Room code is sent to the rasp!!", style="success")
             else:
-                print(f"[SERVER] Can't send room code to {self.pi} cuz there no room field!!\n")
+                MyCustomPrint(f"Can't send room code to {self.pi}, no room field in database", style="warning")
 
     # List of commands
     commands = {
@@ -158,12 +160,12 @@ class RealTime(WebsocketConsumer):
         self.unsignedPi = False
         
         if self.room_name == "general":
-            print(f"\n[SERVER]: Pi is in general room\n")
+            MyCustomPrint(f"Pi is in general room")
             self.unsignedPi = True
         
         if self.piID != "none":
             self.pi = RaspDevice.objects.get(id=self.piID)
-            print(f"\n[SERVER]: {self.pi} is connected\n")
+            MyCustomPrint(f"{self.pi} is connected")
             if not self.unsignedPi: self.updatePiConnection()
 
         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
@@ -172,7 +174,7 @@ class RealTime(WebsocketConsumer):
     def disconnect(self, close_code):
         if self.pi and not self.unsignedPi:
             if not self.unsignedPi: self.updatePiConnection(online=False)
-            print(f"[SERVER]: {self.pi} is disconnected!\n")
+            MyCustomPrint(f"{self.pi} is disconnected!")
 
         async_to_sync(self.channel_layer.group_discard)(
             self.room_name, self.channel_name
@@ -180,7 +182,6 @@ class RealTime(WebsocketConsumer):
 
     def receive(self, text_data):
         data = json.loads(text_data)
-        print(data)
         self.commands[data["command"]](self, data)
 
     # Send message to all groups

@@ -7,6 +7,7 @@ import string, random
 from .models import *
 from realtime.models import Alert
 from .forms import CarForm, CreateUserForm, ProfileForm, AddCarForm
+from .customPrint import MyCustomPrint
 
 
 # Welcome, Login, Register Page
@@ -35,7 +36,6 @@ def welcome(request):
                 form.save()
 
             else:
-                print(form.errors.items())
                 formsErrors = form.errors.values()
                 form = CreateUserForm(None)
 
@@ -83,8 +83,9 @@ def home(request):
             if form.is_valid():
                 form.save()
             else:
-                for err in form.errors:
-                    print(err)
+                # for err in form.errors:
+                #     MyCustomPrint(err)
+                pass
 
         # Add new car Form
         else:
@@ -133,7 +134,6 @@ def accountSettings(request):
 
         if form.is_valid():
             form.save()
-        print(request.POST)
     
     # Notifications manage
     company = request.user.profile.company
