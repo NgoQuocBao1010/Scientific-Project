@@ -11,4 +11,5 @@ def removeAllDrives(sender, instance, **kwargs):
     except Exception as e:
         print(f"[SERVER] Car {instance} from {instance.company} and all its drives are deleted\n")
 
+
 pre_delete.connect(removeAllDrives, sender=Car)

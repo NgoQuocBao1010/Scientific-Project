@@ -3,13 +3,16 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
 from django import forms
+from django.urls import reverse
 from django.core.exceptions import ValidationError
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 import random, string
+from datetime import datetime
 
 from .models import Car, Profile, RaspDevice, Company
+from realtime.models import Drive
 
 
 class CarForm(ModelForm):
@@ -98,6 +101,31 @@ class AddCarForm(forms.Form):
         rasp.car = newCar
         rasp.company = self.company
         rasp.save()
+
+        if rasp.status == "online" and not rasp.drive_set.all():
+            newDrive = Drive.objects.create(
+                    device=rasp, startTime=datetime.now(), status="ongoing"
+                )
+            driveID = newDrive.id
+            driveUrl = reverse("driveDetail", kwargs={'id': driveID})
+
+            message = (
+                {
+                    "messageType": "status", 
+                    "licensePlate": newCar.licensePlate, 
+                    "status": True, 
+                    "piID": rasp.id,
+                    "driveID": driveID,
+                    "driveUrl": driveUrl,
+                }
+            )
+
+            layer = get_channel_layer()
+            async_to_sync(layer.group_send)(
+                roomCode, {"type": "randomFunc", "message": message}
+            )
+            print(f"[SERVER]: New Drive {driveID} is added\n")
+
 
 
         message = {

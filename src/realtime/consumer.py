@@ -79,6 +79,10 @@ class RealTime(WebsocketConsumer):
         
         drive = drives[0]
 
+        checkRasp = RaspDevice.objects.get(id=self.pi.id)
+        if not self.pi.car and checkRasp.car:
+            self.pi = checkRasp
+
         if not self.pi.car:
             print(f"[SERVER]: Drowsiness detection from {self.pi} that has no car!\n")
             carLiscense = "Xe không xác định"
@@ -176,6 +180,7 @@ class RealTime(WebsocketConsumer):
 
     def receive(self, text_data):
         data = json.loads(text_data)
+        print(data)
         self.commands[data["command"]](self, data)
 
     # Send message to all groups
