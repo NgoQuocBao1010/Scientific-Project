@@ -19,7 +19,7 @@ ID = "1"
 def on_message(ws, message):
     thisFolder = "./simulators/images/"
     data = json.loads(message)
-
+    
     if data.get("piDeviceID") == ID:
         images = os.listdir(thisFolder)
 

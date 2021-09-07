@@ -61,16 +61,18 @@ def on_close(ws):
 def on_open(ws):
     def run(*args):
         while True:
-            time.sleep(3)
-            ws.send(
-                json.dumps(
-                    {
-                        "command": "alert",
-                        "name": random.choice(["Alcohol", "Drowsiness", "Noeye"]),
-                        "time": str(datetime.now()),
-                    }
-                )
-            )
+            # time.sleep(3)
+            # ws.send(
+            #     json.dumps(
+            #         {
+            #             "command": "alert",
+            #             "name": random.choice(["Alcohol", "Drowsiness", "Noeye"]),
+            #             "time": str(datetime.now()),
+            #         }
+            #     )
+            # )
+            print("Doing nothing")
+            time.sleep(2)
             # pass
 
     thread.start_new_thread(run, ())
@@ -78,7 +80,7 @@ def on_open(ws):
 
 if __name__ == "__main__":
     # websocket.enableTrace(True)
-    url = f"ws://{HOSTNAME}:8000/ws/realtime/{COMPANY_ROOM_CODE}/{ID}/"
+    # url = f"ws://{HOSTNAME}:8000/ws/realtime/{COMPANY_ROOM_CODE}/{ID}/"
     url = f"ws://localhost:8000/ws/realtime/{COMPANY_ROOM_CODE}/{ID}/"
 
     ws = websocket.WebSocketApp(

@@ -22,7 +22,6 @@ class RealTime(WebsocketConsumer):
             self.pi = checkRasp
 
         self.pi.status = "online" if online else "offline"
-
         self.pi.save()
 
         if not online and not self.pi.car:
@@ -111,6 +110,7 @@ class RealTime(WebsocketConsumer):
 
     # Get video message
     def getVideo(self, data):
+        print(data)
         driveID = data["driveID"]
         drive = Drive.objects.get(id=driveID)
         alerts = drive.alert_set.all().exclude(detect="Alcohol").order_by('-timeOccured')
@@ -118,16 +118,13 @@ class RealTime(WebsocketConsumer):
         if len(alerts) > 0:
             data.setdefault("time-occured", str(alerts[0].timeOccured))
             data.setdefault("alertType", str(alerts[0].detect))
-            self.sendSignal(
-                data
-            )
-            MyCustomPrint(f"Request video to {drive.device}")
+            self.sendSignal(data)
+            MyCustomPrint(f"Request video from {drive.device}")
     
     # Display image to browser
     def sendImgToBrowser(self, data):
-        self.sendSignal(
-            data
-        )
+        self.sendSignal(data)
+        MyCustomPrint(f"Sending videos")
     
     # send room code to unconfig rasp
     def getRoomCode(self, data):

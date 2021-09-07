@@ -59,14 +59,13 @@
 
                 if (!imageTaken) {
                     const loading = document.querySelector(".loading-section");
-                    loading.remove()
-                    console.log(loading)
+                    loading.remove();
                 }
                 
-
                 imageTaken = true;
             }
         }
+        // Deteting whether if there is changes in the status of the car
         else if (data["messageType"] === "status") {
             if (data["piID"] == piDeviceID && data["status"] && !imageTaken) {
                 socket.send(
@@ -95,4 +94,17 @@
     socket.onclose = function (e) {
         console.log("Connection closed");
     };
+
+    setTimeout(() => {
+        if (!imageTaken) {
+            const noImgIndentifier = document.getElementById("no-img");
+            noImgIndentifier.classList.remove("hide");
+
+            const loadingIndentifier = document.getElementById("loading-identifier");
+            loadingIndentifier.classList.add("hide");
+
+            const loadingAnimation = document.querySelector(".loading-animation");
+            loadingAnimation.classList.add("hide");
+        }
+    }, 5000)
 </script>

@@ -8,6 +8,7 @@
 {% block content %}
 {% include "navbar.html" %}
 <style>
+.none-image-receive,
 .loading-section {
     margin-top: 100px;
     display: flex;
@@ -42,6 +43,7 @@
 .loading-animation .two {
     animation-delay: 0.1s;
 }
+
 .loading-animation .three {
     animation-delay: 0.2s;
 }
@@ -103,7 +105,8 @@
         </div>
         
         <div class="loading-section">
-            <h5>Đang kết nối với thiết bị Raspberry</h5>
+            <h5 id="no-img" class="hide">Không nhận được hình ảnh</h5>
+            <h5 id="loading-identifier">Đang kết nối với thiết bị Raspberry</h5>
             <div class="loading-animation">
                 <div class="one"></div>
                 <div class="two"></div>
@@ -130,22 +133,8 @@
                     class="carousel slide"
                     data-ride="carousel"
                 >
-                    <ol class="carousel-indicators">
-                        <!-- <li
-                            data-target="#carouselExampleIndicators"
-                            data-slide-to="0"
-                            class="active"
-                        ></li> -->
-                    </ol>
-                    <div class="carousel-inner">
-                        <!-- <div class="carousel-item active">
-                            <img
-                                class="d-block w-100"
-                                src="#"
-                                alt="First slide"
-                            />
-                        </div> -->
-                    </div>
+                    <ol class="carousel-indicators"></ol>
+                    <div class="carousel-inner"></div>
                     <a
                         class="carousel-control-prev"
                         href="#carouselExampleIndicators"
@@ -171,18 +160,6 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
-                <!-- <div
-                    class="
-                        buttons
-                        d-flex
-                        flex-row
-                        justify-content-center
-                        flex-grow-1
-                    "
-                >
-                    <a href="#" class="clip-btn light-blue-btn">Bình thường</a>
-                    <a href="#" class="clip-btn light-yellow-btn">Không ổn</a>
-                </div> -->
             </div>
         </div>
     </div>
