@@ -13,6 +13,8 @@ from .customPrint import MyCustomPrint
 # Welcome, Login, Register Page
 def welcome(request):
     form = CreateUserForm()
+    newAccount = False
+
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -34,6 +36,7 @@ def welcome(request):
             form = CreateUserForm(request.POST)
             if form.is_valid():
                 form.save()
+                newAccount = True
 
             else:
                 formsErrors = form.errors.values()
@@ -41,6 +44,7 @@ def welcome(request):
 
     context = {
         "errors": formsErrors,
+        "newAccount": newAccount,
     }
     return render(request, "welcome.html", context)
 

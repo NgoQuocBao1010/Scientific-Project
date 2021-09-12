@@ -37,6 +37,25 @@
         />
     </head>
 
+    <style>
+        /* #successModal {
+            position: relative;
+        } */
+
+        #successModal .modal-content {
+            max-width: max-content;
+        }
+
+        #successModal i {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        
+    </style>
+
     <body class="full-height-grow">
         <!-- MODALS -->
         <!-- Sign In Modals -->
@@ -101,19 +120,6 @@
                                 </label>
                             </div>
                             <!-- Remember -->
-                            <div class="form-field">
-                                <div class="row remember-forget">
-                                    <div>
-                                        <input
-                                            id="remember"
-                                            type="checkbox"
-                                            name="remember"
-                                        />
-                                        Ghi nhớ
-                                    </div>
-                                    <a href="#">Quên mật khẩu?</a>
-                                </div>
-                            </div>
 
                             <div class="form-field">
                                 {% for message in messages %}
@@ -250,7 +256,21 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Success modal -->
+        <div class="modal fade" id="successModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <i class="fas fa-times-circle"></i>
+                    <div class="modal-body">
+                        Bạn đã đăng ký tài khoản thành công
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Content -->
         <header class="main-header">
             <nav
                 class="
@@ -289,9 +309,7 @@
                     <p class="subtitle">
                         Bạn đồng hành đáng tin cậy của mọi người lái xe
                     </p>
-                    <a data-toggle="modal" data-target="#RegisterModal" class="btn yellow-btn short-btn large-btn"
-                        >TẠO TÀI KHOẢN</a
-                    >
+                    <a data-toggle="modal" data-target="#RegisterModal" class="btn yellow-btn short-btn large-btn"> TẠO TÀI KHOẢN </a>
                 </div>
             </section>
 
@@ -479,3 +497,16 @@
         </div>
     </body>
 </html>
+
+<script>
+    const newAccount = "{{ newAccount }}";
+
+    if (newAccount === "True") {
+        $("#successModal").modal("show");
+    }
+
+    $("#successModal i").click(() => {
+        $("#successModal").modal("hide");
+    })
+    
+</script>

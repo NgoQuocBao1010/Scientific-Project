@@ -11,7 +11,6 @@ import json
 from datetime import datetime
 
 class RealTime(WebsocketConsumer):
-
     # Update when Raspberry Pi is connected and disconnected
     def updatePiConnection(self, online=True):
         driveID =  None
