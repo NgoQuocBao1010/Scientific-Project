@@ -11,6 +11,6 @@ class MyCustomPrint():
 
     def __init__(self, statement="", style="info"):
         self.console = Console(theme=Theme(self.THEMES))
-        self.statement = f"\n[SERVER]: {statement}"
+        self.statement = f"[SERVER]: {statement}"
 
         self.console.print(self.statement, style=self.THEMES.get(style))

@@ -132,9 +132,7 @@ class RealTime(WebsocketConsumer):
                 roomCode = self.pi.company.roomCode
                 data.setdefault("roomCode", roomCode)
 
-                self.sendSignal(
-                    data
-                )
+                self.sendSignal(data)
                 MyCustomPrint("Room code is sent to the rasp!!", style="success")
             else:
                 MyCustomPrint(f"Can't send room code to {self.pi}, no room field in database", style="warning")
