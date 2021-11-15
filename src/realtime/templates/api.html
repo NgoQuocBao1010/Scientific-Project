@@ -28,7 +28,6 @@
     let imageTaken = false;
 
     socket.onopen = function (e) {
-        console.log("Connection established");
         socket.send(
             JSON.stringify({
                 command: "getVideo",
@@ -40,7 +39,6 @@
 
     socket.onmessage = function (e) {
         let data = JSON.parse(e.data);
-        console.log(data);
 
         // handle notifications
         if (data["messageType"] === "notification") {
@@ -52,7 +50,6 @@
         // Receive message from server 
         else if (data["messageType"] === "sendImg") {
             if (data["driveID"] === driveID) {
-                console.log("Here is the image");
                 getImage(data["frame"]);
                 const pictureSections = document.getElementById("pictures-section");
                 pictureSections.classList.remove("hide-picture");
@@ -77,7 +74,6 @@
                 );
             }
             if (data["driveID"] == driveID && !data["status"]) {
-                console.log(`Chuyen xe ${driveID} da ket thuc`)
                 const statusInfo = document.getElementById("status");
                 const today = new Date();
                 const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -89,10 +85,6 @@
                 `;
             }
         }
-    };
-
-    socket.onclose = function (e) {
-        console.log("Connection closed");
     };
 
     setTimeout(() => {

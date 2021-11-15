@@ -180,7 +180,6 @@
 
     socket.onmessage = function (e) {
         let data = JSON.parse(e.data);
-        console.log(data);
 
         // switching status whenever any car is online or offline
         if (data["messageType"] === "status" && data["licensePlate"] === licensePlate) {

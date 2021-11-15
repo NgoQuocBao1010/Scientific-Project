@@ -103,30 +103,6 @@ class AddCarForm(forms.Form):
         rasp.company = self.company
         rasp.save()
 
-        # if rasp.status == "online" and not rasp.drive_set.all():
-        #     newDrive = Drive.objects.create(
-        #             device=rasp, startTime=datetime.now(), status="ongoing"
-        #         )
-        #     driveID = newDrive.id
-        #     driveUrl = reverse("driveDetail", kwargs={'id': driveID})
-
-        #     message = (
-        #         {
-        #             "messageType": "status", 
-        #             "licensePlate": newCar.licensePlate, 
-        #             "status": True, 
-        #             "piID": rasp.id,
-        #             "driveID": driveID,
-        #             "driveUrl": driveUrl,
-        #         }
-        #     )
-
-        #     layer = get_channel_layer()
-        #     async_to_sync(layer.group_send)(
-        #         roomCode, {"type": "randomFunc", "message": message}
-        #     )
-        #     MyCustomPrint(f"New Drive {driveID} is added", style="info")
-
         message = {
             "piDeviceID": rasp.id,
             "command": "getRoomCode",

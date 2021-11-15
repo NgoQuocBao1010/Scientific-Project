@@ -4,6 +4,7 @@ from .models import Car
 from .customPrint import MyCustomPrint
 
 def removeAllDrives(sender, instance, **kwargs):
+    """ Remove all the drive instance related to a car after its deleted """
     try:
         rasp = instance.raspdevice
         rasp.drive_set.all().delete()

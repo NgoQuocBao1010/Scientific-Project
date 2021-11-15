@@ -181,13 +181,9 @@
     let socketUrl = `ws://${window.location.host}/ws/realtime/${room}/none/`;
     let socket = new ReconnectingWebSocket(socketUrl);
 
-    socket.onopen = function (e) {
-        console.log("Connection established");
-    };
 
     socket.onmessage = function (e) {
         let data = JSON.parse(e.data);
-        console.log(data);
 
         // switching status whenever any car is online or offline
         if (data["messageType"] === "status") {
@@ -201,10 +197,6 @@
             if (!popUpVisible) popUp(licensePlate, driveUrl);
             notifyDetail(alertType, licensePlate, time, driveUrl);
         }
-    };
-
-    socket.onclose = function (e) {
-        console.log("Connection closed");
     };
 </script>
 {% endblock %}

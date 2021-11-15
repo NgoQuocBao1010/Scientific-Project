@@ -2,13 +2,14 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 
-from accounts.models import RaspDevice, Car
+from accounts.models import Car
 from accounts.views import getNotifications
-from .models import Drive, Alert
+from .models import Drive
 
-# Drives management page
+
 @login_required(login_url="/")
 def drives(request):
+    """ Drive management page """
     company = request.user.profile.company
     drs = Drive.objects.filter(device__company=company).order_by('-startTime')
 
@@ -23,9 +24,10 @@ def drives(request):
     context = {'drs': drs, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "drives.html", context)
 
-# Alerts management page
+
 @login_required(login_url="/")
 def alerts(request):
+    """ Alerts management page """
     company = request.user.profile.company
     drs = Drive.objects.filter(device__company=company, alert__gt=0).order_by('-startTime').annotate(total=Count('id'))
     
@@ -40,9 +42,11 @@ def alerts(request):
     context = {'drs': drs, "notifications": lastestAlerts, "unreadNotis": unreadCounts}
     return render(request, "alerts.html", context)
 
-# Detail of an specific drive (start, end, alerts ...) 
+
+
 @login_required(login_url="/")
 def driveDetail(request, id):
+    """ Detail of an specific drive (start, end, alerts ...)  """
     company = request.user.profile.company
     drive = Drive.objects.get(id=id)
 
@@ -69,9 +73,10 @@ def driveDetail(request, id):
     }
     return render(request, "driveDetail.html", context)
 
-# Return every drives of individual car
+
 @login_required(login_url="/")
 def carDrives(request, id):
+    """ Return every drives of individual car """
     company = request.user.profile.company
     car = Car.objects.get(id=id)
 

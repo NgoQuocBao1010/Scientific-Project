@@ -7,9 +7,9 @@ class AccountsConfig(AppConfig):
     def ready(self):
         from .models import RaspDevice
         from .customPrint import MyCustomPrint
-
+        
+        # Handle untrack devices if server was down previously
         onlineRasp = RaspDevice.objects.filter(status="online")
-
         if onlineRasp.exists():
             for rasp in onlineRasp:
                 rasp.status = "offline"

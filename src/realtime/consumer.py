@@ -1,4 +1,3 @@
-from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.urls import reverse
@@ -11,8 +10,8 @@ import json
 from datetime import datetime
 
 class RealTime(WebsocketConsumer):
-    # Update when Raspberry Pi is connected and disconnected
     def updatePiConnection(self, online=True):
+        """ Update when Raspberry Pi is connected and disconnected """
         driveID =  None
 
         # Check if user add car to rasp during the drive
@@ -65,8 +64,9 @@ class RealTime(WebsocketConsumer):
             }
         )
 
-    # Save neccessary data when alerts is detected
+
     def alertDetected(self, data):
+        """ Save neccessary data when alerts is detected """
         if self.unsignedPi:
             return
         
@@ -107,9 +107,9 @@ class RealTime(WebsocketConsumer):
             }
         )
 
-    # Get video message
+
     def getVideo(self, data):
-        print(data)
+        """ Get video message """
         driveID = data["driveID"]
         drive = Drive.objects.get(id=driveID)
         alerts = drive.alert_set.all().exclude(detect="Alcohol").order_by('-timeOccured')
@@ -120,13 +120,14 @@ class RealTime(WebsocketConsumer):
             self.sendSignal(data)
             MyCustomPrint(f"Request video from {drive.device}")
     
-    # Display image to browser
+
     def sendImgToBrowser(self, data):
+        """ Send image data to the browser to display """
         self.sendSignal(data)
         MyCustomPrint(f"Sending videos")
     
-    # send room code to unconfig rasp
     def getRoomCode(self, data):
+        """ send room code to unconfig rasp """
         if self.unsignedPi:
             if self.pi.company:
                 roomCode = self.pi.company.roomCode
@@ -178,7 +179,6 @@ class RealTime(WebsocketConsumer):
         data = json.loads(text_data)
         self.commands[data["command"]](self, data)
 
-    # Send message to all groups
     def sendSignal(self, message):
         async_to_sync(self.channel_layer.group_send)(
             self.room_name, {"type": "randomFunc", "message": message}

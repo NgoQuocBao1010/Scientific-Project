@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-import string, random
 
 from .models import *
 from realtime.models import Alert
@@ -10,8 +9,8 @@ from .forms import CarForm, CreateUserForm, ProfileForm, AddCarForm
 from .customPrint import MyCustomPrint
 
 
-# Welcome, Login, Register Page
 def welcome(request):
+    """ Welcome page, for non-auth user to visit login or reigster an account """
     form = CreateUserForm()
     newAccount = False
 
@@ -48,19 +47,14 @@ def welcome(request):
     }
     return render(request, "welcome.html", context)
 
-# Manage notifications
-def getNotifications(company):
-    lastestAlerts = Alert.objects.filter(drive__device__company=company).order_by('-timeOccured')[:5]
-    
-    unreadCounts = 0
-    for alert in lastestAlerts:
-        unreadCounts = (unreadCounts + 1) if not alert.isRead else unreadCounts
-    
-    return lastestAlerts, unreadCounts
 
-# Home page
+
 @login_required(login_url="/")
 def home(request):
+    """
+        Home page
+        Handle search car, add car, add Rasp device
+    """
     company = request.user.profile.company
     cars = Car.objects.filter(company=company)
     
@@ -84,12 +78,14 @@ def home(request):
         if carID:
             editedCar = Car.objects.get(id=carID)
             form = CarForm(request.POST, instance=editedCar)
+
             if form.is_valid():
                 form.save()
             else:
-                # for err in form.errors:
-                #     MyCustomPrint(err)
-                pass
+                for field in form:
+                    for err in field.errors:
+                        formsErrors.setdefault(field.label, err)
+                MyCustomPrint(form.errors.as_text())
 
         # Add new car Form
         else:
@@ -102,8 +98,9 @@ def home(request):
             else:
                 for field in form:
                     for err in field.errors:
-                        # print("Errors", field.label, err)
                         formsErrors.setdefault(field.label, err)
+                MyCustomPrint(form.errors.as_text())
+
                 form = AddCarForm()
 
     context = {
@@ -117,21 +114,22 @@ def home(request):
 
 @login_required(login_url="/")
 def logoutUser(request):
+    """ Logout functionality """
     logout(request)
     return redirect("welcome")
 
 
-# Remove Cars
 @login_required(login_url="/")
 def removeCar(request, id):
+    """ Remove car information """
     car = Car.objects.get(id=id)
     car.delete()
     return redirect("home")
 
 
-# Account settings
 @login_required(login_url="/")
 def accountSettings(request):
+    """ Edit accounts information """
     profile = Profile.objects.get(user=request.user)
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
@@ -146,16 +144,18 @@ def accountSettings(request):
     return render(request, "account-setting.html", context)
 
 
-@login_required(login_url="/")
-def test(request):
-    form = AddCarForm()
 
-    if request.method == "POST":
-        form = AddCarForm(request.POST)
+""" 
+Utils fucntions
+Functions that did not handle request and render view
+"""
 
-        if form.is_valid():
-            form.save(company=request.user.profile.company)
-            return redirect("test")
-
-    context = {"form": form}
-    return render(request, "test.html", context)
+def getNotifications(company):
+    """ Manage notifications which is the amount of alerts """
+    lastestAlerts = Alert.objects.filter(drive__device__company=company).order_by('-timeOccured')[:5]
+    
+    unreadCounts = 0
+    for alert in lastestAlerts:
+        unreadCounts = (unreadCounts + 1) if not alert.isRead else unreadCounts
+    
+    return lastestAlerts, unreadCounts
